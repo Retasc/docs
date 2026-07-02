@@ -1,16 +1,15 @@
 /* ---------------------------------------------------------------------------
- * Retasc docs — look & feel lifted from the retasc.com landing (web/index.html)
- * and the Dash (dash/src/styles/tokens.css) so all three surfaces share one
- * language. Default theme is dark ("Protocol Dark"); the light override
- * ("Structural Light") mirrors the landing's warm paper palette.
+ * Retasc docs — look & feel lifted verbatim from the retasc.com landing
+ * (web/index.html). The landing is monochrome + ONE green accent (#4ade80 dark /
+ * #16a34a light). There is NO blue anywhere the eye lands: links are monochrome,
+ * every highlight/badge/active-state/code-prompt is green. This file mirrors that.
  *
- * Mintlify auto-loads this file. We drive everything off the same design tokens
- * as the landing, then map them onto Mintlify's structure.
+ * Mintlify auto-loads this file. We drive everything off the landing's tokens.
  * ------------------------------------------------------------------------- */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@300;500;600;700&display=swap');
 
-/* ---- Design tokens (verbatim from the landing) ---- */
+/* ---- Tokens (verbatim from the landing: "Protocol Dark") ---- */
 :root {
   --rt-bg: #0a0a0a;
   --rt-card: #111;
@@ -23,19 +22,24 @@
   --rt-muted: #666;
   --rt-dim: #444;
   --rt-ink: #cfcfcf;
-  --rt-success: #4ade80;
-  --rt-success-bg: rgba(74, 222, 128, 0.08);
-  --rt-success-border: rgba(74, 222, 128, 0.15);
+
+  /* The single accent — green. NO blue. */
+  --rt-accent: #4ade80;
+  --rt-accent-bg: rgba(74, 222, 128, 0.08);
+  --rt-accent-border: rgba(74, 222, 128, 0.15);
+  --rt-accent-underline: rgba(74, 222, 128, 0.40);
+
   --rt-warning: #facc15;
   --rt-warning-bg: rgba(250, 204, 21, 0.08);
   --rt-warning-border: rgba(250, 204, 21, 0.18);
   --rt-error: #f87171;
   --rt-error-bg: rgba(248, 113, 113, 0.08);
   --rt-error-border: rgba(248, 113, 113, 0.18);
-  --rt-link: #5a9fd4;
+
   --rt-radius-sm: 4px;
   --rt-radius-md: 6px;
   --rt-radius-lg: 8px;
+  --rt-radius-card: 10px;
 
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-display: 'Space Grotesk', sans-serif;
@@ -56,9 +60,12 @@ html.light,
   --rt-muted: #888;
   --rt-dim: #bbb;
   --rt-ink: #333;
-  --rt-success: #16a34a;
+  --rt-accent: #16a34a;
+  --rt-accent-bg: rgba(22, 163, 74, 0.10);
+  --rt-accent-border: rgba(22, 163, 74, 0.20);
+  --rt-accent-underline: rgba(22, 163, 74, 0.45);
+  --rt-warning: #ca8a04;
   --rt-error: #dc2626;
-  --rt-link: #2563eb;
 }
 
 /* ---- Base type ---- */
@@ -75,25 +82,28 @@ h1, h2, h3, h4, h5, h6,
   letter-spacing: -0.02em;
   color: var(--rt-fg-strong);
 }
-
-h1, .prose h1 {
-  font-weight: 600;
-}
-
-/* Links pick up the landing's blue and its hover underline. */
-a,
-.prose a {
-  color: var(--rt-link);
-  text-decoration: none;
-}
-a:hover,
-.prose a:hover {
-  text-decoration: underline;
-}
+h1, .prose h1 { font-weight: 600; }
 
 ::selection {
-  background: var(--rt-success-bg);
+  background: var(--rt-accent-bg);
   color: var(--rt-fg);
+}
+
+/* ---- Links — monochrome like the landing, green only on hover/underline.
+        NEVER blue. The !important floor guarantees Mintlify's default link
+        color (and any theme blue) never wins. ---- */
+.prose a,
+#content-area a:not(.card):not([class*="button"]) {
+  color: var(--rt-fg-strong) !important;
+  text-decoration: underline;
+  text-decoration-color: var(--rt-accent-underline);
+  text-underline-offset: 2px;
+  transition: color 0.15s, text-decoration-color 0.15s;
+}
+.prose a:hover,
+#content-area a:not(.card):not([class*="button"]):hover {
+  color: var(--rt-accent) !important;
+  text-decoration-color: var(--rt-accent);
 }
 
 /* ---- Code — JetBrains Mono everywhere, landing surface colors ---- */
@@ -113,7 +123,7 @@ code, kbd, pre, .font-mono,
   font-weight: 400;
 }
 
-/* Code blocks — card background + faint border, matching .card. */
+/* Code blocks — card background + faint border, like the landing's .codeblock. */
 pre,
 .prose pre {
   background: #0d0d0d !important;
@@ -125,24 +135,26 @@ html.light pre,
   background: var(--rt-card) !important;
 }
 
-/* ---- Cards (CardGroup / Card) — landing's .card ---- */
+/* ---- Cards (CardGroup / Card) — the landing's .surface/.claim-card:
+        #111 bg, #1a1a1a border, 10px radius, hover → dim border + lift. ---- */
 #content-area .card,
 .card,
 a.card {
   background: var(--rt-card);
   border: 1px solid var(--rt-card-border);
-  border-radius: var(--rt-radius-lg);
-  transition: border-color 0.15s ease;
+  border-radius: var(--rt-radius-card);
+  transition: border-color 0.15s ease, transform 0.15s ease;
 }
 #content-area a.card:hover,
 a.card:hover {
   border-color: var(--rt-dim);
+  transform: translateY(-3px);
 }
 .card h2, .card h3, .card .font-semibold {
   font-family: var(--font-display);
 }
 
-/* ---- Tables — quiet rows, mono-ish headers ---- */
+/* ---- Tables — the landing's .matrix: quiet rows, mono header voice ---- */
 .prose table {
   border: 1px solid var(--rt-card-border);
   border-radius: var(--rt-radius-lg);
@@ -155,24 +167,21 @@ a.card:hover {
   font-weight: 600;
   color: var(--rt-fg);
 }
-.prose tbody tr {
-  border-top: 1px solid var(--rt-card-border);
-}
+.prose tbody tr { border-top: 1px solid var(--rt-card-border); }
 
-/* ---- Callouts (Note / Tip / Warning / Info) — landing accent tints ---- */
-.callout,
-[class*="callout"] {
-  border-radius: var(--rt-radius-md);
+/* ---- Accents — anything Mintlify tints with the primary is now green.
+        Kill any residual blue on active nav / sidebar / TOC. ---- */
+#sidebar a[data-active="true"],
+#sidebar a.active,
+.sidebar a[aria-current="page"],
+#table-of-contents a[data-active="true"] {
+  color: var(--rt-accent) !important;
 }
+#sidebar, #navigation-items { font-family: var(--font-sans); }
 
-/* ---- Accents: primary buttons / active nav in brand green-adjacent ---- */
-.mint-primary,
-button[data-primary] {
-  border-radius: var(--rt-radius-md);
-}
-
-/* Eyebrow-style Steps numbers & sidebar in the muted mono voice. */
-#sidebar,
-#navigation-items {
-  font-family: var(--font-sans);
+/* Focus ring — green (the landing used a faint outline; never blue). */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--rt-accent);
+  outline-offset: 2px;
+  border-radius: var(--rt-radius-sm);
 }

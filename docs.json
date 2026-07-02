@@ -4,9 +4,9 @@
   "name": "Retasc",
   "description": "A persistent, dependency-aware, leased work queue that a fleet of AI agents pulls from — with server-enforced correctness.",
   "colors": {
-    "primary": "#5a9fd4",
-    "light": "#7db8e8",
-    "dark": "#5a9fd4"
+    "primary": "#16a34a",
+    "light": "#4ade80",
+    "dark": "#16a34a"
   },
   "appearance": {
     "default": "dark"
@@ -55,8 +55,16 @@
   "navbar": {
     "links": [
       {
-        "label": "Dashboard",
-        "href": "https://dash.retasc.com"
+        "label": "Home",
+        "href": "https://retasc.com"
+      },
+      {
+        "label": "Docs",
+        "href": "https://docs.retasc.com"
+      },
+      {
+        "label": "GitHub",
+        "href": "https://github.com/Retasc"
       }
     ],
     "primary": {
@@ -66,6 +74,34 @@
     }
   },
   "footer": {
+    "links": [
+      {
+        "header": "Retasc",
+        "items": [
+          {
+            "label": "Home",
+            "href": "https://retasc.com"
+          },
+          {
+            "label": "Docs",
+            "href": "https://docs.retasc.com"
+          },
+          {
+            "label": "Dashboard",
+            "href": "https://dash.retasc.com"
+          }
+        ]
+      },
+      {
+        "header": "Resources",
+        "items": [
+          {
+            "label": "GitHub",
+            "href": "https://github.com/Retasc"
+          }
+        ]
+      }
+    ],
     "socials": {
       "github": "https://github.com/Retasc",
       "website": "https://retasc.com"
