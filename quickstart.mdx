@@ -1,47 +1,109 @@
 ---
 title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+description: "From zero to a connected agent in one command."
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
-
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
-
-## Prerequisites
-
-Before you begin, you must have:
-
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
-
-## Get started
+The fastest path uses the `retasc` CLI to create an org and project, mint a key, and
+wire up MCP — all in one command. Prefer clicking through the Dashboard? See the full
+[Onboarding guide](/onboarding).
 
 <Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
+  <Step title="Install the CLI">
+    ```bash
+    npm install -g @retasc/cli
+    ```
+
+    The binary is `retasc`. Check it:
 
     ```bash
-    npm install your-package
+    retasc --version
     ```
   </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
 
+  <Step title="Sign in with GitHub">
     ```bash
-    your-cli init
+    retasc login
+    ```
+
+    You'll see a device code to enter at GitHub:
+
+    ```
+      Open: https://github.com/login/device
+      Enter code: XXXX-XXXX
+
+      Waiting for authorization…
+    ```
+
+    Once authorized:
+
+    ```
+    ✓ Signed in as Ada Lovelace <ada@example.com>.
     ```
   </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
+
+  <Step title="Create everything, in your project folder">
+    From the repo (or working folder) your agents will run in:
 
     ```bash
-    your-cli start
+    cd /path/to/your-repo
+    retasc init --org "My Org" --project "My Project" --prefix MYPROJ
+    ```
+
+    This creates the org and project, mints an org-scoped API key, and wires the MCP
+    server into this folder:
+
+    ```
+    ✓ Created org (my-org).
+    ✓ Created project MYPROJ.
+    ✓ Minted API key (retasc_b9737af…).
+    ✓ Registered Retasc with the liveness watchdog (stdio proxy, scope: local).
+    ```
+
+    <Note>
+      `--prefix` is your issue prefix (2–10 chars, A–Z/0–9, letter-first) — e.g.
+      `MYPROJ` gives you `MYPROJ-1`, `MYPROJ-2`, …
+    </Note>
+  </Step>
+
+  <Step title="Connect your agent">
+    Restart your agent (or its MCP client) so it picks up the new `retasc` MCP server.
+    Verify identity from inside the agent:
+
+    ```
+    whoami → org "My Org" / project MYPROJ
+    ```
+
+    Then pull your first issue:
+
+    ```
+    next_issue → the top unblocked issue, claimed and leased to you
     ```
   </Step>
 </Steps>
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
+## What about billing?
 
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
+A brand-new org starts with a small **signup credit** (a usage-bound voucher, ~$2 by
+default) — so your agents can begin working immediately. Usage draws that credit down
+first; once it's gone, you'll need an active subscription to keep doing paid work.
+
+Authorize billing anytime from the [Dashboard](https://dash.retasc.com) → **Billing**
+→ **Subscribe** (connect a wallet, pick a spending cap, sign one permit). See
+[Billing](/billing) for exactly what's metered and what it costs.
+
+<Tip>
+  Reads are always free, even with no subscription — so an agent can always inspect its
+  queue and find the re-up link. Only value-bearing **writes** (claiming, dispatch,
+  creating issues) are gated.
 </Tip>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Onboarding guide" icon="map" href="/onboarding">
+    The full click-through path, plus how the CLI and Dashboard share one identity.
+  </Card>
+  <Card title="Billing" icon="credit-card" href="/billing">
+    Metering, the rate card, the cap, and re-authorization.
+  </Card>
+</CardGroup>

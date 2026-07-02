@@ -1,0 +1,183 @@
+---
+title: "Onboarding guide"
+description: "The full path — Dashboard sign-in, org, billing, project, key, and connecting an agent."
+---
+
+This is the complete walkthrough. If you'd rather do it in one command, the
+[Quickstart](/quickstart) uses `retasc init` to collapse most of these steps.
+
+## Two front doors, one identity
+
+Retasc has two ways to sign in, and they resolve to the **same account**:
+
+<CardGroup cols={2}>
+  <Card title="Web — Dashboard" icon="browser">
+    [dash.retasc.com](https://dash.retasc.com) → **Sign in with GitHub**. For creating
+    orgs and projects, authorizing billing, and managing keys by hand.
+  </Card>
+  <Card title="CLI — device flow" icon="terminal">
+    `retasc login` → GitHub **device flow** (enter a code at github.com). For minting
+    keys, installing MCP, and claiming work in worktrees.
+  </Card>
+</CardGroup>
+
+Both authenticate the same GitHub identity, so an org you create in the Dashboard is
+visible to the CLI and vice-versa. Use whichever fits the step you're on.
+
+<Note>
+  **Agents never sign up.** Only humans authenticate. Agents carry an org-scoped **API
+  key** — which folder they run in (via that folder's `.mcp.json` key) determines which
+  org their work lands in.
+</Note>
+
+## 1. Sign in to the Dashboard
+
+Go to [dash.retasc.com](https://dash.retasc.com) and click **Sign in with GitHub**.
+First-time users land on the **Create org** screen automatically.
+
+## 2. Create an org
+
+An **org** owns your projects, members, keys, and billing. On the Create org screen:
+
+- **Name** (required) — e.g. `My Company`.
+- **Slug** (optional) — a short URL-safe handle; auto-derived from the name if left blank.
+
+<Tip>
+  You can also create an org from the CLI: `retasc org create --name "My Company"`.
+</Tip>
+
+## 3. Authorize billing
+
+Open the **Billing** tab and click **Subscribe**. This launches our hosted checkout
+(usage-based, pay-as-you-go, settled in USDC on Base):
+
+<Steps>
+  <Step title="Enter your email">
+    Where collection receipts and re-authorization reminders are sent.
+  </Step>
+  <Step title="Connect your wallet">
+    A stablecoin wallet on Base. Nothing is charged at signup.
+  </Step>
+  <Step title="Pick a spending cap">
+    The total permit allowance you're authorizing, plus an optional monthly limit.
+    Both are yours to raise or lower anytime.
+  </Step>
+  <Step title="Sign one permit">
+    A single, gasless [EIP-2612](https://eips.ethereum.org/EIPS/eip-2612) permit
+    authorizes metered pull-payments up to your cap. That's the only signature you need.
+  </Step>
+</Steps>
+
+You're redirected back to the Dashboard, where the **Billing** card now shows your
+subscription status, cap, and accrued usage.
+
+<Note>
+  A new org starts with a small **signup credit** (a usage-bound voucher), so you can
+  begin working before authorizing — usage draws that down first. See
+  [Billing](/billing) for exactly what's metered and what it costs.
+</Note>
+
+## 4. Create a project
+
+A **project** gets an issue **prefix** (2–10 chars, letter-first — e.g. `ACME` →
+`ACME-1`, `ACME-2`, …). Create one from the Dashboard, or from the CLI:
+
+```bash
+retasc project create --org-id <org-id> --name "Acme App" --prefix ACME
+```
+
+## 5. Mint an API key (CLI)
+
+Keys are org- and project-scoped. Mint one with the CLI:
+
+```bash
+retasc login              # if you haven't already
+retasc key mint --org-id <org-id> --project-id <project-id>
+```
+
+```
+✓ Minted key: retasc_b9737afaa1c40f2e8d5b6c3a9f1e0d4c7b2a8f6e3d1c0b9
+  (Shown once — store it now.)
+```
+
+<Warning>
+  The key is shown **once**. Store it in your secret manager. Lost it? Mint a new one
+  and revoke the old with `retasc key rotate` / `retasc key revoke`.
+</Warning>
+
+<Tip>
+  Add `--install` to mint **and** wire up MCP in one step (equivalent to running
+  `retasc mcp install` next).
+</Tip>
+
+## 6. Install the MCP server
+
+Point your agent's MCP client at Retasc. From the folder your agent runs in:
+
+```bash
+retasc mcp install --key retasc_b9737afa…
+```
+
+This registers the `retasc` MCP server. By default it wires a **liveness watchdog**
+(a small stdio proxy) that keeps your claims' leases renewed automatically — no manual
+heartbeats. It targets Claude Code's config when present, and always prints a
+copy-pasteable block for any MCP client:
+
+```json
+{
+  "mcpServers": {
+    "retasc": {
+      "command": "retasc",
+      "args": ["mcp-proxy"],
+      "env": {
+        "RETASC_MCP_URL": "https://mcp.retasc.com/mcp",
+        "RETASC_MCP_KEY": "retasc_b9737afa…"
+      }
+    }
+  }
+}
+```
+
+<Note>
+  **Scopes:** `--scope local` (default) keeps the key out of the repo; `--scope project`
+  writes a committable `./.mcp.json` marker (secret-free — it carries only a workspace
+  id, and the watchdog resolves the actual key locally). Hosted agents or CI that can't
+  spawn a local process can wire a direct HTTP transport with `--no-watchdog`.
+</Note>
+
+## 7. Connect your agent
+
+Restart your agent (or its MCP client) so it loads the `retasc` server. From inside the
+agent, confirm identity and pull work:
+
+```
+whoami     → org "My Company" / project ACME
+next_issue → the top unblocked issue, atomically claimed and leased to you
+```
+
+That's it — your agent is on the queue.
+
+<Card title="Running a fleet?" icon="users" href="https://github.com/Retasc">
+  Several agents can pull in parallel; the server guarantees no two claim the same
+  issue. Give each agent its own git worktree — `retasc claim` (alias `retasc next`)
+  claims the top unblocked issue and drops you into a fresh worktree on its branch.
+</Card>
+
+## Handy checks
+
+| Command | What it tells you |
+|---|---|
+| `retasc whoami` | Which org/project this folder is bound to, and who you are |
+| `retasc doctor` | Whether the binding, key, and MCP wiring are healthy |
+| `retasc config` | Config file path, deployment URL, MCP URL, sign-in status |
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Billing" icon="credit-card" href="/billing">
+    What's metered, the rate card, the cap, and re-authorization.
+  </Card>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    The one-command path with `retasc init`.
+  </Card>
+</CardGroup>

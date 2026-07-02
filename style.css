@@ -1,0 +1,178 @@
+/* ---------------------------------------------------------------------------
+ * Retasc docs — look & feel lifted from the retasc.com landing (web/index.html)
+ * and the Dash (dash/src/styles/tokens.css) so all three surfaces share one
+ * language. Default theme is dark ("Protocol Dark"); the light override
+ * ("Structural Light") mirrors the landing's warm paper palette.
+ *
+ * Mintlify auto-loads this file. We drive everything off the same design tokens
+ * as the landing, then map them onto Mintlify's structure.
+ * ------------------------------------------------------------------------- */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@300;500;600;700&display=swap');
+
+/* ---- Design tokens (verbatim from the landing) ---- */
+:root {
+  --rt-bg: #0a0a0a;
+  --rt-card: #111;
+  --rt-card-border: #1a1a1a;
+  --rt-surface: #191919;
+  --rt-surface-border: #252525;
+  --rt-fg: #f0f0f0;
+  --rt-fg-strong: #fff;
+  --rt-secondary: #999;
+  --rt-muted: #666;
+  --rt-dim: #444;
+  --rt-ink: #cfcfcf;
+  --rt-success: #4ade80;
+  --rt-success-bg: rgba(74, 222, 128, 0.08);
+  --rt-success-border: rgba(74, 222, 128, 0.15);
+  --rt-warning: #facc15;
+  --rt-warning-bg: rgba(250, 204, 21, 0.08);
+  --rt-warning-border: rgba(250, 204, 21, 0.18);
+  --rt-error: #f87171;
+  --rt-error-bg: rgba(248, 113, 113, 0.08);
+  --rt-error-border: rgba(248, 113, 113, 0.18);
+  --rt-link: #5a9fd4;
+  --rt-radius-sm: 4px;
+  --rt-radius-md: 6px;
+  --rt-radius-lg: 8px;
+
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+}
+
+/* Light palette — the landing's "Structural Light" warm paper. */
+html.light,
+:root.light {
+  --rt-bg: #E8E4DF;
+  --rt-card: #f5f2ee;
+  --rt-card-border: #d5d0ca;
+  --rt-surface: #ece8e3;
+  --rt-surface-border: #d0ccc7;
+  --rt-fg: #1a1a1a;
+  --rt-fg-strong: #000;
+  --rt-secondary: #555;
+  --rt-muted: #888;
+  --rt-dim: #bbb;
+  --rt-ink: #333;
+  --rt-success: #16a34a;
+  --rt-error: #dc2626;
+  --rt-link: #2563eb;
+}
+
+/* ---- Base type ---- */
+body,
+.prose,
+p, li, td, th {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6,
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  color: var(--rt-fg-strong);
+}
+
+h1, .prose h1 {
+  font-weight: 600;
+}
+
+/* Links pick up the landing's blue and its hover underline. */
+a,
+.prose a {
+  color: var(--rt-link);
+  text-decoration: none;
+}
+a:hover,
+.prose a:hover {
+  text-decoration: underline;
+}
+
+::selection {
+  background: var(--rt-success-bg);
+  color: var(--rt-fg);
+}
+
+/* ---- Code — JetBrains Mono everywhere, landing surface colors ---- */
+code, kbd, pre, .font-mono,
+.prose code, .prose pre {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+}
+
+/* Inline code — subtle surface chip like the landing's <code>. */
+.prose :not(pre) > code {
+  background: var(--rt-surface);
+  border: 1px solid var(--rt-surface-border);
+  border-radius: var(--rt-radius-sm);
+  padding: 0.12em 0.36em;
+  color: var(--rt-fg);
+  font-weight: 400;
+}
+
+/* Code blocks — card background + faint border, matching .card. */
+pre,
+.prose pre {
+  background: #0d0d0d !important;
+  border: 1px solid var(--rt-card-border);
+  border-radius: var(--rt-radius-lg);
+}
+html.light pre,
+:root.light .prose pre {
+  background: var(--rt-card) !important;
+}
+
+/* ---- Cards (CardGroup / Card) — landing's .card ---- */
+#content-area .card,
+.card,
+a.card {
+  background: var(--rt-card);
+  border: 1px solid var(--rt-card-border);
+  border-radius: var(--rt-radius-lg);
+  transition: border-color 0.15s ease;
+}
+#content-area a.card:hover,
+a.card:hover {
+  border-color: var(--rt-dim);
+}
+.card h2, .card h3, .card .font-semibold {
+  font-family: var(--font-display);
+}
+
+/* ---- Tables — quiet rows, mono-ish headers ---- */
+.prose table {
+  border: 1px solid var(--rt-card-border);
+  border-radius: var(--rt-radius-lg);
+  overflow: hidden;
+}
+.prose thead th {
+  background: var(--rt-surface);
+  border-bottom: 1px solid var(--rt-card-border);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  color: var(--rt-fg);
+}
+.prose tbody tr {
+  border-top: 1px solid var(--rt-card-border);
+}
+
+/* ---- Callouts (Note / Tip / Warning / Info) — landing accent tints ---- */
+.callout,
+[class*="callout"] {
+  border-radius: var(--rt-radius-md);
+}
+
+/* ---- Accents: primary buttons / active nav in brand green-adjacent ---- */
+.mint-primary,
+button[data-primary] {
+  border-radius: var(--rt-radius-md);
+}
+
+/* Eyebrow-style Steps numbers & sidebar in the muted mono voice. */
+#sidebar,
+#navigation-items {
+  font-family: var(--font-sans);
+}
