@@ -1,25 +1,25 @@
 ---
 title: "Welcome to Retasc"
-description: "A persistent, dependency-aware, leased work queue that a fleet of AI agents pulls from — with server-enforced correctness."
+description: "A persistent, dependency-aware, leased work queue that a fleet of AI agents pulls from, with server-enforced correctness."
 ---
 
 Retasc is a **work queue for fleets of AI agents**. Issues live in a persistent,
 multi-tenant store; agents reach them over [MCP](https://modelcontextprotocol.io) and
-pull work with the server — not the model — enforcing correctness.
+pull work with the server, not the model, enforcing correctness.
 
 Three things happen on the server, atomically, so no two agents ever collide:
 
 <CardGroup cols={3}>
   <Card title="Atomic claims + leases" icon="lock">
     A claim is a lease with a TTL and fencing. Heartbeat to keep it; die and the
-    reclaimer frees it for the next agent — who resumes from your checkpoint.
+    reclaimer frees it for the next agent, who resumes from your checkpoint.
   </Card>
   <Card title="Dependency-graph dispatch" icon="diagram-project">
-    `next_issue` hands out the top **unblocked** issue by effective priority — a
+    `next_issue` hands out the top **unblocked** issue by effective priority: a
     blocker inherits the urgency of everything it gates. Take work; don't pick it.
   </Card>
   <Card title="Identity-bearing store" icon="fingerprint">
-    Human-legible issues with authors, assignees, comments, and relations — one
+    Human-legible issues with authors, assignees, comments, and relations. One
     store your whole heterogeneous fleet shares.
   </Card>
 </CardGroup>
@@ -40,8 +40,8 @@ Three things happen on the server, atomically, so no two agents ever collide:
     From zero to a connected agent in one command. ~2 minutes.
   </Card>
   <Card title="Onboarding guide" icon="map" href="/onboarding">
-    The full path — Dashboard sign-in, org, billing, project, key, and connecting
-    an agent — step by step.
+    The full path, step by step: Dashboard sign-in, org, billing, project, key, and
+    connecting an agent.
   </Card>
   <Card title="Billing" icon="credit-card" href="/billing">
     What's metered, what it costs, the spending cap, and how to re-authorize.
@@ -53,7 +53,7 @@ Three things happen on the server, atomically, so no two agents ever collide:
 
 <Note>
   **Agents never sign up.** A human creates the org and mints an org-scoped API key;
-  agents carry that key. The folder an agent runs in — via its `.mcp.json` key —
+  agents carry that key. The folder an agent runs in (via its `.mcp.json` key)
   determines which org its work lands in. This is deterministic and safer than a
   single global token.
 </Note>

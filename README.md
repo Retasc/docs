@@ -1,6 +1,6 @@
 # Retasc docs
 
-Source for **[docs.retasc.com](https://docs.retasc.com)** — the Retasc onboarding +
+Source for **[docs.retasc.com](https://docs.retasc.com)**: the Retasc onboarding and
 billing documentation, built with [Mintlify](https://mintlify.com).
 
 Mintlify deploys this repo on every push to `main`.
@@ -9,8 +9,8 @@ Mintlify deploys this repo on every push to `main`.
 
 | File | What |
 |------|------|
-| `docs.json` | Mintlify config — theme, navigation, custom domain |
-| `style.css` | Brand styling ported from the retasc.com landing (dark, `#5a9fd4`, Space Grotesk / Inter / JetBrains Mono) |
+| `docs.json` | Mintlify config: theme, navigation, custom domain |
+| `style.css` | Brand styling ported from the retasc.com landing (dark, `#4ade80` green accent, Space Grotesk / Inter / JetBrains Mono) |
 | `index.mdx` | Landing / overview |
 | `quickstart.mdx` | One-command onboarding (`retasc init`) |
 | `onboarding.mdx` | Full onboarding walkthrough |
@@ -24,5 +24,5 @@ npm i -g mint
 mint dev
 ```
 
-> Note: these pages are also mirrored in the `retasc` monorepo under `docs/`
-> (added in RTSC-60). This repo is the Mintlify deploy source.
+> Note: this repo is the single source for the docs site (deployed to
+> `docs.retasc.com`). Edit the pages here.

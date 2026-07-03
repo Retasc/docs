@@ -1,6 +1,6 @@
 ---
 title: "Onboarding guide"
-description: "The full path — Dashboard sign-in, org, billing, project, key, and connecting an agent."
+description: "The full path: Dashboard sign-in, org, billing, project, key, and connecting an agent."
 ---
 
 This is the complete walkthrough. If you'd rather do it in one command, the
@@ -11,11 +11,11 @@ This is the complete walkthrough. If you'd rather do it in one command, the
 Retasc has two ways to sign in, and they resolve to the **same account**:
 
 <CardGroup cols={2}>
-  <Card title="Web — Dashboard" icon="browser">
+  <Card title="Web: Dashboard" icon="browser">
     [dash.retasc.com](https://dash.retasc.com) → **Sign in with GitHub**. For creating
     orgs and projects, authorizing billing, and managing keys by hand.
   </Card>
-  <Card title="CLI — device flow" icon="terminal">
+  <Card title="CLI: device flow" icon="terminal">
     `retasc login` → GitHub **device flow** (enter a code at github.com). For minting
     keys, installing MCP, and claiming work in worktrees.
   </Card>
@@ -26,7 +26,7 @@ visible to the CLI and vice-versa. Use whichever fits the step you're on.
 
 <Note>
   **Agents never sign up.** Only humans authenticate. Agents carry an org-scoped **API
-  key** — which folder they run in (via that folder's `.mcp.json` key) determines which
+  key**. The folder they run in (via that folder's `.mcp.json` key) determines which
   org their work lands in.
 </Note>
 
@@ -39,8 +39,8 @@ First-time users land on the **Create org** screen automatically.
 
 An **org** owns your projects, members, keys, and billing. On the Create org screen:
 
-- **Name** (required) — e.g. `My Company`.
-- **Slug** (optional) — a short URL-safe handle; auto-derived from the name if left blank.
+- **Name** (required), for example `My Company`.
+- **Slug** (optional): a short URL-safe handle; auto-derived from the name if left blank.
 
 <Tip>
   You can also create an org from the CLI: `retasc org create --name "My Company"`.
@@ -73,14 +73,15 @@ subscription status, cap, and accrued usage.
 
 <Note>
   A new org starts with a small **signup credit** (a usage-bound voucher), so you can
-  begin working before authorizing — usage draws that down first. See
+  begin working before authorizing. Usage draws that down first. See
   [Billing](/billing) for exactly what's metered and what it costs.
 </Note>
 
 ## 4. Create a project
 
-A **project** gets an issue **prefix** (2–10 chars, letter-first — e.g. `ACME` →
-`ACME-1`, `ACME-2`, …). Create one from the Dashboard, or from the CLI:
+A **project** gets an issue **prefix** (2 to 10 chars, letter-first). For example,
+`ACME` gives you `ACME-1`, `ACME-2`, and so on. Create one from the Dashboard, or from
+the CLI:
 
 ```bash
 retasc project create --org-id <org-id> --name "Acme App" --prefix ACME
@@ -97,7 +98,7 @@ retasc key mint --org-id <org-id> --project-id <project-id>
 
 ```
 ✓ Minted key: retasc_b9737afaa1c40f2e8d5b6c3a9f1e0d4c7b2a8f6e3d1c0b9
-  (Shown once — store it now.)
+  (Shown once. Store it now.)
 ```
 
 <Warning>
@@ -119,8 +120,8 @@ retasc mcp install --key retasc_b9737afa…
 ```
 
 This registers the `retasc` MCP server. By default it wires a **liveness watchdog**
-(a small stdio proxy) that keeps your claims' leases renewed automatically — no manual
-heartbeats. It targets Claude Code's config when present, and always prints a
+(a small stdio proxy) that keeps your claims' leases renewed automatically, with no
+manual heartbeats. It targets Claude Code's config when present, and always prints a
 copy-pasteable block for any MCP client:
 
 ```json
@@ -140,7 +141,7 @@ copy-pasteable block for any MCP client:
 
 <Note>
   **Scopes:** `--scope local` (default) keeps the key out of the repo; `--scope project`
-  writes a committable `./.mcp.json` marker (secret-free — it carries only a workspace
+  writes a committable `./.mcp.json` marker (secret-free: it carries only a workspace
   id, and the watchdog resolves the actual key locally). Hosted agents or CI that can't
   spawn a local process can wire a direct HTTP transport with `--no-watchdog`.
 </Note>
@@ -155,11 +156,11 @@ whoami     → org "My Company" / project ACME
 next_issue → the top unblocked issue, atomically claimed and leased to you
 ```
 
-That's it — your agent is on the queue.
+That's it. Your agent is on the queue.
 
 <Card title="Running a fleet?" icon="users" href="https://github.com/Retasc">
   Several agents can pull in parallel; the server guarantees no two claim the same
-  issue. Give each agent its own git worktree — `retasc claim` (alias `retasc next`)
+  issue. Give each agent its own git worktree. `retasc claim` (alias `retasc next`)
   claims the top unblocked issue and drops you into a fresh worktree on its branch.
 </Card>
 

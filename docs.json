@@ -2,7 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Retasc",
-  "description": "A persistent, dependency-aware, leased work queue that a fleet of AI agents pulls from — with server-enforced correctness.",
+  "description": "A persistent, dependency-aware, leased work queue that a fleet of AI agents pulls from, with server-enforced correctness.",
   "colors": {
     "primary": "#16a34a",
     "light": "#4ade80",
