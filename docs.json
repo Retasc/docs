@@ -20,6 +20,18 @@
   "styling": {
     "codeblocks": "dark"
   },
+  "contextual": {
+    "display": "header",
+    "options": [
+      "copy",
+      "view",
+      "claude",
+      "chatgpt",
+      "perplexity",
+      "cursor",
+      "vscode"
+    ]
+  },
   "favicon": "/favicon.svg",
   "logo": {
     "light": "/logo/light.svg",
