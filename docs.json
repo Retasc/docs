@@ -118,5 +118,10 @@
       "github": "https://github.com/Retasc",
       "website": "https://retasc.com"
     }
+  },
+  "integrations": {
+    "ga4": {
+      "measurementId": "G-LDG1JH7YMF"
+    }
   }
 }
