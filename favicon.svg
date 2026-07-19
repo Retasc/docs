@@ -1,17 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-  <!-- Retasc favicon — queue fan-out. One source (the queue, larger green
-       node) dispatches to three workers (white agent nodes). Black tile,
-       faint edges. Full-bleed (no rounded corners) so it stays clean on
-       both light and dark tabs. -->
-  <rect width="32" height="32" fill="#000000"/>
-  <!-- Edges: queue source fans out to three workers -->
-  <line x1="8" y1="16" x2="24" y2="7"  stroke="#3a3a3a" stroke-width="1.5"/>
-  <line x1="8" y1="16" x2="24" y2="16" stroke="#3a3a3a" stroke-width="1.5"/>
-  <line x1="8" y1="16" x2="24" y2="25" stroke="#3a3a3a" stroke-width="1.5"/>
-  <!-- Worker nodes (agents) -->
-  <circle cx="24" cy="7"  r="2.5" fill="#f0f0f0"/>
-  <circle cx="24" cy="16" r="2.5" fill="#f0f0f0"/>
-  <circle cx="24" cy="25" r="2.5" fill="#f0f0f0"/>
-  <!-- Queue source node (larger, brand green) -->
-  <circle cx="8" cy="16" r="3.5" fill="#4ade80"/>
+  <!-- Retasc favicon: queue fan-out. One source (the queue) dispatches to three
+       workers. Transparent background; colors adapt to the browser theme. -->
+  <style>
+    .e { stroke: #8a8a8a; } .n { fill: #1a1a1a; }
+    @media (prefers-color-scheme: dark) { .e { stroke: #5a5a5a; } .n { fill: #f0f0f0; } }
+  </style>
+  <line class="e" x1="8" y1="16" x2="24" y2="7"  stroke-width="1.5"/>
+  <line class="e" x1="8" y1="16" x2="24" y2="16" stroke-width="1.5"/>
+  <line class="e" x1="8" y1="16" x2="24" y2="25" stroke-width="1.5"/>
+  <circle class="n" cx="24" cy="7"  r="2.5"/>
+  <circle class="n" cx="24" cy="16" r="2.5"/>
+  <circle class="n" cx="24" cy="25" r="2.5"/>
+  <circle class="n" cx="8" cy="16" r="3.5"/>
 </svg>
