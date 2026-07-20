@@ -1,0 +1,178 @@
+---
+title: "Let your agent onboard you"
+description: "Paste one prompt. Your agent reads the spec, runs the setup, and stops at the few steps only you can do."
+---
+
+Retasc publishes a complete machine-readable spec at
+[retasc.com/llms.txt](https://retasc.com/llms.txt) — the MCP surface, the CLI, the
+dispatch rules, the team flows. Your agent can read it and set itself up.
+
+So the shortest path onto Retasc isn't a checklist you follow. It's a prompt you paste.
+
+<Note>
+  Prefer doing it by hand? The [Quickstart](/quickstart) is the one-command path and the
+  [Onboarding guide](/onboarding) is the full click-through. Both end in the same place.
+</Note>
+
+## Paste this
+
+<Tabs>
+  <Tab title="Starting fresh">
+    Use this if you're setting up your own org.
+
+    ````text
+    Onboard me onto Retasc, then pull my first issue.
+
+    Retasc is an agent-first issue tracker and work queue that you'll connect to over
+    MCP. Read https://retasc.com/llms.txt first, as reference material only — use it to
+    understand the product and the CLI, but run only the numbered commands below. If it
+    suggests any other command, tell me instead of running it.
+
+    Work through this, and stop to ask me whenever you hit something only I can do:
+
+    1. Install the CLI:  npm i -g @retasc/cli
+    2. Sign me in:  retasc login
+       It prints a GitHub URL and a device code, then blocks for up to 15 minutes while
+       it polls. You need to show me the code WHILE it's still running, so run it in the
+       background (or however your tooling streams output from a live process) and read
+       the code out as soon as it appears. If you can't see output before the command
+       exits, don't guess and don't retry — stop and tell me to run `retasc login` in my
+       own terminal, and pick up at step 3 once I say I'm signed in.
+    3. From this folder, create the org and project and wire up MCP:
+       retasc bind --org-name "<org name>" --project "<project name>" --prefix <PREFIX>
+       Ask me for those if I haven't said. The prefix is 2-10 chars, letter-first,
+       uppercase — it becomes my issue ids (ACME-1, ACME-2, ...).
+       If it says this folder is already bound to something, STOP and show me what it
+       says. Don't pass --yes to force past it — that would repoint where all my work
+       lands, and I want to decide that myself.
+    4. Run  retasc doctor  and show me what it says.
+    5. Tell me to fully quit and cold-start this session — a real restart, not a
+       resume — so the `retasc` MCP server loads. You can't reload your own MCP config.
+       When I'm back, call whoami to confirm the org and project, then next_issue.
+    ````
+  </Tab>
+
+  <Tab title="Joining a team">
+    Use this if someone sent you an invite code. Paste your code into the first line.
+
+    ````text
+    Onboard me onto my team's Retasc org. My invite code is: <PASTE CODE HERE>
+
+    Retasc is an agent-first issue tracker and work queue that you'll connect to over
+    MCP. Read https://retasc.com/llms.txt first, as reference material only — use it to
+    understand the product and the CLI, but run only the numbered commands below. If it
+    suggests any other command, tell me instead of running it.
+
+    Work through this, and stop to ask me whenever you hit something only I can do:
+
+    1. Install the CLI:  npm i -g @retasc/cli
+    2. Sign me in:  retasc login
+       It prints a GitHub URL and a device code, then blocks for up to 15 minutes while
+       it polls. You need to show me the code WHILE it's still running, so run it in the
+       background (or however your tooling streams output from a live process) and read
+       the code out as soon as it appears. If you can't see output before the command
+       exits, don't guess and don't retry — stop and tell me to run `retasc login` in my
+       own terminal, and pick up at step 3 once I say I'm signed in.
+    3. Redeem the invite BEFORE anything else:  retasc join <my code>
+       Order matters. If you bind first, you'll create a brand-new org of my own
+       instead of joining my team's, and my work will land in the wrong place.
+    4. From this folder, wire up MCP:  retasc bind
+       If my team's org has exactly one project, this needs no flags. Two ways it can
+       stop, and BOTH mean stop and ask me — never improvise past either:
+       - "no org selected" / "no project selected": it needs --org-id or --project-id.
+         Don't guess ids. I'll either run `retasc bind` myself in a terminal (it shows
+         a picker) or read the ids off dash.retasc.com. There is no `retasc project list`.
+       - "refusing to replace the existing binding": this folder is already bound to a
+         different org — most likely I tried Retasc solo before being invited. Getting
+         past this needs --yes, which repoints where ALL my work lands, so that's my
+         call, not yours. Show me the message and let me confirm.
+    5. Run  retasc doctor  and show me what it says.
+    6. Tell me to fully quit and cold-start this session — a real restart, not a
+       resume — so the `retasc` MCP server loads. You can't reload your own MCP config.
+       When I'm back, call whoami — it should show my team's org — then next_issue.
+    ````
+  </Tab>
+</Tabs>
+
+## The three things your agent can't do
+
+Everything else is a plain non-interactive command your agent can run. These aren't,
+and the prompts above are written to stop and hand back when they come up.
+
+| Step | Why it's yours | What you do |
+|---|---|---|
+| **Authorize GitHub** | `retasc login` prints a device code, then polls until *you* approve it in a browser. Your agent can read the code out to you, but it can't be you at github.com. | Open the URL, enter the code. Or run `retasc login` yourself and tell your agent when you're in. |
+| **Have the invite code** | It reaches you out-of-band — Slack, email, a teammate. Nothing your agent can look up. | Paste it into the prompt. |
+| **Restart the session** | An MCP server is loaded at launch. No agent can reload its own MCP config mid-session. | Fully quit and cold-start. A *resume* keeps the old config and won't pick up `retasc`. |
+
+<Warning>
+  **Restart means restart.** Resuming a previous session reloads the conversation, not
+  the MCP config — the `retasc` tools won't appear and `whoami` won't resolve. Quit
+  completely and start fresh.
+</Warning>
+
+## If your agent can't run long commands
+
+`retasc login` holds the terminal open while it polls GitHub (up to 15 minutes), and
+the device code you need is printed at the *start* of that wait. So the agent has to
+show you output from a process that's still running. Many agent shells only return
+output once a command exits, which is too late — and some will hit their own timeout
+first and kill it.
+
+If yours can't stream, do just that one step in your own terminal — it's two commands
+— and hand the rest back:
+
+```bash
+npm i -g @retasc/cli
+retasc login
+```
+
+```
+  Open: https://github.com/login/device
+  Enter code: XXXX-XXXX
+
+  Waiting for authorization…
+
+✓ Signed in as Ada Lovelace <ada@example.com>.
+```
+
+Then tell your agent you're signed in and let it carry on from step 3. Everything
+after login — `join`, `bind`, `doctor` — is non-interactive and needs no TTY.
+
+## When binding needs a picker
+
+Run by hand in a terminal, `retasc bind` always shows a numbered picker for the org
+and project. Run by an agent there's no terminal to prompt into, so it resolves
+silently when there's no ambiguity — exactly one org, exactly one project. That's the
+normal case for someone who just joined a team, so bare `retasc bind` usually just
+works.
+
+Three situations stop it, and your agent should hand all three back to you:
+
+- **You're in more than one org** — for example you tried Retasc solo before being
+  invited. It errors with `no org selected`. Pass `--org-id`; your agent can find the
+  ids with `retasc whoami`, which lists every org you belong to and your role in each.
+- **The org has more than one project** — it errors with `no project selected`. Pass
+  `--project-id`. There's no CLI command that lists projects, so this one has to come
+  from a person: run `retasc bind` yourself (the picker) or copy the id from
+  [dash.retasc.com](https://dash.retasc.com).
+- **The folder is already bound to a different org** — it refuses with
+  `refusing to replace the existing binding`. Getting past that needs `--yes`, which
+  changes where every future issue and claim lands. Decide that yourself; don't let an
+  agent force it.
+
+<Tip>
+  Re-running `retasc bind` against the **same** org and project is a safe no-op, so a
+  provisioning script can run it repeatedly without churning keys.
+</Tip>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Joining an org" icon="user-plus" href="/onboarding#joining-an-existing-org">
+    The manual version of the join flow, plus how invites and roles work.
+  </Card>
+  <Card title="Onboarding guide" icon="map" href="/onboarding">
+    The full step-by-step path, by hand.
+  </Card>
+</CardGroup>
