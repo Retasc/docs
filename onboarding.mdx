@@ -4,7 +4,14 @@ description: "The full path: Dashboard sign-in, org, billing, project, key, and 
 ---
 
 This is the complete walkthrough. If you'd rather do it in one command, the
-[Quickstart](/quickstart) uses `retasc init` to collapse most of these steps.
+[Quickstart](/quickstart) uses `retasc init` to collapse most of these steps. If you'd
+rather not do it at all, [hand the whole thing to your agent](/agent-onboarding).
+
+<Note>
+  **Were you invited to a team?** Skip to [Joining an existing
+  org](#joining-an-existing-org). Steps 1-7 below create a **new** org — following them
+  with an invite in hand lands your work in the wrong place.
+</Note>
 
 ## Two front doors, one identity
 
@@ -163,6 +170,110 @@ That's it. Your agent is on the queue.
   issue. Give each agent its own git worktree. `retasc claim` (alias `retasc next`)
   claims the top unblocked issue and drops you into a fresh worktree on its branch.
 </Card>
+
+## Joining an existing org
+
+If a teammate invited you, you don't create anything — you redeem a single-use code
+and bind your folder to *their* org:
+
+<Steps>
+  <Step title="Sign in as yourself">
+    ```bash
+    npm install -g @retasc/cli
+    retasc login
+    ```
+
+    You authenticate as your own GitHub identity. There's no separate Retasc account
+    and no email invite to accept.
+  </Step>
+
+  <Step title="Redeem the invite">
+    ```bash
+    retasc join <invite-code>
+    ```
+
+    ```
+    ✓ Joined org "acme" as member. It'll show up in `retasc whoami`.
+    ```
+
+    Codes are single-use and expire (7 days by default). If yours is stale, ask the
+    owner to mint another.
+  </Step>
+
+  <Step title="Bind your working folder">
+    From the repo your agents will run in:
+
+    ```bash
+    cd /path/to/your-repo
+    retasc bind
+    ```
+
+    This mints *your* agent key for the org and wires the MCP server into this folder.
+    Run in a terminal it shows a numbered picker for the org and project; pass
+    `--org-id` / `--project-id` to skip it.
+  </Step>
+
+  <Step title="Confirm">
+    ```bash
+    retasc whoami
+    ```
+
+    It leads with the folder's binding — the same "you are in org X / project Y"
+    heads-up your agent gets — then lists every org you belong to and your role in each.
+    Restart your agent so it loads the `retasc` MCP server.
+  </Step>
+</Steps>
+
+<Warning>
+  **Run `join` before `bind`.** If you don't belong to an org yet, `retasc bind`
+  offers to *create* one — so binding first puts you in an org of your own instead of
+  your team's, and your agent's work lands somewhere nobody else can see. If that
+  already happened: run `retasc join <code>`, then `retasc bind --org-id <their-org-id>
+  --yes` to repoint the folder.
+</Warning>
+
+## Roles
+
+Every membership is **owner** or **member**. Invites always join as `member`.
+
+| | Owner | Member |
+|---|---|---|
+| Read and write issues, claim work | ✓ | ✓ |
+| Mint, rotate, and revoke **their own** agent keys | ✓ | ✓ |
+| Invite teammates, manage other people's keys | ✓ | — |
+| Change billing, open the manage link | ✓ | — |
+| Create projects, connect GitHub, import/export | ✓ | — |
+
+<Note>
+  Members are free and unlimited — Retasc meters actions, not seats, so adding people
+  costs nothing. See [Billing](/billing).
+</Note>
+
+## Inviting teammates
+
+Owners mint single-use codes. From the Dashboard, open **Team → New invite**, pick an
+expiry, and copy the code — it's shown once.
+
+Or from the CLI:
+
+```bash
+retasc members invite --org-id <org-id> [--expires-days 1-30]
+```
+
+```
+✓ Invite code: rtscinv_3f9c1a7e0b4d82615c8f3a9e17d0b62c4a85f931e7c0d248
+  Expires 2026-07-27. Single-use — shown once.
+  Share it; they run:  retasc login && retasc join rtscinv_3f9c1a7e0b4d82615c8f3a9e17d0b62c4a85f931e7c0d248
+```
+
+Manage them with `retasc members list --org-id <org-id>` (status: pending, accepted,
+revoked, expired) and `retasc members revoke --invite-id <id>`.
+
+<Tip>
+  Invites add **humans**. To add an **agent**, run `retasc bind` (or `retasc key mint`)
+  in the folder that agent works from — the key is what carries org identity, not a
+  person.
+</Tip>
 
 ## Handy checks
 
