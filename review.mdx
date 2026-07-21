@@ -1,0 +1,115 @@
+---
+title: "Review workflow"
+description: "An optional acceptance gate that runs on the same dispatch engine as everything else: finished work waits in review, a different principal pulls it, and no fleet can approve its own work."
+---
+
+Most trackers grow a review step as a column you drag into and an approval someone
+has to remember to click. Retasc doesn't add a review *feature* — it lets an issue
+finish into a sixth status, `review`, and runs that status through the **same dispatch
+engine** as every other kind of work. A review is a normal queue item: it's claimed
+atomically, held under a lease, ordered by effective priority, and reclaimed if the
+reviewer stalls. The one extra rule the server enforces is **author ≠ reviewer**.
+
+<Note>
+  **Review is opt-in, per issue, and off by default.** If you never finish into
+  `review`, nothing changes: `done` behaves exactly as it always has. There is no
+  project switch to flip and no global mode — each issue decides at finish time.
+</Note>
+
+## The lifecycle
+
+<Steps>
+  <Step title="Finish into review, not done">
+    Instead of closing an issue with `done`, the finishing agent sets its status to
+    `review` and names a **reviewer** (a human lane, via `assignee`). That single
+    choice is the whole opt-in.
+  </Step>
+
+  <Step title="The issue stays open and frees its lease">
+    Entering `review` is **non-terminal**: the issue keeps blocking its dependents, so
+    nothing downstream unblocks on work that hasn't been accepted yet. The author's
+    lease is released, and their checkpoint is **kept** — it's the handoff to the
+    reviewer, not scratch state to discard.
+  </Step>
+
+  <Step title="A reviewer pulls it — nobody gets pinged">
+    Because the review is an ordinary queue item, it's **dispatched**: `next_issue` and
+    `next_batch` hand it out like any other claimable work, and effective priority
+    applies — a review gating an urgent chain inherits that urgency and jumps the
+    reviewer's queue on its own. Claiming a review is a lease that keeps it *in*
+    `review` (it doesn't flip to `doing`); heartbeat and checkpoint work as usual, and a
+    stalled review is reclaimed by the lease timer.
+  </Step>
+
+  <Step title="Promote, or send back">
+    The reviewer takes one of two exits, both ordinary queue verbs:
+    - **Promote** — set the status to `done`. *Now* the issue is terminal and its
+      dependents unblock.
+    - **Send back** — set the status to `todo` and leave a comment. The author's
+      checkpoint carries forward as rework context, and the issue re-enters dispatch as
+      fresh work. There is no separate "reject" status.
+  </Step>
+</Steps>
+
+## Author ≠ reviewer is server-enforced
+
+The correctness guarantee is that **a fleet can't approve its own work** — even if it
+holds every key in the org. Retasc compares **principals** (the human an agent acts
+for, not the individual agent key) at three points:
+
+| Checked | What it prevents |
+|---|---|
+| When the review is **requested** | Naming yourself as the reviewer on the way into `review`. |
+| When the review is **claimed** | Pulling a review of work your own principal finished. |
+| On the **promotion** to `done` | Approving it on the final transition, even if you slipped past the claim. |
+
+<Note>
+  The identity check lives on the **transition**, not on a permission toggle. Approving
+  your own work is structurally impossible, not merely discouraged — the server rejects
+  the `review → done` edge when the promoting principal is the author.
+</Note>
+
+## Review needs two principals
+
+Because author ≠ reviewer is enforced by principal, an org with only **one** principal
+can't promote anything through review — there is no second party to accept it. That's
+by design, not an oversight: review is an acceptance gate between *different* parties.
+
+<Warning>
+  In a single-principal org, finish work straight to `done` (the default). Reserve
+  `review` for when a second principal — a teammate, or a CI agent acting for a
+  distinct principal — is available to accept it.
+</Warning>
+
+## What agents do (and don't) change
+
+Nothing about the agent loop changes. An agent still claims, works, checkpoints, and
+finishes. Opting into review is a single field on the finish call:
+
+```
+save_issue  RTSC-58  status:review  assignee:"<reviewer's lane>"
+```
+
+Leave that off and the agent finishes to `done` exactly as before. Agents never gain a
+new "approve" verb — promotion is just another principal setting `status:done`, gated
+by the rule above.
+
+<Note>
+  **What routing and automation are *not* built in:** Retasc doesn't model reviewer
+  rotation, an approval inbox, or a policy for *who* reviews — that's lane convention on
+  your side. The engine enforces exactly one thing, author ≠ reviewer, and dispatches
+  the review like any other work. Wiring a promotion to an external signal (a merged
+  PR, a green CI run) is your workflow's job, performed by an agent acting for a
+  principal that isn't the author.
+</Note>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Onboarding guide" icon="map" href="/onboarding">
+    Roles and principals — the identity model that makes author ≠ reviewer enforceable.
+  </Card>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    From zero to a connected agent in one command.
+  </Card>
+</CardGroup>

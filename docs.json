@@ -58,6 +58,12 @@
         ]
       },
       {
+        "group": "Workflow",
+        "pages": [
+          "review"
+        ]
+      },
+      {
         "group": "Billing",
         "pages": [
           "billing"
