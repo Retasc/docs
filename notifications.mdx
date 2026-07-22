@@ -1,0 +1,111 @@
+---
+title: "Notifications (Telegram & Discord)"
+description: "A private DM when work crosses back to you: done, assigned, review, or canceled on an issue you're tied to. Relationship-routed, never your own actions, and every event mute-able."
+---
+
+Your fleet runs on its own. Retasc doesn't ask you to watch a board or refresh a
+dashboard. It pings you only when work crosses back into human hands. When an issue
+you're tied to is finished, assigned, sent for review, or canceled, the Retasc bot
+sends you a **private direct message** on Telegram or Discord. Nothing else.
+
+<Note>
+  **Awareness, not a firehose.** Notifications are **relationship-routed**: you only
+  hear about issues *you* are tied to, and Retasc **never DMs you about your own
+  action**. Every event type is independently **mute-able**, so you can keep only the
+  ones you care about.
+</Note>
+
+## What you get
+
+A DM fires on exactly four transitions, each routed to the one human it concerns:
+
+| Event | Who gets pinged | Why it matters |
+|---|---|---|
+| **Done** | the issue's **author** | Work you filed was finished. |
+| **Assigned** | the **assignee** | An issue was put on your lane. |
+| **Review** | the **reviewer** | Work is waiting for you to accept or send back. |
+| **Canceled** | the issue's **author** | Work you filed was closed without shipping. |
+
+<Note>
+  Routing is by **principal**, the human an agent acts for, not the agent key. If your
+  agent finishes work you filed, you won't get a "done" DM: it was your own action.
+  That's the point. You hear about work only when it lands back with *you*.
+</Note>
+
+Connecting takes one pass through the Dashboard. Pick the channel you already use, or
+connect both.
+
+## Connect Discord
+
+You link your own Discord account to the shared Retasc server, then run one slash
+command. The Dashboard connects automatically the moment you do.
+
+<Steps>
+  <Step title="Open the connector">
+    In the [Dashboard](https://dash.retasc.com), go to **Connectors → Discord** and
+    press **Connect Discord**.
+  </Step>
+  <Step title="Copy your connect code">
+    The panel shows a single-use **connect code**. Copy it. The code expires in 15
+    minutes, so press Connect again if you need a fresh one.
+  </Step>
+  <Step title="Join the Retasc server">
+    Use the **Join the Retasc server** button to open the invite and join (skip if
+    you're already in).
+  </Step>
+  <Step title="Run /connect">
+    In any channel of the Retasc server, type <code>/connect</code> and paste your code
+    into the **code** field, then send it.
+  </Step>
+  <Step title="Connected">
+    The Retasc bot DMs you to confirm and the Dashboard flips to **Connected** on its
+    own. Your four notifications are now on.
+  </Step>
+</Steps>
+
+<Note>
+  A workspace admin connects the Retasc Discord app to your org once. Until that's done,
+  the Discord connector shows a "not set up yet" notice, so ask an owner to finish it,
+  then link your account.
+</Note>
+
+## Connect Telegram
+
+Telegram is a single tap, with no server to join and no command to type.
+
+<Steps>
+  <Step title="Open the connector">
+    In the [Dashboard](https://dash.retasc.com), go to **Connectors → Telegram** and
+    press **Connect Telegram**.
+  </Step>
+  <Step title="Open the one-time link">
+    A single-use link to the Retasc bot appears. Tap it to open Telegram. The link
+    expires in 15 minutes, so press Connect again if you need a new one.
+  </Step>
+  <Step title="Tap Start">
+    In Telegram, tap **Start** on the Retasc bot.
+  </Step>
+  <Step title="Connected">
+    The Dashboard switches to **Connected** on its own. Your four notifications are now
+    on.
+  </Step>
+</Steps>
+
+## Muting an event
+
+Once connected, the connector shows a toggle per event: **done**, **assigned**,
+**review**, and **canceled**. Turn any of them off to stop those DMs while keeping the
+rest. You can also **disconnect** entirely from the same panel, or send a **test** DM to
+confirm the channel works.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Review workflow" icon="user-check" href="/review">
+    Where the **review** notification comes from: the acceptance gate that routes work to
+    a second principal.
+  </Card>
+  <Card title="Onboarding guide" icon="map" href="/onboarding">
+    Principals and lanes, the identity model that decides who each DM is routed to.
+  </Card>
+</CardGroup>
