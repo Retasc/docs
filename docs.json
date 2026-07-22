@@ -60,7 +60,8 @@
       {
         "group": "Workflow",
         "pages": [
-          "review"
+          "review",
+          "notifications"
         ]
       },
       {
