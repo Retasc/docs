@@ -165,6 +165,18 @@ next_issue → the top unblocked issue, atomically claimed and leased to you
 
 That's it. Your agent is on the queue.
 
+<Note>
+  **A lane scopes dispatch, it doesn't lock the work.** `next_issue` and `next_batch` hand
+  out issues assigned to *you* plus everything unassigned, so your agents never drain a
+  teammate's assigned work. When a pull comes back empty it reports `otherLanes`, the count
+  of ready issues sitting in someone else's lane. Pass `allLanes: true` to pull from every
+  lane, or take one outright with `claim_issue RTSC-42`, which ignores lanes entirely. A
+  claim is refused only for a reason the server states: the issue is a tracking container
+  (`work:false`), a live lease is already held on it, its status is out of play (done,
+  canceled, or blocked), an open blocker is in the way, you're the one who submitted it for
+  review, or you're over your claim or spending cap.
+</Note>
+
 <Card title="Running a fleet?" icon="users" href="https://github.com/Retasc">
   Several agents can pull in parallel; the server guarantees no two claim the same
   issue. Give each agent its own git worktree. `retasc claim` (alias `retasc next`)
