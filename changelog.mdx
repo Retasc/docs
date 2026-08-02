@@ -17,6 +17,24 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.13.1 (2026-08-02)
+
+- **RTSC-522** — the changelog is public, and five releases that were never written down now
+  are.
+
+  It used to be unreachable by anyone who installs the CLI: it did not ship in the tarball,
+  the README never mentioned it, and the source repo is private so the npm repository link
+  404s for the public. It is now at
+  [docs.retasc.com/changelog](https://docs.retasc.com/changelog), and ships in the package.
+
+  1.1.0, 1.1.1, 1.1.3, 1.2.1 and 1.2.2 were published and never described. They are
+  reconstructed here from their release commits and the issues they reference, so every
+  version on npm now has an entry. Each one carries its publish date.
+
+  Also fixed two npm-facing details: the package description still said "sign in with
+  GitHub", which stopped being the whole truth at 1.11.0, and the bug-report link pointed at
+  a private repository that 404s for everyone npm showed it to.
+
 ## 1.13.0 (2026-08-02)
 
 - **RTSC-521** — five commands stopped answering you with a JSON dump.
