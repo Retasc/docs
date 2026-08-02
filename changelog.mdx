@@ -17,6 +17,28 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.17.0 (2026-08-02)
+
+- **RTSC-529** — the column mapping is a numbered picker, like every other prompt.
+
+  It was the only one that made you type a word. Picking an org, a project, a source, a
+  list, a reviewer, a sign-in door or whether to install globally are all numbered lists
+  reading `Choose a number` — and the reviewer picker appears two lines below this one, so a
+  single import taught two input styles within four lines of output.
+
+  ```
+    to do
+      1) todo   (suggested)
+      2) doing
+      3) done
+      4) canceled
+    Choose a number [1]:
+  ```
+
+  Enter still takes the suggestion, now marked in the list rather than described beside it.
+  Typing the word still works for anyone who has learned the vocabulary; it just isn't what
+  the prompt advertises.
+
 ## 1.16.1 (2026-08-02)
 
 - **RTSC-528** — two things the first real `retasc import` run turned up.
