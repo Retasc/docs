@@ -17,6 +17,35 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.18.0 (2026-08-02)
+
+- **RTSC-530** — setting up from scratch now asks where your work comes from, and imports it
+  in the same command.
+
+  `retasc bind` used to offer one thing at the project step: name a new project. So someone
+  arriving from Jira had to invent a project they didn't want, run `retasc import`
+  afterwards to get the one they did, and leave the empty one behind — and projects can't be
+  deleted individually.
+
+  ```
+  Where does your work come from?
+    1) Linear
+    2) Jira
+    3) Asana
+    4) ClickUp
+    5) Shortcut
+    6) Start from scratch   (name a project; your agents file into it)
+  ```
+
+  Pick a tracker and the import runs right there, then the folder binds to the project it
+  created. Pick "start from scratch" and it behaves exactly as before. This is the same fork
+  the Dash has always offered; importing isn't a separate errand, it's one of the ways a
+  first project comes into existence.
+
+  Only when the org has no projects — binding a second folder in an existing org is still
+  just picking from the list. Declining at the import confirmation falls back to naming a
+  project rather than abandoning setup: you still asked to bind the folder.
+
 ## 1.17.0 (2026-08-02)
 
 - **RTSC-529** — the column mapping is a numbered picker, like every other prompt.
