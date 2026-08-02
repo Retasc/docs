@@ -17,6 +17,29 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.16.1 (2026-08-02)
+
+- **RTSC-528** — two things the first real `retasc import` run turned up.
+
+  **The progress bar never appeared.** It only started drawing once it had seen the run
+  reported as running, and a 15-issue import finishes before that is ever observed, so the
+  output went straight from `Importing…` to `✓ Imported.` with a silent gap. It now draws
+  the moment the run starts, sweeping while it waits for counts and switching to the real
+  bar once they arrive. Still silent without a terminal and under `NO_COLOR`.
+
+  **The column prompt didn't say what to do.** It read
+  `to do  [todo]  (todo / doing / done / canceled):`, where nothing is a verb, so the first
+  person to run it had to guess that you type one of the words. Now:
+
+  ```
+    to do
+      Enter to keep todo, or type: doing, done, canceled
+    >
+  ```
+
+  The suggestion is no longer repeated among the alternatives, which is what made the old
+  line read as four equal options behind a mysterious bracket.
+
 ## 1.16.0 (2026-08-02)
 
 - **RTSC-526** — `retasc import` catches up with the Dash on four things.
