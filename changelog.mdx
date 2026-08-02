@@ -17,6 +17,28 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.16.0 (2026-08-02)
+
+- **RTSC-526** — `retasc import` catches up with the Dash on four things.
+
+  **It warns before a second import.** Re-importing does not duplicate anything, but it
+  does re-sync: status, labels, title and body are replaced with whatever the source says
+  now. Import from Jira, spend two weeks moving issues along in Retasc, re-import to pick up
+  new tickets, and those two weeks of changes snap back. You now get told, with the date of
+  the last import, before the confirmation.
+
+  **The run shows progress**, as a bar that fills while it works, rather than a silent wait
+  that looks like it has hung. The run is server-side, so pressing Ctrl-C out of boredom
+  never stopped it anyway.
+
+  **The column list is grouped** under your own tool's sections (Not started, Active, Done,
+  Closed) instead of arriving flat. On a twenty-column board that is the difference between
+  scannable and a wall.
+
+  **Columns that were not mapped are named.** If a column appears between the moment you set
+  the mapping and the moment the import runs, its issues land in `todo`. They used to show
+  as a number; now they are listed, with what to do about it.
+
 ## 1.15.0 (2026-08-02)
 
 - **RTSC-524** — new command: `retasc import`. Bring a Linear, Jira, Asana, ClickUp or
