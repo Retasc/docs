@@ -1,0 +1,515 @@
+---
+title: "Changelog"
+description: "Every published version of the Retasc CLI, newest first."
+---
+
+{/*
+  GENERATED FILE. Do not edit here.
+  Source: cli/CHANGELOG.md in the Retasc monorepo.
+  Regenerate: node scripts/build-changelog-page
+*/}
+
+Every version of `@retasc/cli` published to npm, newest first. Dates are the npm publish
+date, and each entry names the issue behind it.
+
+```sh
+npm i -g @retasc/cli    # latest
+retasc --version        # what you have
+```
+
+## 1.13.0 (2026-08-02)
+
+- **RTSC-521** — five commands stopped answering you with a JSON dump.
+
+  `whoami`, `org create`, `project create`, `key list` and `members list` printed the raw
+  payload. `whoami` is the one people actually noticed, because it is the command you run to
+  find out who you are:
+
+  ```
+  {
+    "orgs": [],
+    "user": {
+      "email": "you@example.com",
+      "id": "mh7edhnpet55dqr9m48yked29s8bqr9j",
+      "name": "Your Name"
+    }
+  }
+  ```
+
+  The one fact you wanted was a bracket to parse, next to a document id that means nothing.
+  Now:
+
+  ```
+  Signed in    Your Name <you@example.com>
+  Orgs         none
+  ```
+
+  `key list` and `members list` are aligned tables, and state reads as words: a revoked key
+  says `revoked` rather than an epoch, and a spent invite shows no expiry date because the
+  date stopped meaning anything. Auto-minted session keys are folded into a count instead of
+  drowning the keys you can actually manage.
+
+  Ids follow one rule: shown when a command takes them, dropped when nothing does. So
+  `org create` gives you the org id and names the command that wants it, and never mentions
+  `ownerMemberId`.
+
+  **`--json` on all five, emitting exactly what they printed before.** Anything scripted
+  against the old output keeps working by adding the flag.
+
+  `whoami`'s binding block is unchanged. It was already the useful half.
+
+## 1.12.0 (2026-08-02)
+
+- **RTSC-519** — `retasc bind` now tells you it finished, and what to do next.
+
+  It used to end on the last thing it *did* ("This folder is bound to org Acme / project
+  ACM") and stop. So the person who set up their own org was left reading a status line and
+  guessing whether anything else was required, while the invited teammate, who arrives
+  through `retasc join`, was told. Both commands now end the same way:
+
+  ```
+  Start your agent in this folder, or restart it if it's already open, and it'll pull from the queue.
+  ```
+
+  The restart half matters: `.mcp.json` is read when an MCP client starts, so an agent
+  already open on that folder won't see Retasc until it restarts — and `bind` is routinely
+  run from inside a session that's already there.
+
+  The sentence lives in the tail both commands share, rather than a copy in each, so
+  neither can lose it again.
+
+- **RTSC-507** — "none of these are me" now covers the tools you were asked about, not the
+  whole org forever.
+
+  Declining wrote one org-wide flag, checked before the list of imported people was even
+  read. So the January answer "I was never in ClickUp" — correct, and the cheapest possible
+  answer to give — meant that when the org migrated off Jira in June, where you *did* have
+  an account, you were never offered your placeholder. Not by `retasc identity`, not by
+  `retasc join`, not by the Dash, not ever. Your Jira authorship, comments and assignments
+  stayed on a placeholder permanently, and only an owner could repair it.
+
+  Claiming was already tracked per source, so someone who *claimed* their ClickUp identity
+  was correctly re-asked at every later migration. Declining being the more final of the two
+  was backwards.
+
+  The decline row now names what it covers:
+
+  ```
+    3) None of these are me (covers ClickUp and Jira only)
+  ```
+
+  and `retasc identity` says so when nothing is left:
+
+  ```
+  You've answered about every tool imported into Acme so far.
+  Run this again after the next migration, each one is asked about separately.
+  ```
+
+  That replaces wording saying the answer "covers the whole org, including later
+  migrations" and pointing at an owner. It existed only to describe this bug.
+
+  **Needs the matching backend deploy.** The copy above is a promise the server keeps, so
+  publish this only after `convex deploy` and `migrations:backfillDismissedSources` have
+  run. Against an older backend the CLI would say a later import will ask again, and it
+  would not.
+
+## 1.11.0 (2026-08-02)
+
+- **RTSC-508** — you can now sign in with **Google**, not only GitHub.
+
+  Google sign-in shipped for the web Dash first, which left a one-way street: an account
+  created through that door reached the Dash and nothing else, because every login-gated
+  command here sat behind a GitHub-only device flow. `retasc login` would start a GitHub
+  device flow for an account GitHub had never heard of. That blocked `bind`, `init`, `key`,
+  `members`, `billing` and `identity` outright — including the sign-in step *inside*
+  `retasc bind` and `retasc join`, so a teammate invited through the web could not finish
+  setting up their folder at all.
+
+  With no flag, `login` now asks which door you use:
+
+  ```
+  How do you sign in to Retasc?
+    1) GitHub
+    2) Google
+  Choose a number:
+  ```
+
+  After a successful sign-in the door is remembered, so later logins offer it back and
+  Enter takes it:
+
+  ```
+  How do you sign in to Retasc?
+    1) GitHub
+    2) Google   (last used)
+  Choose a number [2]:
+  ```
+
+  A default only ever appears once it is a recorded fact about you. On a first login there
+  is none, and Enter is not an answer — because the wrong door is not a mistake you correct
+  next time (see below). The remembered door is a default, not a lock: the other one is
+  still one keystroke, and a typo re-prompts rather than being read as "the usual".
+
+  `retasc login --google` / `--github` skip the question. A non-interactive run is
+  unchanged: no prompt, GitHub, exactly as before. The same question appears inside `bind`
+  and `join` when they sign you in for you.
+
+  **Signing in through the wrong door is not a typo you correct on the next run.** Google
+  and GitHub are deliberately separate identities — doors are linked only on a provider's
+  own immutable account id, never on a matching email address, because email is an
+  account-takeover vector. So a Google sign-in by someone who already has a GitHub account
+  here creates a *second* identity with its own membership, and the CLI cannot merge them
+  back. That is why the question is asked rather than guessed, and why a non-answer
+  re-prompts instead of falling through to a door.
+
+  Needs `AUTH_GOOGLE_DEVICE_ID` / `AUTH_GOOGLE_DEVICE_SECRET` on the deployment
+  (`operations/runbooks/google-device-client.md`). Where they aren't set, the CLI says so
+  in one line and names GitHub as the way in meanwhile, rather than failing opaquely.
+
+## 1.10.0 (2026-08-01)
+
+- **RTSC-477** — new command: `retasc identity`. It shows the people a migration carried
+  into your org and asks which one is you — the same question `retasc join` asks, on demand.
+
+  ```
+  retasc identity              # defaults to your only org
+  retasc identity --org-id …   # when you're in several
+  ```
+
+  `join` asks this once, at the moment you accept an invite. Placeholders arrive with
+  *every* migration, though, and claiming is per source tool rather than per person: the
+  backend is built for "claim your ClickUp one now, your Jira one in six months". So a team
+  that onboarded by CLI a year ago had no terminal path to a later import's history at all,
+  and had to open the Dash or leave it on placeholders. Three narrower cases `join` skips on
+  purpose are covered too: `--yes`, a non-interactive run, and `--no-bind`.
+
+  It asks the question, so it needs a TTY and refuses without one rather than exiting 0 in
+  silence. There is deliberately no `--yes` and no `identity claim <name>`: linking someone
+  pulls their authorship *and* their dispatch lane onto your account, irreversibly, with no
+  CLI way back, so it is never answered on a script's behalf.
+
+  It also names the ending, which `join` does not. "Nothing waiting for you" and "you've
+  already said none of these are you" are the same empty list from the inside and mean
+  opposite things — the second is permanent and org-wide, so it still applies after a later
+  migration that really did carry you across. That case now says so, and points at the
+  owner, who is the only one who can undo it.
+
+## 1.9.0 (2026-07-31)
+
+**Behaviour change, read this if you script `join`:** `retasc join <code>` used to redeem an
+invite and stop. It now also sets up the folder you run it in — mints a key, writes a
+binding, wires the MCP marker. **`--no-bind` reproduces the old behaviour exactly**, same
+output and same exit code. Every other command is unchanged.
+
+`join` also no longer exits 1 telling you to run `retasc login` first. It starts the device
+flow itself when there is no session, and refuses with the same message `bind` uses when
+there is no TTY to run one in.
+
+- **RTSC-492** — `retasc join` is now the whole of an invited teammate's setup, in one
+  command run from the folder their agent will work in:
+
+  ```
+  npx @retasc/cli join https://dash.retasc.com/join#rtscinv_…
+  ```
+
+  It signs them in (device flow, only when there is no session), redeems the invite,
+  offers them any identity a migration carried across, picks the project, makes `retasc`
+  durable, mints a key, binds the folder and wires the MCP marker. It used to be three
+  commands with an ordering trap in them, and the first of those three was `retasc login`
+  — which is not something you can tell someone who has installed nothing yet.
+
+  The target case is that an invited teammate never opens the Dash at all. With no imports
+  and one project, the only thing they type is the GitHub device code: every prompt is
+  conditional on there being a real choice.
+
+  - Takes a full invite link or a bare `rtscinv_…` code. The code is what the server
+    matches, so unwrapping a paste belongs at the edge that accepts typed input, not in the
+    mutation that grants membership.
+  - A member is never offered a project they cannot create (`createProject` is owner-only),
+    and an org with no projects names what to ask an owner for instead of failing opaquely.
+  - Imported placeholders are offered once per source tool, each behind an explicit
+    confirm, in the same words the Dash uses. `--yes` skips that question and never answers
+    it: claiming another person's history is irreversible and has no CLI path back.
+  - `--no-bind` keeps the old redeem-only behaviour for anything scripted against it.
+
+  Under it, `bind` and `join` now share one implementation of the folder half — the project
+  pick, the launcher ladder, the mint, the binding and the marker — so the fix that landed
+  in 1.8.0 cannot drift back out of one of them.
+
+- **RTSC-498** — `retasc doctor` now says which platform the CLI is actually tested
+  on. Nothing in the product stated one: the READMEs never mentioned platforms and
+  `package.json` declares only `engines.node`, so someone hitting a problem on Linux
+  or Windows had no way to tell their own mistake from a bug from a platform we never
+  targeted. macOS is the only platform we run end to end.
+
+  It's a note in `doctor` rather than a line in the README on purpose. A README is read
+  by everyone, and for the majority on macOS a standing disclaimer about platforms they
+  aren't using is noise they read before they've even installed. `doctor` already knows
+  which machine it's on, so the people the limit applies to are exactly the people who
+  see it, and on macOS nothing is printed at all.
+
+  The note claims a limit, not a blockage: much of the CLI is plain Node and should work
+  fine, and `package.json` still carries no `os` field, so installing is never refused
+  anywhere Node 18+ runs. Windows and Linux are named as platforms we intend to support
+  properly; anything else is told it's untested without being promised a roadmap it
+  isn't on.
+
+## 1.8.0 (2026-07-31)
+
+- **RTSC-493** — the MCP marker no longer names a command that may not exist. It
+  used to hardcode `retasc`, which is only on PATH after a global install — but the
+  Dash tells people to run `npx @retasc/cli bind`, and npx unpacks into its own cache
+  and installs nothing. So a bind printed every success line, really did bind the
+  folder, and left an agent that could not start the Retasc MCP server at all. The
+  failure surfaced later, somewhere else, as a broken server rather than a failed setup.
+
+  `bind` now resolves a launcher and **proves it by running it** before writing
+  anything: it uses an existing `retasc` if there is one, otherwise installs the CLI
+  globally, and if that install lands where PATH cannot see it, the marker names the
+  binary's absolute path instead. Only when none of that works does it fall back to a
+  version-pinned `npx`, which is slower and needs the network — and if even that will
+  not start, it says so outright rather than reporting success.
+
+  `retasc doctor` now checks the same thing, so a folder bound by an older version
+  reports why its agent cannot start and names the repair.
+
+## 1.7.2 (2026-07-21)
+
+- **RTSC-297** — `retasc bind` no longer strands a new org silently. It creates
+  the org server-side before the project picker runs, so aborting at the project
+  step (reachable by a typo since 1.x's picker gives up after 3 bad answers) left
+  an org behind with no project, no key, and no local binding — invisible from
+  the CLI and quietly accruing on the billing rail. Bind now names the org and
+  prints the exact resume command (`retasc bind --org-id <id>`) when it aborts
+  before the workspace is bound. Selecting a pre-existing org and then aborting
+  is untouched — nothing is reclaimed.
+
+## 1.7.1 (2026-07-21)
+
+- **RTSC-321** — the liveness watchdog now stops heartbeating an issue the moment
+  it moves to `review` (RTSC-257): the server releases the lease there, so the
+  proxy no longer pings a dead lease until the next heartbeat fails. It is treated
+  as a release, not a close — the branch/worktree is preserved for the review + PR
+  (never reaped). The reviewer's send-back (`review → todo`) still self-heals via
+  the failed-heartbeat path, since it can't be told apart from a `doing → todo`
+  edit by request args alone.
+
+## 1.7.0 (2026-07-21)
+
+- **RTSC-306** — `retasc claim` / `retasc next` now pull **lane-scoped by
+  default**: only issues assigned to your principal or left unassigned, never
+  another human's work. The old `--mine` flag is retired — that behavior is the
+  default now. The new `--all-lanes` flag opts back into the whole ready pool
+  when you need to pick up an absent teammate's work. When your lane is empty but
+  ready work is stranded in another lane, the CLI says so and points you at
+  `--all-lanes` instead of reading as "nothing to do".
+
+## 1.6.3 (2026-07-20)
+
+- **RTSC-266** — README now links the setup page, the docs quickstart, and the
+  parallel-agents guide instead of only the bare homepage. npm package pages are
+  a real entry point and only re-render on publish, so this ships as its own
+  patch release. No code changes.
+
+## 1.6.2 (2026-07-20)
+
+- **RTSC-269** — `retasc bind`'s org/project picker no longer treats a typo as
+  "create new". Answering `1)` (a fumbled `1`) used to select nothing and fall
+  straight through to **creating a new org/project**, which then hit the owner
+  gate and surfaced as a redacted Server Error. Invalid input now re-prompts;
+  only the explicit trailing option creates. The answer must be plain digits, so
+  the non-canonical forms `Number()` happily parses (`0x4`, `4e0`, `+4`, `4.0`)
+  can't reach the create branch either.
+- **RTSC-269** — the picker gives up after 3 invalid answers instead of looping,
+  and a closed stdin (Ctrl-D, or a pipe running dry) now exits with an error
+  rather than hanging. `readline.question()` never settles at EOF, so any prompt
+  in `bind` could previously wedge the CLI with no output and no exit.
+
+## 1.6.1 (2026-07-20)
+
+- **RTSC-263** — owner/member permission denials now print a readable reason and the
+  next step instead of an opaque `Server Error`. Hitting an owner-only command as a
+  member reports "Owner role required." with "Ask <owner> to create a project." on its
+  own line. The backend change does the work; the CLI already read the structured
+  payload (1.5.0), so this release carries only the hardening below.
+- **RTSC-263** — `formatError` now strips U+0085, U+2028 and U+2029 in addition to the
+  ASCII control characters. All three are mandatory line breaks, so a server message
+  interpolating a user-controlled name could previously forge extra lines in terminal
+  output.
+
+## 1.6.0 (2026-07-20)
+
+- **RTSC-262** — `doctor` and `whoami` no longer report "not bound" for a folder whose
+  Retasc MCP is registered in **Claude Code local scope** (the `claude mcp add` default —
+  stored in Claude's own config, not `./.mcp.json`). The binding lookup now reads both
+  legal per-folder locations, and when both exist the **local-scope entry wins**, matching
+  Claude Code's documented precedence (local > project) — doctor names the org the agent
+  *actually* uses, and warns when a differing `./.mcp.json` marker is being shadowed.
+- **RTSC-262** — `claim`/`tidy`/`done` resolve the key through the same entry selection,
+  so the CLI can no longer say "✓ bound" in one command and "No Retasc MCP key found" in
+  another for the same folder.
+- **RTSC-262** — the illegal-global-server check is now **presence-based**: a hand-added
+  user-scope entry is detected in every shape (including keyless), and an unreadable
+  `~/.claude.json` reports "cannot verify" instead of a false all-clear.
+- **RTSC-262** — honest failure modes: server-unreachable (timeouts, 5xx, rate limits) is
+  no longer reported as a rejected key, `whoami`/`doctor` requests are bounded by a 10s
+  timeout, and server-derived strings are stripped of control characters before printing.
+- **RTSC-262** — `bind` hardening: re-binding to the *same* org/project is an idempotent
+  success (no key churn for provisioning scripts); replacing a *different* binding
+  non-interactively without `--yes` now fails loudly with exit 1 instead of silently
+  succeeding as a no-op; a cloned repo's committed marker no longer triggers the
+  replace prompt (minting your own key under it is what `bind` is for).
+- **RTSC-262** — (security) a keystore-resolved key now only ever travels to the
+  keystore's own URL — a hostile `RETASC_MCP_URL` planted next to a committed secret-free
+  marker can no longer redirect a teammate's real key.
+
+## 1.5.0 (2026-07-20)
+
+- **RTSC-261** — backend failures you're meant to act on now print what actually went
+  wrong instead of `✗ Server Error`. Convex masks any plain server throw in production, so
+  every precondition — a consumed invite code, an expired one, a suspended membership —
+  reached the terminal as the same opaque string. `retasc join` was the worst case: an
+  invited teammate hit an unreadable wall at the very first step.
+
+  Errors now carry a machine-readable `code`, a readable `message`, and an optional `hint`
+  printed on its own line:
+
+  ```
+  ✗ CONSUMED: This invite was already used.
+    → ask an owner for a fresh invite link
+  ```
+
+  This release covers invite redemption; the remaining surfaces (auth/key problems,
+  not-found lookups, billing gating, import/restore) follow. Internal invariants stay
+  masked deliberately — those are our bugs, not yours, and their messages describe server
+  state. **Upgrade before your teammates redeem invites**: an older CLI can't read the new
+  payload and prints it as raw JSON.
+
+## 1.4.0 (2026-07-19)
+
+- **RTSC-279** — new `retasc billing` command: the org's whole billing picture in the
+  terminal instead of only in the Dash. Prints the subscription and spending caps, what's
+  owed right now, and the charge + confirmed on-chain payment history — both **org-scoped
+  across every payment link the org has ever used**, so changing payment link no longer
+  hides prior history. Owner-only (it reuses the same owner-gated functions the Dash
+  renders; the client-side role check is UX, the server still gates). `--org-id` selects the
+  org when you belong to more than one, `--json` emits the raw payload. Payments are a live
+  read of Xenarch's authoritative records and degrade to a note rather than failing the
+  command.
+- **RTSC-279** — (server-side, no CLI change) the MCP usage meter now reports **two**
+  clearly-named figures instead of one misleading `wouldBeBillUsd`:
+  `lifetimeMeteredEstimateUsd` (all-time activity repriced at today's rate card — a
+  diagnostic, not an amount owed) and `pendingUsd` (what is actually owed right now, the
+  same figure the Dash shows). A new `billing_summary` MCP tool exposes the full billing
+  detail to agents whose human principal owns the org.
+
+## 1.3.2 (2026-07-17)
+
+- **RTSC-250** — serialize `patchConfig` under a cross-process advisory lock so
+  concurrent CLI/MCP processes can't lose an update. Previously a lock-free
+  load-modify-save meant a `defaultOrgId`/`defaultProjectPrefix` write racing the
+  hourly token refresh could write back the old single-use `refreshToken`,
+  breaking the next refresh and forcing a device re-login a non-interactive
+  context can't perform. The lock re-reads the freshest config inside the
+  critical section and stamps a nonce so a stolen-from holder never deletes the
+  new owner's lock. Also sweeps orphaned `.config.json.<uuid>.tmp` files left by a
+  hard kill, age-gated so a concurrent writer's in-flight temp is never touched.
+
+## 1.3.1 (2026-07-17)
+
+- **RTSC-179** — atomic config write (temp file + rename) so a reader never sees
+  a truncated `config.json`; adds `RETASC_DIR` support.
+- **RTSC-178** — token refresh now classifies transient backend errors vs a
+  genuinely expired refresh token, so a one-off backend blip no longer drags a
+  valid session through a full device re-login.
+
+## 1.3.0 (2026-07-08)
+
+- Auto-reap branches on MCP close: when the watchdog proxy observes a session's
+  own claim close terminally and successfully, it removes that issue's clean,
+  merged `rtsc-NN/*` worktree and branch out-of-band (`retasc tidy --prune --only
+  <id>`), instead of orphaning them until a human ran `retasc tidy`. Exposes
+  `tidy --only <RTSC-NN>`.
+
+## 1.2.4 (2026-07-07)
+
+- **RTSC-170** — credential-file permission hardening: `config.json`,
+  `bindings.json`, and the fallback `.mcp.json` are written `0600` (dirs `0700`)
+  with no world-readable creation window.
+
+## 1.2.3 (2026-07-05)
+
+- **RTSC-150** — watchdog `isClaimLost` fix: no longer drops a live lease when a
+  payload field merely contains the string `CLAIM_LOST`.
+
+## 1.2.2 (2026-07-04)
+
+- **RTSC-148** — `retasc claim` takes the issue as a positional argument, and never
+  silently falls through to `next_issue`.
+
+  `retasc claim 143`, `claim RTSC-143` and `claim rtsc-143` all resolve to that issue; a
+  bare number expands against the *workspace's* prefix, resolved over the workspace key
+  rather than global config. Excess arguments now error loudly instead of being dropped by
+  Commander, which was how "claim this specific issue" quietly became "claim whatever is
+  next".
+
+## 1.2.1 (2026-07-04)
+
+- **RTSC-143** — one tolerant tool-result parser, and a loud failure when the claim fence
+  is off.
+
+  The proxy and `claim` each had their own silent copy of the parser; they are now one
+  (`lib/toolresult.ts`), which recovers the leading JSON value when a footer trails the
+  payload, refuses to recover from an `isError` response or concatenated JSON, and warns on
+  stderr when it degrades so a shape regression is never silent.
+
+  Session-key minting retries once with a 5s timeout and checks `res.ok`. On a double
+  failure it still fails soft, but says loudly that the per-session claim fence is OFF, and
+  the proxy appends that notice to `whoami` so the agent sees the degraded state rather than
+  it sitting in an MCP log file nobody opens.
+
+## 1.2.0 (2026-07-04)
+
+- **RTSC-137** — org-membership commands: `retasc members invite|list|revoke` and
+  `retasc join`.
+
+## 1.1.3 (2026-07-02)
+
+- **RTSC-131** — `retasc --version` reads `package.json` instead of a frozen literal.
+
+  It was hardcoded to `1.1.1`, so the published 1.1.2 still reported 1.1.1. The version is
+  now read at runtime relative to the compiled file, making `package.json` the single source
+  of truth.
+
+## 1.1.2 (2026-07-02)
+
+- **RTSC-130** — republish the bind auto-wire fix that had changed CLI source
+  without a version bump (npm versions are immutable).
+
+## 1.1.1 (2026-06-28)
+
+- **RTSC-98** — `claim`, `tidy` and `done` resolve the keystore key through the same
+  resolver the proxy uses.
+
+  After 1.1.0 moved keys out of the repo, a secret-free `.mcp.json` was understood by the
+  proxy but not by those three commands, which still only knew the legacy inline-key path
+  and bailed with "No Retasc MCP key found". The two resolvers had drifted, so they are now
+  one (`resolveConn` in `lib/keystore.ts`): explicit `RETASC_MCP_KEY`, then a legacy inline
+  key, then the canonical secret-free marker. Legacy markers keep working.
+
+## 1.1.0 (2026-06-28)
+
+- **RTSC-92** — workspace keys move to a home keystore, and the folder marker becomes
+  secret-free.
+
+  Secrets no longer sit in a project tree. The key lives in `~/.retasc/bindings.json` (mode
+  0600), keyed by an opaque workspace id rather than a path, so nothing leaks a home
+  directory and a checkout stays portable across a team. What lands in the repo is a marker
+  carrying only that id, which is why `./.mcp.json` is safe to commit.
+
+  `doctor` reports whether a binding is keystore-backed or legacy, and flags a workspace id
+  already bound at a different folder. A cloned repo whose marker has no key on this machine
+  is reported as such rather than as broken.
+
+## 1.0.0 (2026-06-27)
+
+- **RTSC-89** — initial npm publish as `@retasc/cli` (bin stays `retasc`).
