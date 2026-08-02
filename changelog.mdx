@@ -17,6 +17,40 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.15.0 (2026-08-02)
+
+- **RTSC-524** — new command: `retasc import`. Bring a Linear, Jira, Asana, ClickUp or
+  Shortcut project across without opening a browser.
+
+  This was the last thing the terminal could not do. Everything else — sign in, make or join
+  an org, create a project, wire the folder, pull work — already worked end to end, but
+  importing meant stopping and finishing in the Dash.
+
+  ```
+  retasc import
+  retasc import --source jira --org-id …
+  ```
+
+  It walks you through the source, your credentials, which team or project to take, and then
+  **what each of your columns means**. That last part is the point, and it is asked rather
+  than guessed: a tool lets its users name their own columns, so the only honest way to know
+  what one means is to ask you. Pressing Enter accepts a suggestion derived from the
+  column's *type* in your tool, never its name — a column called "Rejected" that is really
+  an in-progress lane maps to `doing`, not `canceled`.
+
+  A column mapped to `review` needs a named reviewer, chosen per column, because two
+  "awaiting acceptance" columns can belong to different people. Columns holding work nobody
+  has started cannot be mapped to `review` at all, and the CLI says why rather than letting
+  the server refuse it later.
+
+  **Your source token is never an argument.** There is no `--token`, because anything passed
+  that way lands in shell history and in `ps` output. Secrets are typed with echo off, or
+  taken from `RETASC_IMPORT_<FIELD>` for scripted runs.
+
+  The run is confirmed before anything is written, and afterwards you are offered the
+  imported identity the migration just created for you, through the same prompt
+  `retasc join` uses.
+
 ## 1.14.0 (2026-08-02)
 
 - **RTSC-523** — setup asks before installing anything on your machine.
