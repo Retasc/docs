@@ -17,6 +17,39 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.14.0 (2026-08-02)
+
+- **RTSC-523** — setup asks before installing anything on your machine.
+
+  `retasc bind` and `retasc join` are one command you paste and answer, and somewhere in the
+  middle they ran `npm install -g @retasc/cli`. It said so, but it never asked. That is the
+  only step in a folder-scoped command that changes the machine rather than the folder, and
+  a shared npm prefix is exactly what plenty of developers keep clean.
+
+  ```
+  Install the retasc command on this machine?
+
+    1) Yes, globally          A `retasc` command you can use anywhere.
+                              Best if you'll use Retasc in more than one project.
+    2) No, run it on demand   Nothing is installed. Your agent fetches it when it
+                              starts, which adds a couple of seconds and needs a
+                              network connection.
+  ```
+
+  Both answers leave the folder bound identically. Option 2 is not a per-project install:
+  nothing is written to the folder, so it needs no `package.json` and cannot fail for want
+  of an npm project. Your answer is remembered, because it is a question about the machine
+  and the machine has not changed by the time you bind a second folder.
+
+  You are only asked when it would actually happen. If `retasc` already works, there is
+  nothing to decide and nothing is said.
+
+  **Without a TTY it installs, exactly as before.** That is deliberate rather than a
+  leftover: when an agent runs setup on someone's behalf, that person never types `retasc`,
+  but their agent starts the MCP server every session, and the on-demand route would cost
+  them seconds and a network dependency every single time. `--no-install` on `bind` and
+  `join` declines without a TTY, for a developer whose own agent is doing the setup.
+
 ## 1.13.1 (2026-08-02)
 
 - **RTSC-522** — the changelog is public, and five releases that were never written down now
