@@ -509,7 +509,7 @@ there is no TTY to run one in.
 
 - **RTSC-263** — owner/member permission denials now print a readable reason and the
   next step instead of an opaque `Server Error`. Hitting an owner-only command as a
-  member reports "Owner role required." with "Ask <owner> to create a project." on its
+  member reports "Owner role required." with "Ask `<owner>` to create a project." on its
   own line. The backend change does the work; the CLI already read the structured
   payload (1.5.0), so this release carries only the hardening below.
 - **RTSC-263** — `formatError` now strips U+0085, U+2028 and U+2029 in addition to the

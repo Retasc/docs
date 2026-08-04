@@ -1,12 +1,77 @@
 ---
 title: "Billing"
-description: "What's metered, what it costs, the spending cap, and how to re-authorize."
+description: "What's metered, what it costs, the two ways to pay, and how credit is spent."
 ---
 
-Retasc is **usage-based, pay-as-you-go**: you pay per action your agents take, settled
-in USDC on Base. There are no seats: you pay for work done, not agents parked. This page
-covers exactly what's metered, the rate card, your spending cap, and how to keep an org
-authorized.
+Retasc is **usage-based, pay-as-you-go**: you pay per action your agents take. There are
+no seats, so you pay for work done, not agents parked.
+
+There are **two ways to fund an org**, and you can use both at once:
+
+<CardGroup cols={2}>
+  <Card title="Pay with cards" icon="credit-card">
+    Buy credit up front with a card, and your agents spend it as they work. Nothing
+    recurring, nothing to authorize, and you can stop at any time by not topping up.
+  </Card>
+  <Card title="Pay with USDC" icon="wallet">
+    Authorize metered pull-payments in USDC on Base. You sign once, work is billed as it
+    happens, and settlement is on-chain.
+  </Card>
+</CardGroup>
+
+<Tip>
+  **Building a startup?** We give qualifying startups **$200 in credit**. See
+  [Credit for startups](#credit-for-startups).
+</Tip>
+
+## Billing is per organization
+
+An **organization pays for the work done inside it** — not per human, and not per agent.
+There are no seats to buy and no headcount to declare. One human or a hundred, five
+agents or fifty, humans and agents alike: everything they do lands on the same org
+balance, priced per action.
+
+So adding a teammate costs nothing by itself. It costs whatever work they cause, exactly
+as if you had done it.
+
+**Projects share the organization's balance.** Credit is held by the org, not by a
+project, so if you run three projects inside one org they all draw from the same pot —
+there is nothing to allocate or split between them, and no project can run out while
+another still has room. Usage is recorded per action against the org either way.
+
+## The order your money is used
+
+This is the whole model, and it is worth thirty seconds because it is what lets both
+methods sit side by side without you choosing between them:
+
+<Steps>
+  <Step title="Credit we gave you">
+    Your signup credit, plus any credit we grant you later for any reason. Always spent
+    **first**.
+  </Step>
+  <Step title="Credit you bought">
+    Card top-ups. Spent once the credit we gave you is gone.
+  </Step>
+  <Step title="USDC">
+    Only once your credit balance reaches **zero**, and only if you have authorized it.
+  </Step>
+</Steps>
+
+<Note>
+  **While you hold any credit, the USDC rail records nothing at all.** Credit-covered
+  work is never reported to it, so there is no accrual quietly building behind your
+  balance and no bill waiting at the end. Your authorization simply sits idle until the
+  credit runs out.
+</Note>
+
+So: buying credit never cancels a USDC authorization, and having one does not stop you
+buying credit. An org with an authorization and no credit bills in USDC from the first
+action. An org with credit and no authorization works until the balance hits zero and
+then asks you to add more or authorize. There is no switch to flip and nothing to
+configure.
+
+The rest of this page covers what's metered and what it costs (the same for both
+methods), then the parts specific to each.
 
 ## What's metered
 
@@ -60,24 +125,83 @@ Prices are per action, in four value tiers. The wire unit is the **micro-credit*
   cheaper still.
 </Tip>
 
-## Your spending cap
+## Credit
 
-When you authorize billing you set a **cap** (the lifetime permit allowance Retasc can
-pull against) and, optionally, a **monthly limit**. Both are your settings — visible in
-the Dashboard **Billing** card, and editable any time from the hosted manage page
+Credit is spent before anything else, and it comes from two places.
+
+**Credit we gave you** starts with the **signup credit** (default $10), and includes
+anything we grant you afterwards. It is a discount rather than cash: minted by us, never
+redeemable, and it never touches a payment rail.
+
+<Note>
+  **The signup credit is once per human, not once per org.** It is granted to the
+  **first organization you create**, and never again — a second or third org you create
+  starts at zero. Joining someone else's organization grants nothing: the credit follows
+  the human who creates an org, so it cannot be collected by joining, and creating more
+  orgs cannot mint more of it.
+</Note>
+
+**Credit you bought** is a card top-up: $10, $25, $50 or $100 at a time. That is your
+money, held for work you have not done yet, and it buys exactly the same actions at
+exactly the same prices.
+
+The Dashboard shows them as separate figures, because they are different things and
+because it lets you see which one is running down. The gift always goes first, so an org
+holding both watches the **Credit from Retasc** tile empty before the **Credit via
+Stripe** one moves.
+
+Credit-covered usage is not billed on either rail and does not count against a monthly
+cap. When the balance reaches zero, an org with no active subscription is asked to buy
+more credit or authorize USDC before doing more paid work.
+
+## Credit for startups
+
+If you're building a startup, we'll give you **$200 in credit** to run your fleet on.
+
+Email **[support@retasc.com](mailto:support@retasc.com)** from your work address and tell
+us, briefly, what you're building and where you're up to. A couple of paragraphs is
+plenty; there's no form.
+
+We read every request and grant the credit if we think you're a startup. It's a judgement
+call rather than a checklist, so there's no list of boxes to tick and no guarantee — but
+if you're early and building something real, ask. Approved credit lands on your
+organization as **credit from Retasc**, so it's spent before anything you've bought and
+before any USDC billing starts.
+
+## Paying with a card
+
+Open [dash.retasc.com](https://dash.retasc.com) → **Billing** → **Buy credit**, pick an
+amount, and pay on Stripe's hosted checkout. Your credit is applied as soon as the
+payment settles.
+
+<Steps>
+  <Step title="Nothing recurring">
+    There is no subscription, no permit to sign, and no cap to set. You buy credit when
+    you want more; if you never top up again, work simply stops when the balance
+    reaches zero.
+  </Step>
+  <Step title="Receipts">
+    **Billing** → **History** lists every payment with a link to Stripe's own receipt.
+  </Step>
+  <Step title="You can still authorize USDC">
+    If you also authorize USDC, it takes over automatically when your credit runs out.
+    See [the order your money is used](#the-order-your-money-is-used).
+  </Step>
+</Steps>
+
+## Your spending cap (USDC)
+
+This section applies to the **USDC** rail. Card top-ups have no cap: the amount you
+bought is the limit.
+
+When you authorize USDC billing you set a **cap** (the lifetime permit allowance Retasc
+can pull against) and, optionally, a **monthly limit**. Both are your settings — visible
+in the Dashboard **Billing** card, and editable any time from the hosted manage page
 (opened with the card's **Manage** button).
 
 The per-period cap is **non-terminal**: reaching it doesn't cancel your subscription or
 strand in-flight work; it simply pauses new paid work until the period resets or you
 raise the limit. Only the states below actually gate an org.
-
-## Signup credit
-
-A new org is seeded a **signup credit**, a usage-bound voucher (default $10).
-It's a discount, not cash: minted by us, never redeemable, and it never touches the
-payment rail. Your usage draws it down first; credit-covered usage isn't billed and
-doesn't count against your monthly cap. When the balance hits zero, an org with no
-active subscription is asked to authorize before doing more paid work.
 
 ## When work gets blocked
 
@@ -86,17 +210,20 @@ its queue and find the way back), but metered **writes** return a `BILLING_INACT
 error:
 
 ```text
-BILLING_INACTIVE: this org has no active subscription. Reads are allowed but
-writes are blocked. Re-authorize in the Retasc Dash (dash.retasc.com) or at
-/s/<subscription_id>.
+BILLING_INACTIVE: your credit is used up. Add credit or authorize USDC billing
+in the Retasc Dash (dash.retasc.com) to continue. Reads are allowed; writes are
+blocked.
 ```
+
+The remedy is tailored to why the write was blocked, so the message you get names the
+way out of *your* situation rather than a generic one.
 
 The two reasons an org is blocked:
 
 | Reason | Meaning |
 |---|---|
-| **inactive** | The subscription is in a gated state (see the status table below). |
-| **no_credit** | A not-yet-subscribed org whose signup credit is used up. Message: *"your starting credit is used up and there's no active subscription."* |
+| **inactive** | The USDC subscription is in a gated state (see the status table below). |
+| **no_credit** | An org with no active USDC subscription whose credit is used up — whether that credit was given or bought. Buy more credit, or authorize USDC. |
 
 <Note>
   **Lease wind-down is never blocked.** Even when an org is inactive, an in-flight agent
@@ -106,15 +233,21 @@ The two reasons an org is blocked:
 
 ### Subscription states
 
+These describe a **USDC** subscription. An org paying only by card never leaves
+**pending**, and works for as long as it holds credit.
+
 | State | What it means | Can do paid work? |
 |---|---|:--:|
-| **pending** | Signed up, not yet active (or pre-billing) | Only while signup credit remains |
-| **active** | Authorized and within cap | ✅ Yes |
+| **pending** | No USDC subscription — a new org, or one paying by card | Only while credit remains |
+| **active** | USDC authorized and within cap | ✅ Yes |
 | **needs_reauth** | Your signed permit's allowance is used up | ❌ Re-authorize |
 | **lapsed** | A permit/payment failed | ❌ Re-up (recoverable) |
 | **canceled** | Ended | ❌ Terminal |
 
-## Fixing `needs_reauth`
+## Fixing `needs_reauth` (USDC)
+
+Only orgs on the USDC rail can reach this state. If you pay by card, you will never see
+it: there is no permit to draw down.
 
 `needs_reauth` means your signed permit's allowance is **drawn down**: you authorized a
 total, and metered usage has now reached it. Nothing is wrong; you just need to sign a
@@ -142,14 +275,21 @@ fresh permit to top the allowance back up. Two ways:
 
 ## Reading your usage
 
-The Dashboard **Billing** card shows, for the selected org:
+The Dashboard **Billing** page shows, for the selected org. Figures appear only when
+they apply to you, so an org that has never touched USDC sees no USDC figures:
 
-- **Subscription status** and, if any, remaining **signup credit**.
-- **Metered usage accrued** since the last charge: pending charges that haven't yet
-  crossed the billing threshold.
-- **Authorization**: billing type, lifetime cap, amount drawn, remaining, monthly budget.
-- **Payment history**: on-chain transactions (with Basescan links).
-- **Charges ledger**: booked/collected charges from Retasc's local mirror.
+- **Subscription** status.
+- **Credit**, split by where it came from: *from Retasc* (given) and *via Stripe*
+  (bought). The given side empties first.
+- **Pending** *(USDC)*: work Xenarch has metered but not yet charged for. It becomes a
+  charge once it crosses their billing threshold.
+- **Outstanding** *(USDC)*: charges already raised where the USDC has not been collected
+  yet. It clears when the next collection settles; nothing here is late.
+- **History**: card payments and any reversals, each with a link to Stripe's receipt.
+- **Authorization** *(USDC)*: billing type, lifetime cap, amount drawn, remaining,
+  monthly budget.
+- **Payments** and **Charges** *(USDC)*: on-chain transactions with Basescan links, and
+  the booked/collected charge ledger from Retasc's local mirror.
 
 <Note>
   Only an **owner** of the org can change billing or open the manage link. Other members
@@ -159,13 +299,37 @@ The Dashboard **Billing** card shows, for the selected org:
 ## Questions
 
 <AccordionGroup>
-  <Accordion title="Do I pay per agent?">
-    No. There are no per-agent or per-seat charges. The org carries billing; agents work
-    freely under it. You pay only for the metered actions they take.
+  <Accordion title="Do I pay per agent, or per human?">
+    Neither. There are no per-agent and no per-seat charges. The organization carries
+    billing; every human and every agent works under it, and you pay only for the
+    metered actions taken. Adding a teammate or a tenth agent costs nothing by itself.
+  </Accordion>
+  <Accordion title="Does each new member bring their own $10 credit?">
+    No. The signup credit is granted once per human, to the **first organization that
+    human creates**. Someone joining your org brings no credit with them, and creating
+    extra orgs doesn't mint more.
   </Accordion>
   <Accordion title="Is anything charged when I sign up?">
-    No. Signing the permit at checkout authorizes future metered pull-payments up to your
-    cap. Nothing is charged at signup, and it's gasless.
+    No. Your new org starts with signup credit and nothing to pay. If you later authorize
+    USDC, signing the permit at checkout authorizes future metered pull-payments up to
+    your cap — nothing is charged at signing, and it's gasless. A card top-up is the one
+    thing you pay for up front, and only when you choose to.
+  </Accordion>
+  <Accordion title="Can I use a card and USDC at the same time?">
+    Yes, and nothing needs configuring. Credit is always spent first (what we gave you,
+    then what you bought); USDC only starts once your credit balance is zero. Buying
+    credit doesn't cancel an authorization, and having one doesn't stop you buying
+    credit.
+  </Accordion>
+  <Accordion title="Does buying credit stop my USDC billing?">
+    It pauses it. While you hold credit, covered work is never reported to the USDC rail
+    at all, so nothing accrues behind your balance. When the credit runs out, USDC picks
+    up from the next action.
+  </Accordion>
+  <Accordion title="Can I get a refund on credit I bought?">
+    Credit is spent as your agents work, so it's meant to be used rather than returned.
+    If something has gone wrong, contact us — a refund is issued through Stripe and the
+    matching credit is reversed, which you'll see in **Billing** → **History**.
   </Accordion>
   <Accordion title="Can my agents keep reading if billing lapses?">
     Yes. Reads are always allowed, so an agent can inspect its queue and surface the re-up
