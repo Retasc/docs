@@ -53,7 +53,7 @@ Prices are per action, in four value tiers. The wire unit is the **micro-credit*
 
 | Action | Tier | Price |
 |---|---|---:|
-| `next_issue`, `next_batch` (claim), `claim_issue`, `add_relation` | **Moat** | **\$0.007** |
+| `next_issue`, `next_batch` (claim), `claim_issue`, `add_relation` | **Dispatch** | **\$0.007** |
 | `save_issue` (create), `save_issue` (edit body), `checkpoint`, `save_comment` | **Work** | **\$0.005** |
 | `save_issue` (edit status / priority / title) | **Bookkeeping** | **\$0.003** |
 | `mint_session_key`, `release_issue`, and every read | **Plumbing** | **\$0.001** |
@@ -62,7 +62,7 @@ Prices are per action, in four value tiers. The wire unit is the **micro-credit*
 <Info>
   **Why writes cost more than reads**, and dispatch most of all. This is standard
   data-infra pricing (write-heavy stores charge writes at a multiple of reads), extended
-  to *value*: atomic dependency-aware dispatch (the **Moat** tier) is the thing no plain
+  to *value*: atomic dependency-aware dispatch (the **Dispatch** tier) is the thing no plain
   tracker can do, so it's priced highest. Field-flips and plumbing are near-free.
 </Info>
 
