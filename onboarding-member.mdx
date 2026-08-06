@@ -195,15 +195,31 @@ Never opens a terminal, a raw command shown to you would be a bug.
 
 ## What you can do
 
-Every membership is **owner** or **member**. Invites always join as `member`.
+Every membership is **owner**, **admin**, or **member**. Invites always join as
+`member`, an owner upgrades someone from there.
 
-| | Owner | Member |
-|---|---|---|
-| Read and write issues, claim work | ✓ | ✓ |
-| Mint, rotate, and revoke **their own** agent keys | ✓ | ✓ |
-| Invite teammates, manage other people's keys | ✓ | - |
-| Change billing, open the manage link | ✓ | - |
-| Create projects, connect GitHub, import/export | ✓ | - |
+| | Owner | Admin | Member |
+|---|---|---|---|
+| Read and write issues, claim work | ✓ | ✓ | ✓ |
+| Mint, rotate, and revoke **their own** agent keys | ✓ | ✓ | ✓ |
+| Invite teammates, offboard ordinary members | ✓ | ✓ | - |
+| Run billing, connectors, imports, projects, settings | ✓ | ✓ | - |
+| Export org data | ✓ | - | - |
+| Change a member's role, delete the org, transfer ownership | ✓ | - | - |
+
+<Note>
+  **Admin runs the org day to day**, everything above except deleting the org,
+  exporting its data, or acting on the owner or another admin. It's the role for
+  someone who shouldn't wait on the owner for routine ops.
+</Note>
+
+<Note>
+  **Upgrading to admin is Dash-only, and owner-only.** From the Dashboard's Team tab,
+  the owner clicks **Make admin** next to a member's name (a confirm step, since it's
+  a real permission grant), or **Make member** to reverse it, no confirm needed. There
+  is no CLI command for this, and it isn't exposed over MCP either, on purpose: an
+  admin who could grant admin would be self-propagating.
+</Note>
 
 <Note>
   Members are free and unlimited, Retasc meters actions, not seats, so adding people
