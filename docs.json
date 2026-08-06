@@ -20,6 +20,9 @@
   "styling": {
     "codeblocks": "dark"
   },
+  "metadata": {
+    "timestamp": true
+  },
   "contextual": {
     "display": "header",
     "options": [
