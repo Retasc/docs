@@ -1,0 +1,98 @@
+---
+title: "Migrate from another tracker"
+description: "Linear, Jira, ClickUp, Asana, or Shortcut, in one pull: issues, comments, labels, relations, and attachment files, authors included."
+---
+
+Five sources, one flow: paste a token, pick the project, say what your columns mean,
+import. An owner or admin runs it from **Connectors → Migrate**; one import runs per
+org at a time.
+
+| Source | You pick a… | Identifiers | Token from |
+|---|---|---|---|
+| **Linear** | team | kept (`TEAM-N`) | Settings → Security & access → Personal API keys |
+| **Jira** (Cloud only) | project | kept (`PROJ-42`) | id.atlassian.com → Security → API tokens |
+| **ClickUp** | list | renumbered `PREFIX-N` | Settings → Apps → API Token |
+| **Asana** | project | renumbered `PREFIX-N` | Settings → Apps → Developer → Personal access tokens |
+| **Shortcut** | team | story numbers kept | Settings → API Tokens |
+
+## Set up
+
+<Steps>
+  <Step title="Pick the source">
+    **Connectors → Migrate**, then the source's card.
+  </Step>
+
+  <Step title="Paste the token">
+    Used live for this run only, never stored. Jira also asks for the site
+    (`your-domain.atlassian.net`) and account email.
+  </Step>
+
+  <Step title="Fetch targets, pick one">
+    The team, project, or list to bring across.
+  </Step>
+
+  <Step title="Say what your columns mean">
+    Jira, ClickUp, and Asana surface each source column to map to `todo` / `doing` /
+    `review` / `done` / `canceled`, pre-filled from the column's *type*, never its
+    name. A column mapped to `review` needs a named reviewer. Linear and Shortcut type
+    their own columns, so they skip this step.
+  </Step>
+
+  <Step title="Import">
+    Live progress, then a summary: created, updated, comments, links, files.
+  </Step>
+
+  <Step title="Claim your history">
+    Imported authors arrive as placeholder members. Each real person clicks "That's
+    me" once, and their authorship *and* their assigned backlog move onto their live
+    account.
+  </Step>
+</Steps>
+
+<div className="rt-mock">
+  <div className="rt-mock-bar">
+    <span className="rt-mock-dot"></span><span className="rt-mock-dot"></span><span className="rt-mock-dot"></span>
+    <span className="rt-mock-url">dash.retasc.com/connectors</span>
+  </div>
+  <div className="rt-mock-body">
+    <div className="rt-mock-card">
+      <div className="rt-mock-eyebrow">What your columns mean · ClickUp → Retasc</div>
+      <div className="rt-mock-maphead">Active</div>
+      <div className="rt-mock-maprow"><span>In Progress</span><span className="rt-mock-sel">doing</span></div>
+      <div className="rt-mock-maprow"><span>Waiting on QA</span><span className="rt-mock-sel">review</span></div>
+      <div className="rt-mock-revrow">↳ reviewer <span className="rt-mock-sel">Dana</span></div>
+      <div className="rt-mock-maphead">Done</div>
+      <div className="rt-mock-maprow"><span>Shipped</span><span className="rt-mock-sel">done</span></div>
+      <span className="rt-mock-btn">Import into Acme</span>
+    </div>
+    <div className="rt-mock-card">
+      <div className="rt-mock-eyebrow">Importing…</div>
+      <div className="rt-mock-progress"><div className="rt-mock-progress-fill"></div></div>
+      <div className="rt-mock-hint">96 / 150 issues · comments, relations and files follow</div>
+    </div>
+  </div>
+</div>
+
+<Warning>
+  **Re-importing overwrites your Retasc edits.** A second run never duplicates; it
+  re-syncs, so status, labels, title and body snap back to whatever the source says
+  now. Two weeks of moving issues along in Retasc can vanish. You are warned, with the
+  date of the last import, before it runs.
+</Warning>
+
+<Note>
+  **Same flow in the terminal:** `retasc import` walks the identical steps (source,
+  token typed with echo off and never a flag, target, column mapping, import) and ends
+  on the same identity-claim prompt.
+</Note>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Onboarding: starting fresh" icon="rocket" href="/onboarding-owner">
+    Where an import fits in a new org's first hour.
+  </Card>
+  <Card title="Notifications" icon="bell" href="/notifications">
+    Connect a DM channel once your history is in.
+  </Card>
+</CardGroup>
