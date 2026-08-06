@@ -17,6 +17,44 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.20.0 (2026-08-04)
+
+- **RTSC-561** — the org gained an **admin** role, and the CLI stopped refusing it.
+  `retasc billing` gated on `role !== "owner"` client-side, so it would have refused an
+  admin locally for a call the server allows. Owner-only copy in `bind` and the command
+  help now names both roles.
+
+## 1.19.0 (2026-08-03)
+
+- **RTSC-495** — `retasc bind --setup <code>` sets a folder up with no sign-in and nothing
+  to answer, so an agent can do it on behalf of someone who does not use a terminal.
+
+  The Dash's connect step now hands over a block you paste to your agent, with this command
+  inside it. Everything the interactive `bind` would ask was already answered in the
+  browser, and the code carries those answers across. An agent's shell is not a TTY, so the
+  ordinary path refuses it outright at the first prompt.
+
+  ```
+  npx @retasc/cli bind --setup rtscsetup_…
+  ```
+
+  The code is single-use and lives ten minutes. The alternative — pasting a real API key
+  into the prompt — needed no backend at all, but would have left a long-lived credential in
+  an agent's conversation history forever.
+
+  A folder that is already connected is refused rather than silently replaced, and the
+  refusal happens BEFORE the code is spent, so a mix-up costs nothing.
+
+- **RTSC-532** — the agent says which folder it is in, and the key remembers.
+
+  Binding the wrong folder used to look exactly like success: the agent still called in, so
+  the Dash went green, while the folder you actually work in had no Retasc in it. The prompt
+  now asks the agent to report its full path and wait before it runs anything, and the
+  confirmation names the real path instead of "This folder".
+
+  The key it creates is named after that folder, so the Keys page shows which folder each
+  key belongs to (`client-a`) instead of naming them all after the project (`ENG key`).
+
 ## 1.18.0 (2026-08-02)
 
 - **RTSC-530** — setting up from scratch now asks where your work comes from, and imports it
@@ -509,7 +547,7 @@ there is no TTY to run one in.
 
 - **RTSC-263** — owner/member permission denials now print a readable reason and the
   next step instead of an opaque `Server Error`. Hitting an owner-only command as a
-  member reports "Owner role required." with "Ask `<owner>` to create a project." on its
+  member reports "Owner role required." with "Ask <owner> to create a project." on its
   own line. The backend change does the work; the CLI already read the structured
   payload (1.5.0), so this release carries only the hardening below.
 - **RTSC-263** — `formatError` now strips U+0085, U+2028 and U+2029 in addition to the
