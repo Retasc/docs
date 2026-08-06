@@ -1,0 +1,94 @@
+---
+title: "GitHub & GitLab sync"
+description: "Keep an external tracker in lockstep: issues sync in as work items, and outside contributors' PRs become review-work that closes itself when the PR does."
+---
+
+One webhook per repo, two independent streams. An owner or admin sets it up from
+**Connectors → Sync**; everyone benefits.
+
+| Stream | Default | What happens |
+|---|---|---|
+| **Sync issues** | on | Repo issues land in a Retasc project, labeled (default `support`). With a token, Retasc closes them back on `done` or `canceled`. |
+| **Sync PRs/MRs** | off | Outside contributors' PRs become review items on a preset reviewer's lane. Merge promotes to `done`; close without merge cancels. Automatic, both ways. |
+
+<Note>
+  **Your own team's PRs are filtered out.** A PR on a tracked branch, referencing an
+  issue id, or authored by a linked member is already tracked work. Only genuinely
+  external PRs become items.
+</Note>
+
+## Set up
+
+<Steps>
+  <Step title="Connect a repo">
+    **Connectors → Sync → GitHub or GitLab → Connect a repo**, and pick the Retasc
+    project to sync into.
+  </Step>
+
+  <Step title="Name the repo">
+    Type `owner/name`, or paste a token and use "Pick from my repos" for a verified
+    dropdown. GitLab: add an Instance URL if self-hosted.
+  </Step>
+
+  <Step title="Choose streams">
+    Turning PRs on requires naming a reviewer: an active human member whose lane the
+    reviews dispatch to.
+  </Step>
+
+  <Step title="Paste the webhook">
+    Retasc shows a Payload URL and secret **once**. Paste both into the repo's
+    Settings → Webhooks (a deep link opens the right page), ticking the events that
+    match your toggles.
+  </Step>
+
+  <Step title="Verify">
+    GitHub pings automatically and the card flips to Connected. GitLab does not: click
+    **Test** in GitLab or touch a real issue or MR, or the card stays Pending forever.
+  </Step>
+</Steps>
+
+<div className="rt-mock">
+  <div className="rt-mock-bar">
+    <span className="rt-mock-dot"></span><span className="rt-mock-dot"></span><span className="rt-mock-dot"></span>
+    <span className="rt-mock-url">dash.retasc.com/connectors</span>
+  </div>
+  <div className="rt-mock-body">
+    <div className="rt-mock-card">
+      <div className="rt-mock-eyebrow">Connect a repo</div>
+      <div className="rt-mock-field"><label>Repository</label><div className="rt-mock-input">acme/backend</div></div>
+      <div className="rt-mock-togrow"><span>Sync issues → label <code>support</code></span><span className="rt-mock-toggle"></span></div>
+      <div className="rt-mock-togrow"><span>Sync PRs → reviewer <b>Dana</b> (required)</span><span className="rt-mock-toggle"></span></div>
+      <span className="rt-mock-btn">Connect</span>
+    </div>
+    <div className="rt-mock-card">
+      <div className="rt-mock-eyebrow">Finish in GitHub <span className="rt-mock-badge pend">Pending</span></div>
+      <div className="rt-mock-field"><label>Payload URL</label><div className="rt-mock-input">https://…convex.site/webhooks/github/int_8h2k…</div></div>
+      <div className="rt-mock-field"><label>Secret, shown once</label>
+        <div className="rt-mock-secret">whsec_9f3a51c8e2…<span className="rt-mock-copywarn">copy now</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<Warning>
+  **The secret is shown exactly once.** Lose it and you Disconnect and reconnect for a
+  fresh one; there is no re-reveal.
+</Warning>
+
+## Manage
+
+The **Connections** tab lists every connector with its status, project, and streams.
+Owners edit sync settings, tokens, or Disconnect (syncing stops immediately). Agents
+can read `list_connectors` and call `revoke_connector` over MCP, metadata only:
+connecting a new repo is Dash-only, so a raw token never transits MCP.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Review workflow" icon="user-check" href="/review">
+    What happens to a synced PR once it lands in review.
+  </Card>
+  <Card title="Notifications" icon="bell" href="/notifications">
+    A DM the moment a synced item lands on your lane.
+  </Card>
+</CardGroup>
