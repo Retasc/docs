@@ -105,11 +105,11 @@ Prices are per action, in four value tiers. The wire unit is the **micro-credit*
 
 | Action | Tier | Price |
 |---|---|---:|
-| `next_issue`, `next_batch` (claim), `claim_issue`, `add_relation` | 🟣 **Moat** | **\$0.007** |
-| `save_issue` (create), `save_issue` (edit body), `checkpoint`, `save_comment` | 🔵 **Work** | **\$0.005** |
-| `save_issue` (edit status / priority / title) | 🟢 **Bookkeeping** | **\$0.003** |
-| `mint_session_key`, `release_issue`, and every read | ⚪ **Plumbing** | **\$0.001** |
-| `heartbeat` (lease keepalive) | ⚪ **Plumbing** (sub-floor) | **\$0.0001** |
+| `next_issue`, `next_batch` (claim), `claim_issue`, `add_relation` | **Moat** | **\$0.007** |
+| `save_issue` (create), `save_issue` (edit body), `checkpoint`, `save_comment` | **Work** | **\$0.005** |
+| `save_issue` (edit status / priority / title) | **Bookkeeping** | **\$0.003** |
+| `mint_session_key`, `release_issue`, and every read | **Plumbing** | **\$0.001** |
+| `heartbeat` (lease keepalive) | **Plumbing** (sub-floor) | **\$0.0001** |
 
 <Info>
   **Why writes cost more than reads**, and dispatch most of all. This is standard
@@ -239,10 +239,10 @@ These describe a **USDC** subscription. An org paying only by card never leaves
 | State | What it means | Can do paid work? |
 |---|---|:--:|
 | **pending** | No USDC subscription — a new org, or one paying by card | Only while credit remains |
-| **active** | USDC authorized and within cap | ✅ Yes |
-| **needs_reauth** | Your signed permit's allowance is used up | ❌ Re-authorize |
-| **lapsed** | A permit/payment failed | ❌ Re-up (recoverable) |
-| **canceled** | Ended | ❌ Terminal |
+| **active** | USDC authorized and within cap | ✓ Yes |
+| **needs_reauth** | Your signed permit's allowance is used up | ✗ Re-authorize |
+| **lapsed** | A permit/payment failed | ✗ Re-up (recoverable) |
+| **canceled** | Ended | ✗ Terminal |
 
 ## Fixing `needs_reauth` (USDC)
 
