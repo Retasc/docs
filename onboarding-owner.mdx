@@ -1,0 +1,214 @@
+---
+title: "Onboarding: starting fresh"
+description: "Creating the org, maybe bringing a tracker across, becoming its owner. Terminal and web."
+---
+
+For whoever is standing this up: creating the org, maybe bringing a tracker across,
+and becoming its owner.
+
+<Note>
+  **Was someone invited?** They want [Onboarding: joining a
+  team](/onboarding-member) instead, a shorter, different page. Running through this
+  one creates a **new** org, which lands their work in the wrong place.
+</Note>
+
+Two ways to get here, the terminal or the browser. Pick whichever you already live in;
+both end at the same place, an agent pulling from your queue.
+
+## Terminal track
+
+Never opens a browser, except to approve sign-in.
+
+One command walks through everything: sign in, create the org, say where your work
+comes from, connect the folder.
+
+```bash
+npx @retasc/cli bind
+```
+
+<Steps>
+  <Step title="Sign in">
+    Choose GitHub or Google:
+
+    ```
+    How do you sign in to Retasc?
+      1) GitHub
+      2) Google
+    Choose a number: 2
+
+      Open: https://www.google.com/device
+      Enter code: FKDL-XMWZ
+
+      Waiting for Google authorization…
+    ```
+
+    It remembers which one you picked next time.
+  </Step>
+
+  <Step title="Check this folder isn't already connected">
+    Silent the first time. If the folder is already bound to another org, it asks
+    before switching it:
+
+    ```
+    This folder is already bound to org "Acme" / project ACME.
+    Replace it? [y/N]
+    ```
+  </Step>
+
+  <Step title="Create the org">
+    Type a name:
+
+    ```
+    New org name: Northwind
+    ✓ Created org "Northwind".
+    ```
+  </Step>
+
+  <Step title="Say where your work comes from">
+    Pick a tracker to bring across, or start fresh:
+
+    ```
+    Where does your work come from?:
+      1) Jira
+      2) Linear
+      3) ClickUp
+      4) Asana
+      5) Shortcut
+      6) Start from scratch   (name a project; your agents file into it)
+    Choose a number: 3
+    ```
+
+    Picking a tracker asks for an API token (used once, never stored), the list or
+    team to pull, and then walks every source status: press Enter to accept the
+    suggested mapping, or a number to override. Confirm, and it imports with a
+    progress bar. If the migration carried people across, it then asks which one is
+    you.
+  </Step>
+
+  <Step title="Install retasc globally, or run it on demand">
+    ```
+    Install the retasc command on this machine?
+      1) Yes, globally          A `retasc` command you can use anywhere.
+      2) No, run it on demand   Nothing installed, fetched fresh each run.
+    Choose a number [1]:
+    ```
+  </Step>
+
+  <Step title="Connect the folder, and confirm">
+    Nothing to type. It mints the key and wires the folder:
+
+    ```
+    ✓ Minted key for this workspace (rtsc_k_9fA2b3…).
+
+    ✓ This folder is bound to org "Northwind" / project ENG.
+      Agents launched here can only ever read or write ENG.
+
+    Start your agent in this folder, or restart it if it's already open,
+    and it'll pull from the queue.
+    ```
+  </Step>
+</Steps>
+
+<Warning>
+  **Paying is browser-only.** `retasc billing` shows subscription, balance and
+  charges, but there's no subscribe or checkout in the CLI. Not a setup blocker,
+  signup credit covers the first org, but worth knowing before you hit it.
+</Warning>
+
+## Web track
+
+Never opens a terminal. Filesystem work still has to happen somewhere, a browser
+can't write a config file to your machine, so the one step that needs it hands you a
+prompt to paste to your own agent, and the agent does it. You never see a raw command.
+
+<Steps>
+  <Step title="Sign in">
+    Go to [dash.retasc.com](https://dash.retasc.com) and choose **Continue with
+    GitHub** or **Continue with Google**. It remembers which one you used.
+  </Step>
+  <Step title="Create the org">
+    Name your organization. You're its owner.
+  </Step>
+  <Step title="Pick your tracker, or start fresh">
+    Bring Linear, Jira, ClickUp, Asana or Shortcut across, or create an empty
+    project.
+  </Step>
+  <Step title="Map every source status by hand">
+    Say what each column means, and who reviews the ones awaiting sign-off. Skipped
+    if you started fresh.
+  </Step>
+  <Step title="Claim your imported identity">
+    If a migration carried your work across, say which name is you. Skipped if you
+    started fresh.
+  </Step>
+  <Step title="Connect your agent">
+    The one non-click step, below.
+  </Step>
+</Steps>
+
+### Connect your agent, the one non-click step
+
+Copy a block from the Dash and paste it to your agent, and it does the rest: reads
+its own folder path, runs the setup, restarts itself, and reports back.
+
+```text
+Set Retasc up in the folder you're working in, so you can pull work from my queue.
+
+First tell me its full path, and wait for me to say go.
+
+Then run exactly this:
+npx @retasc/cli bind --setup rtscsetup_7ka92m
+
+If Node 18 or newer isn't installed, install it. Prefer a way that doesn't need
+admin rights. Only ask me if there's no other option.
+
+When it's done, restart yourself so the Retasc tools load, then check my queue
+and tell me what you find.
+```
+
+<Note>
+  **Why this, and not a raw command.** The code dies in ten minutes and needs no
+  sign-in on the agent's end, since the Dash session already proved who you are. The
+  agent states which folder it's in before touching anything, so setting up the
+  wrong one is no longer invisible.
+</Note>
+
+## Inviting your team
+
+Owners mint single-use codes. From the Dashboard, open **Team → New invite**, pick an
+expiry, and copy the code, it's shown once.
+
+Or from the CLI:
+
+```bash
+retasc members invite --org-id <org-id> [--expires-days 1-30]
+```
+
+```
+✓ Invite code: rtscinv_3f9c1a7e0b4d82615c8f3a9e17d0b62c4a85f931e7c0d248
+  Expires 2026-07-27. Single-use, shown once.
+  Share it; they run:  retasc login && retasc join rtscinv_3f9c1a7e0b4d82615c8f3a9e17d0b62c4a85f931e7c0d248
+```
+
+Manage invites with `retasc members list --org-id <org-id>` (status: pending,
+accepted, revoked, expired) and `retasc members revoke --invite-id <id>`.
+
+<Tip>
+  Invites add **humans**. To add an **agent**, run `retasc bind` (or `retasc key
+  mint`) in the folder that agent works from, the key is what carries org identity,
+  not a person.
+</Tip>
+
+Whoever redeems it wants [Onboarding: joining a team](/onboarding-member), not this
+page.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Onboarding: joining a team" icon="user-plus" href="/onboarding-member">
+    What your invited teammates see, and what they can do once they're in.
+  </Card>
+  <Card title="Billing" icon="credit-card" href="/billing">
+    What's metered, the rate card, the cap, and re-authorization.
+  </Card>
+</CardGroup>

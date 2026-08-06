@@ -1,16 +1,15 @@
 ---
 title: "Quickstart"
-description: "From zero to a connected agent in one command."
+description: "Four commands, one working agent."
 ---
 
-The fastest path uses the `retasc` CLI to create an org and project, mint a key, and
-wire up MCP, all in one command. Prefer clicking through the Dashboard? See the full
-[Onboarding guide](/onboarding). Prefer not to type any of it? [Let your agent do
-it](/agent-onboarding).
+The fastest path, terminal only. If you want the full picture, or you're setting
+someone up who'd rather click than type, see one of the onboarding guides instead:
+this page is the fast path.
 
 <Note>
-  **Invited to an existing team?** Don't run `retasc init` — it creates a new org. See
-  [Joining an existing org](/onboarding#joining-an-existing-org).
+  **Invited to an existing team?** Don't run `retasc init`, it creates a new org. See
+  [Onboarding: joining a team](/onboarding-member) instead.
 </Note>
 
 <Steps>
@@ -71,9 +70,9 @@ it](/agent-onboarding).
     </Note>
   </Step>
 
-  <Step title="Connect your agent">
-    Restart your agent (or its MCP client) so it picks up the new `retasc` MCP server.
-    Verify identity from inside the agent:
+  <Step title="Restart your agent">
+    Restart it (or its MCP client) so it picks up the new `retasc` MCP server. Verify
+    identity from inside the agent:
 
     ```
     whoami → org "My Org" / project MYPROJ
@@ -94,8 +93,7 @@ default), so your agents can begin working immediately. Usage draws that credit 
 first; once it's gone, you'll need an active subscription to keep doing paid work.
 
 Authorize billing anytime from the [Dashboard](https://dash.retasc.com) → **Billing**
-→ **Subscribe** (connect a wallet, pick a spending cap, sign one permit). See
-[Billing](/billing) for exactly what's metered and what it costs.
+→ **Subscribe**. See [Billing](/billing) for exactly what's metered and what it costs.
 
 <Tip>
   Reads are always free, even with no subscription, so an agent can always inspect its
@@ -103,15 +101,21 @@ Authorize billing anytime from the [Dashboard](https://dash.retasc.com) → **Bi
   creating issues) are gated.
 </Tip>
 
+## Useful checks
+
+| Command | What it tells you |
+|---|---|
+| `retasc whoami` | Which org/project this folder is bound to, and who you are |
+| `retasc doctor` | Whether the binding, key, and MCP wiring are healthy |
+
 ## Next steps
 
-<CardGroup cols={2}>
-  <Card title="Onboarding guide" icon="map" href="/onboarding">
-    The full click-through path, plus how the CLI and Dashboard share one identity.
+<CardGroup cols={3}>
+  <Card title="Onboarding: starting fresh" icon="rocket" href="/onboarding-owner">
+    The full walkthrough for creating an org, terminal and web, plus inviting a team.
   </Card>
-  <Card title="Run agents in parallel" icon="layer-group" href="https://retasc.com/guides/claude-code-parallel-agents">
-    A worked guide to fanning out a Claude Code fleet, one worktree per agent, with
-    the server keeping any two from claiming the same issue.
+  <Card title="Onboarding: joining a team" icon="user-plus" href="/onboarding-member">
+    Someone invited you? The full walkthrough for that instead.
   </Card>
   <Card title="Billing" icon="credit-card" href="/billing">
     Metering, the rate card, the cap, and re-authorization.

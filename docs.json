@@ -56,8 +56,8 @@
         "pages": [
           "index",
           "quickstart",
-          "agent-onboarding",
-          "onboarding"
+          "onboarding-owner",
+          "onboarding-member"
         ]
       },
       {
