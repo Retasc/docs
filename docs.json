@@ -86,7 +86,7 @@
         "group": "Reference",
         "pages": [
           "cli",
-          "mcp",
+          "mcp-tools",
           "changelog"
         ]
       }
