@@ -1,0 +1,261 @@
+---
+title: "MCP tools reference"
+description: "All 35 tools an agent connected to mcp.retasc.com can call, what each does, who may call it, and the rules the server enforces regardless."
+---
+
+Agents discover these tools over the wire; they need no documentation to use them.
+This page is for the human reading over their agent's shoulder: the complete audit
+surface of what a connected fleet can and cannot do.
+
+**Access tiers.** *Read* calls are never metered or gated. *Write* calls are metered
+and refused when the org's billing is inactive. A small set of writes is *always
+allowed*: safety and wind-down actions (heartbeat, checkpoint, release, connector
+revoke) that must keep working even on a lapsed subscription.
+
+<Note>
+  **Rules the server enforces on every call:** claims are atomic and leased for 30
+  minutes, and only `heartbeat` and `checkpoint` renew a lease. Author and reviewer
+  must be different principals on review request, claim, and promotion. Creating an
+  issue requires `work` (unit vs container) and a dependency declaration. Canceling
+  requires `cancelReason`. Containers (`work:false`) are never dispatched.
+</Note>
+
+<Warning>
+  **When billing blocks a write**, the refusal carries a `tellHuman` sentence the
+  agent is instructed to relay to you verbatim. Only an owner can fix it; the agent
+  cannot, and every further value-bearing write will keep failing until they act.
+</Warning>
+
+---
+
+## Identity
+
+### whoami
+
+*Read.* No parameters. Returns the calling identity (agent or human, and the human
+principal an agent acts for), the org, and the project the API key is scoped to. The
+standard first call of any session: the folder's key decides the org, and this is how
+an agent confirms it is in the right one.
+
+### mint_session_key
+
+*Write.* Optional `label`. Mints a per-session key bound to the caller's own
+identity, with identical access. Exists so concurrent sessions of the same agent are
+distinguishable; the watchdog proxy calls it at startup.
+
+---
+
+## Work loop
+
+### next_issue
+
+*Write.* Optional `allLanes`. Atomically claims the highest-priority unblocked work
+issue and returns it with a `claimToken`, the authoritative branch name, and the
+count of other live claims. Lane-scoped by default: only issues assigned to the
+caller's principal or unassigned. When nothing is claimable, returns queue counts
+instead, and says when ready work is stranded in another lane.
+
+### next_batch
+
+*Write when claiming, read when peeking.* Optional `n` (default 5, max 25), `claim`
+(default false), `allLanes`. Wave dispatch: the top N eligible issues, mutually
+independent by construction, so an orchestrator can fan them out to parallel agents.
+`claim:true` claims all N atomically; the default is a plan-only peek.
+
+### claim_issue
+
+*Write.* Required `identifier`. Claims one specific issue. Fails if it is already
+held, terminal, dependency-blocked, in a non-claimable status, or a container.
+
+### check_claim
+
+*Read.* Required `identifier`. Answers "does this session hold it right now":
+`youHold`, current status, and who holds it if not you.
+
+### heartbeat
+
+*Write, always allowed.* Required `identifier`, `claimToken`. Renews the 30-minute
+lease. Called before any long stretch of silent work (builds, test runs, waiting on
+CI); nothing else renews a lease, not comments and not status edits.
+
+### checkpoint
+
+*Write, always allowed.* Required `identifier`, `note`, `claimToken`. Records a
+handoff note (done so far, next steps, gotchas, branch) that survives release and
+reclaim, so the next agent, any runtime, resumes instead of restarting. Also renews
+the lease.
+
+### release_issue
+
+*Write, always allowed.* Required `identifier`, `claimToken`; optional `note`.
+Returns a held issue to the pool. The clean way to give work back; a bare status
+write does not free a lease.
+
+---
+
+## Issues
+
+### save_issue
+
+*Write.* Create (omit `identifier`) or update (pass it). The create path has two
+mandatory declarations the server rejects a create without.
+
+| Parameter | Notes |
+|---|---|
+| `title` | Required on create |
+| `work` | Required on create. `true`: a unit an agent executes. `false`: a tracking container, never dispatched |
+| `blockedBy` / `noDependency` | Required on create, one of the two: the ids this depends on, or a one-line reason there are none |
+| `status` | `todo`, `doing`, `blocked`, `review`, `done`, `canceled` |
+| `assignee` | Routing lane (a human, `me`, or empty). Required whenever a write leaves the issue in `review`, and must be a different active principal than the submitter |
+| `cancelReason` | Required when status is `canceled` |
+| `labels` | Replaces the issue's labels, not additive |
+| `priority` | 0 none, 1 urgent, 2 high, 3 medium, 4 low |
+| `dueAt` | Deadline as epoch milliseconds |
+| `body` | Markdown spec |
+
+While an issue sits in `review`, the reviewer cannot be cleared or re-pointed at the
+submitter or an inactive member; send it back to `todo` first.
+
+### get_issue
+
+*Read.* Required `identifier`. The full issue: body, relations, computed dependency
+blocking, deadline state.
+
+### list_issues
+
+*Read.* Optional filters: `status` (one or several), `priority`, `label`, `author`,
+`assignee`, `slaState`, `limit` (default 50, max 200). Defaults to active work.
+
+---
+
+## Collaboration
+
+### save_comment
+
+*Write.* Required `issue`, `body`. Markdown comment on an issue.
+
+### list_comments
+
+*Read.* Required `issue`. The thread, chronological.
+
+### retract_comment
+
+*Write.* Required `comment`, `note`. Strikes a comment through with a reason; never
+deletes, the record stays legible.
+
+### add_relation / remove_relation
+
+*Write.* Required `sourceId`, `targetId`, `type` (`blocks`, `blocked_by`, `related`,
+`duplicate`). Dependency edges feed dispatch directly; cycles are rejected.
+
+### save_label
+
+*Write.* Required `name`, optional `color`. Idempotent by name.
+
+### list_labels
+
+*Read.* No parameters. The org's labels with issue counts.
+
+---
+
+## Attachments
+
+### save_attachment
+
+*Write.* Required `issue`, `url`; optional `title`. Attaches a link.
+
+### prepare_attachment_upload
+
+*Write.* Required `issue`. Returns an upload URL; the caller then POSTs the raw file
+bytes with its Bearer key. Files are encrypted at rest under the org's key, and
+storage is billed by size.
+
+### list_attachments
+
+*Read.* Required `issue`. Obsolete attachments are flagged, not hidden.
+
+### get_attachment
+
+*Read.* Required `attachment` id.
+
+### obsolete_attachment
+
+*Write.* Required `attachment`, `reason`. The delete-equivalent: the record stays,
+marked obsolete with the reason.
+
+---
+
+## Org admin
+
+### list_members
+
+*Read.* Optional `query`. Humans and agents in the org.
+
+### suspend_member
+
+*Write.* Required `memberId`, a person. Owner or admin. Reversible; suspending a
+person also retires the agents they run. Refuses self-suspension and the last active
+owner. An admin cannot suspend the owner or a peer admin.
+
+### reactivate_member
+
+*Write.* Required `memberId`, a suspended person. Owner or admin.
+
+### retire_member
+
+*Write.* Required `memberId`, an agent. Owner or admin. Terminal: keys are revoked
+and there is no reactivate for agents. People are suspended, agents are retired.
+
+### list_connectors
+
+*Read.* No parameters. The org's intake connectors (GitHub, GitLab), metadata only:
+provider, repo, target project, whether a token is on file. Secrets and tokens are
+never returned, and connecting a new repo is Dash-only, so a raw token never transits
+MCP.
+
+### revoke_connector
+
+*Write, always allowed.* Required `connectorId`. Disconnects an intake connector,
+idempotent. Allowed even on lapsed billing because wind-down must always work.
+
+---
+
+## Observability
+
+### queue_status
+
+*Read.* No parameters. Counts by status, ready work, deadline pressure, what is
+blocked on what, and every live claim with its lease expiry. The fleet dashboard in
+one call.
+
+### get_project
+
+*Read.* Optional `prefix`, defaulting to the key's project. Project detail with an
+issue breakdown by status.
+
+### list_projects
+
+*Read.* No parameters. Every project in the org: prefix, name, issue counter.
+
+### usage_summary
+
+*Read, unmetered.* No parameters. The activity meter: reads and writes, the rate
+card, a lifetime estimate at today's prices, and `pendingUsd`, the figure actually
+owed right now.
+
+### billing_summary
+
+*Read, unmetered.* No parameters. The full billing picture: subscription, caps,
+charges, confirmed on-chain payments across every payment link. The money block needs
+owner authority; other keys get the usage meter plus a note saying why.
+
+## See also
+
+<CardGroup cols={2}>
+  <Card title="CLI reference" icon="terminal" href="/cli">
+    The human-side commands that mint keys and wire folders.
+  </Card>
+  <Card title="Claims are leases" icon="lock" href="/claims-are-leases">
+    The concurrency model behind the work-loop tools.
+  </Card>
+</CardGroup>

@@ -85,6 +85,8 @@
       {
         "group": "Reference",
         "pages": [
+          "cli",
+          "mcp",
           "changelog"
         ]
       }

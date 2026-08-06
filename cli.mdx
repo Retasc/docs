@@ -1,0 +1,415 @@
+---
+title: "CLI reference"
+description: "Every retasc command: synopsis, options, requirements, and examples. Current release: 1.20.0."
+---
+
+```sh
+npm i -g @retasc/cli    # install
+retasc --version        # what you have
+```
+
+## Conventions
+
+- **Auth.** Commands marked *login* need a session: `retasc login`, a GitHub or Google
+  device flow. Commands marked *key* resolve the folder's agent key instead (env,
+  `.mcp.json` marker, or keystore) and need no login.
+- **Output.** `--json` emits the raw payload on stdout; human notes go to stderr, so
+  pipes stay clean.
+- **Failure.** Errors print `✗ CODE: message` with a hint on its own line, and exit 1.
+- **Secrets are never flags.** Anything secret is typed with echo off, or read from an
+  environment variable. There is no `--token`.
+
+## Configuration and environment
+
+| Path | Purpose |
+|---|---|
+| `~/.retasc/config.json` | Session and defaults. Mode 0600, atomic writes, cross-process lock |
+| `~/.retasc/bindings.json` | Per-workspace agent keys (the keystore). Mode 0600 |
+| `./.mcp.json` | Secret-free workspace marker, safe to commit |
+
+| Variable | Purpose |
+|---|---|
+| `RETASC_DIR` | Relocates both config files above |
+| `RETASC_DEPLOYMENT_URL` | Overrides the backend URL |
+| `RETASC_MCP_URL` | Overrides the MCP endpoint |
+| `RETASC_MCP_KEY` | Explicit agent key, overrides the keystore |
+| `RETASC_WORKSPACE` | Workspace id, resolves the key via the keystore |
+| `RETASC_GITHUB_CLIENT_ID` | Overrides the GitHub OAuth client id |
+| `RETASC_IMPORT_TOKEN` (and `RETASC_IMPORT_*`) | Non-interactive import credentials |
+| `RETASC_HEARTBEAT_MS` | Watchdog heartbeat interval (default 10 minutes) |
+| `RETASC_SESSION_LABEL` | Label for the minted per-session key |
+| `NO_COLOR` | Disables progress-bar color |
+
+---
+
+## Session
+
+### retasc login
+
+```sh
+retasc login [--github] [--google]
+```
+
+Sign in via a device flow. With no flag, asks which door you use (GitHub or Google)
+and remembers the answer as the default for next time. The two doors are separate
+identities on purpose: they link on the provider's immutable account id, never on a
+matching email.
+
+| Flag | What it does |
+|---|---|
+| `--github` | Skip the question, use GitHub |
+| `--google` | Skip the question, use Google |
+
+Non-interactive runs use GitHub with no prompt. Google requires the deployment to
+carry Google device credentials; where absent, the CLI says so in one line.
+
+### retasc logout
+
+```sh
+retasc logout
+```
+
+Forgets the local session (token, refresh token, user). Nothing is revoked
+server-side; agent keys in the keystore are untouched.
+
+### retasc whoami
+
+```sh
+retasc whoami [--json]
+```
+
+Two blocks: what this *folder* is bound to (org and project, resolved server-side
+from the local key), and who is *signed in* (user and orgs). The binding block works
+without a login. `--json` emits the raw payload.
+
+### retasc doctor
+
+```sh
+retasc doctor
+```
+
+Health-checks the folder: is it bound, which entry wins when both a local-scope
+registration and a `./.mcp.json` marker exist, can the MCP launcher actually start,
+and is there an illegal global (user-scope) registration. Also names the platform
+support status (macOS is the only platform tested end to end). No login needed.
+
+### retasc config
+
+```sh
+retasc config
+```
+
+Prints the resolved config path, backend and MCP URLs, and sign-in state. Useful
+before filing a bug.
+
+---
+
+## Get connected
+
+### retasc bind
+
+```sh
+retasc bind [options]
+retasc bind --setup rtscsetup_...
+```
+
+Binds this folder to an org and project: pick or create both, mint an agent key, wire
+the MCP server, in one pass. The canonical setup command. Requires login, except with
+`--setup`.
+
+| Flag | What it does | Default |
+|---|---|---|
+| `--org-id`, `--org-name` | Bind into an existing org | picker |
+| `--project`, `--project-id` | Select or create the project | picker |
+| `--prefix` | Issue prefix for a new project | derived |
+| `--agent` | Display name for the minted agent | derived |
+| `--runtime` | Runtime the key is labeled for | `claude-code` |
+| `-y, --yes` | Accept the re-bind confirmation non-interactively | off |
+| `--no-install` | Decline the global CLI install step | asks |
+| `--setup` | Dash-issued single-use code: no login, no prompts, headless-safe | off |
+
+Re-binding to the same org and project is an idempotent success. Replacing a
+*different* binding without a TTY requires `--yes`, otherwise exit 1. If setup aborts
+after a new org was created, bind names the org and prints the exact resume command.
+
+### retasc join
+
+```sh
+retasc join <link> [options]
+```
+
+The whole of an invited teammate's setup in one command, run from the folder their
+agent will work in: signs in (only when there is no session), redeems the invite,
+offers any identity a migration carried across, picks the project, mints a key, binds
+the folder, wires the MCP marker. Takes a full invite link or a bare `rtscinv_...`
+code.
+
+| Flag | What it does |
+|---|---|
+| `--no-bind` | Redeem only, skip folder setup (the old behavior, same output and exit code) |
+| `--project-id` | Skip the project picker |
+| `--agent`, `--runtime` | As in `bind` |
+| `-y, --yes` | Skip confirmations. Never answers the identity question: claiming history is irreversible |
+| `--no-install` | Decline the global CLI install step |
+
+### retasc init
+
+```sh
+retasc init --project <name> --prefix <PFX> [options]
+```
+
+Creates an org and project, mints a key, and wires the MCP server in one shot, for
+scripted or first-time setup. Requires login.
+
+| Flag | What it does | Default |
+|---|---|---|
+| `--project` | Project name (required) | |
+| `--prefix` | Issue prefix (required) | |
+| `--org`, `--org-id` | Name a new org, or reuse an existing one | new org |
+| `--agent` | Agent display name | derived |
+| `--runtime` | Runtime label | `claude-code` |
+| `--scope` | MCP registration scope: `local` or `project` | `local` |
+| `--no-watchdog` | Skip the liveness watchdog proxy | on |
+
+### retasc identity
+
+```sh
+retasc identity [--org-id <id>]
+```
+
+Shows the people a migration carried into your org and asks which one is you, the
+same question `join` asks, on demand and per source tool. Requires login and an
+interactive terminal, and refuses without one: linking someone's history pulls their
+authorship and dispatch lane onto your account irreversibly, so there is deliberately
+no `--yes` and no scriptable form.
+
+### retasc import
+
+```sh
+retasc import [--org-id <id>] [--source <source>] [-y]
+```
+
+Brings a Linear, Jira, Asana, ClickUp, or Shortcut project into a new Retasc project
+from the terminal: source, credentials, target, column mapping, import, then the
+identity-claim prompt. Requires login and a TTY. Sources: `linear`, `jira`, `asana`,
+`clickup`, `shortcut`.
+
+Credentials are typed with echo off, or supplied via `RETASC_IMPORT_TOKEN` (and
+sibling `RETASC_IMPORT_*` variables) for scripted runs. There is no `--token` flag on
+purpose: flags land in shell history and process lists.
+
+<Warning>
+  Re-importing re-syncs: status, labels, title, and body are replaced with whatever
+  the source says now. You are warned, with the date of the last import, before the
+  confirmation.
+</Warning>
+
+---
+
+## Work loop
+
+### retasc claim
+
+```sh
+retasc claim [issue] [options]
+cd "$(retasc claim 42 --print-path)"
+```
+
+Atomically claims an issue over MCP using the folder's key (a specific issue, or the
+top unblocked one), then creates and enters its git worktree on the server-computed
+`rtsc-NN/...` branch. Needs a resolvable key and a git repo (unless `--no-worktree`).
+
+| Flag | What it does | Default |
+|---|---|---|
+| `[issue]`, `--id` | Target issue: `RTSC-42`, `rtsc-42`, or bare `42` | next unblocked |
+| `--all-lanes` | Pull from every lane, not just yours and unassigned | lane-scoped |
+| `--base` | Worktree base ref | `origin/main` |
+| `--dir` | Worktree location | `../<repo>-rtsc-NN` |
+| `--no-fetch` | Skip the pre-claim fetch | fetches |
+| `--no-worktree` | Claim only, no git | off |
+| `--shell` | Spawn a subshell inside the worktree | off |
+| `--print-path` | Print only the worktree path | off |
+| `--json` | Machine-readable claim payload | off |
+
+The claim is a 30-minute lease; only heartbeat and checkpoint renew it. When your
+lane is empty but ready work sits in another lane, the CLI says so and points at
+`--all-lanes` instead of reading as "nothing to do".
+
+### retasc next
+
+```sh
+retasc next [options]
+```
+
+`claim` without a target: takes whatever dispatch hands you. Same flags as `claim`
+except the positional issue.
+
+### retasc done
+
+```sh
+retasc done [--id <RTSC-NN>] [--force]
+```
+
+Marks the current issue done via the same server call agents use (resolved from the
+`rtsc-NN/` branch you are on, or `--id`), then reaps its worktree and branch once
+merged (`tidy --prune --only`). You can only close what you hold.
+
+### retasc tidy
+
+```sh
+retasc tidy [--prune] [--force] [--only <RTSC-NN>] [--json]
+```
+
+Reconciles every `rtsc-NN/*` branch against its issue status and merge state.
+Dry-run by default; `--prune` deletes the done-and-merged ones; `--force` also clears
+orphans (done but unmerged). `untracked`, `active`, and `main` are never touched.
+
+---
+
+## Org management
+
+All of these require login. `--json` emits the raw payload where noted.
+
+### retasc org create
+
+```sh
+retasc org create --name <name> [--slug <slug>] [--json]
+```
+
+Creates an org and prints its id, naming the command that wants it next.
+
+### retasc project create
+
+```sh
+retasc project create --org-id <id> --name <name> --prefix <PFX> [--json]
+```
+
+Creates a project (owner only). The prefix becomes every issue id: `PFX-1`, `PFX-2`.
+
+### retasc project rename-prefix
+
+```sh
+retasc project rename-prefix --project-id <id> --prefix <PFX>
+```
+
+Renames a project's prefix and rewrites every issue id and cross-reference. Loud and
+deliberate; not a cosmetic rename.
+
+### retasc key mint
+
+```sh
+retasc key mint --org-id <id> --project-id <id> [options]
+```
+
+Mints an agent API key, shown once. A member may mint keys for their own agents.
+
+| Flag | What it does | Default |
+|---|---|---|
+| `--agent` | Agent display name | derived |
+| `--runtime` | Runtime label | `claude-code` |
+| `--name` | Key label | derived |
+| `--install` | Also wire the key into this folder's MCP config | off |
+| `--scope` | `local` or `project` registration | `local` |
+
+### retasc key list
+
+```sh
+retasc key list --org-id <id> [--json]
+```
+
+Aligned table of the org's keys; revoked ones say `revoked`, auto-minted session keys
+fold into a count.
+
+### retasc key rotate
+
+```sh
+retasc key rotate --key-id <id>
+```
+
+Mints a replacement and revokes the old key in the same step. The new key is shown
+once.
+
+### retasc key revoke
+
+```sh
+retasc key revoke --key-id <id>
+```
+
+Revokes a key immediately. Members may revoke their own; owners and admins any.
+
+### retasc members invite
+
+```sh
+retasc members invite --org-id <id> [--expires-days <n>]
+```
+
+Mints a single-use invite code (owner or admin), shown once, and prints the exact
+`retasc join` line to send. Default expiry: 7 days.
+
+### retasc members list
+
+```sh
+retasc members list --org-id <id> [--json]
+```
+
+People and agents in the org, with role and state. A spent invite shows no expiry
+date because the date stopped meaning anything.
+
+### retasc members revoke
+
+```sh
+retasc members revoke --invite-id <id>
+```
+
+Voids an unspent invite.
+
+### retasc billing
+
+```sh
+retasc billing [--org-id <id>] [--json]
+```
+
+The org's whole billing picture in the terminal: subscription and caps, what is owed
+right now, charge and confirmed on-chain payment history across every payment link
+the org has ever used. Owner or admin. Payment history is a live read and degrades to
+a note rather than failing the command.
+
+---
+
+## Wiring
+
+### retasc mcp install
+
+```sh
+retasc mcp install --key <key> [--scope local|project] [--url <url>] [--no-watchdog]
+```
+
+Registers the Retasc MCP server with Claude Code (`claude mcp add`), or falls back to
+writing `./.mcp.json`. Takes the key directly, so no login is needed. A `user`
+(global) scope is refused by design: the folder decides the org, never a machine-wide
+default.
+
+There is also a hidden `retasc mcp proxy`, the liveness watchdog your agent harness
+spawns; it is not for manual use.
+
+### retasc gate install
+
+```sh
+retasc gate install [--prefix <PFX>] [--no-hook] [--no-action]
+```
+
+Installs commit-to-issue traceability in the current repo: a `commit-msg` git hook
+(local, bypassable) and a GitHub Action (the authoritative CI gate), both enforcing
+an issue reference like `PFX-42` or `[no-issue]` in every commit. Prefix defaults to
+the bound project's.
+
+## See also
+
+<CardGroup cols={2}>
+  <Card title="MCP tools reference" icon="wrench" href="/mcp">
+    What your agents can call once the folder is wired.
+  </Card>
+  <Card title="Changelog" icon="clock-rotate-left" href="/changelog">
+    Every published CLI release, newest first.
+  </Card>
+</CardGroup>
