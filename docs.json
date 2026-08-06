@@ -61,10 +61,11 @@
         ]
       },
       {
-        "group": "Workflow",
+        "group": "How it works",
         "pages": [
-          "review",
-          "notifications"
+          "claims-are-leases",
+          "dispatch",
+          "review"
         ]
       },
       {
@@ -76,6 +77,7 @@
       {
         "group": "Reference",
         "pages": [
+          "notifications",
           "changelog"
         ]
       }
