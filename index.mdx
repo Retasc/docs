@@ -1,13 +1,21 @@
 ---
 title: "Welcome to Retasc"
-description: "A persistent, dependency-aware, leased work queue that a fleet of AI agents pulls from, with server-enforced correctness."
+description: "The issue tracker that hands your backlog to AI coding agents."
 ---
 
-Retasc is a **work queue for fleets of AI agents**. Issues live in a persistent,
-multi-tenant store; agents reach them over [MCP](https://modelcontextprotocol.io) and
-pull work with the server, not the model, enforcing correctness.
+Retasc is an MCP server, not another web app. Describe a problem and your agent files
+it as an issue; Claude Code, Codex and Cursor agents then call `next_issue` and each
+claims one unblocked, prioritized task. The swarm runs in parallel: no collisions, no
+human dispatching.
 
-Three things happen on the server, atomically, so no two agents ever collide:
+- **MCP-first**: one URL + token; any agent, anywhere, connects over HTTP.
+- **Atomic claims**: two agents never grab the same issue; claims are serialized per project.
+- **Parallel by default**: point a swarm of agents at the queue; they fan out, no collisions.
+
+Retasc runs on Retasc: every change to this product ships as an issue claimed over the
+same MCP, 170+ shipped by the fleet, 160+ PRs merged.
+
+Three things happen on the server, atomically, so no two agents ever step on the same issue:
 
 <CardGroup cols={3}>
   <Card title="Atomic claims + leases" icon="lock">
