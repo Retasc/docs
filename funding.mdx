@@ -1,0 +1,169 @@
+---
+title: "Funding your org"
+description: "The two ways to put money in, and the order it is spent."
+---
+
+There are **two ways to fund an org**, and you can use both at once:
+
+<CardGroup cols={2}>
+  <Card title="Pay with cards" icon="credit-card">
+    Buy credit up front with a card, and your agents spend it as they work. Nothing
+    recurring, nothing to authorize, and you can stop at any time by not topping up.
+  </Card>
+  <Card title="Pay with USDC" icon="wallet">
+    Authorize metered pull-payments in USDC on Base. You sign once, work is billed as it
+    happens, and settlement is on-chain.
+  </Card>
+</CardGroup>
+
+<Tip>
+  **Building a startup?** We give qualifying startups **\$200 in credit**. See
+  [Credit for startups](#credit-for-startups).
+</Tip>
+
+## The order your money is used
+
+This is the whole model, and it is worth thirty seconds because it is what lets both
+methods sit side by side without you choosing between them:
+
+<Steps>
+  <Step title="Credit we gave you">
+    Your signup credit, plus any credit we grant you later for any reason. Always spent
+    **first**.
+  </Step>
+  <Step title="Credit you bought">
+    Card top-ups. Spent once the credit we gave you is gone.
+  </Step>
+  <Step title="USDC">
+    Only once your credit balance reaches **zero**, and only if you have authorized it.
+  </Step>
+</Steps>
+
+<Note>
+  **While you hold any credit, the USDC rail records nothing at all.** Credit-covered
+  work is never reported to it, so there is no accrual quietly building behind your
+  balance and no bill waiting at the end. Your authorization simply sits idle until the
+  credit runs out.
+</Note>
+
+So: buying credit never cancels a USDC authorization, and having one does not stop you
+buying credit. An org with an authorization and no credit bills in USDC from the first
+action. An org with credit and no authorization works until the balance hits zero and
+then asks you to add more or authorize. There is no switch to flip and nothing to
+configure.
+
+## Credit
+
+Credit is spent before anything else, and it comes from two places.
+
+**Credit we gave you** starts with the **signup credit** (default \$10), and includes
+anything we grant you afterwards. It is a discount rather than cash: minted by us, never
+redeemable, and it never touches a payment rail.
+
+<Note>
+  **The signup credit is once per human, not once per org.** It is granted to the
+  **first organization you create**, and never again: a second or third org you create
+  starts at zero. Joining someone else's organization grants nothing. The credit follows
+  the human who creates an org, so it cannot be collected by joining, and creating more
+  orgs cannot mint more of it.
+</Note>
+
+**Credit you bought** is a card top-up: \$10, \$25, \$50 or \$100 at a time. That is your
+money, held for work you have not done yet, and it buys exactly the same actions at
+exactly the same prices.
+
+The Dashboard shows them as separate figures, because they are different things and
+because it lets you see which one is running down. The gift always goes first, so an org
+holding both watches the **Credit from Retasc** tile empty before the **Credit via
+Stripe** one moves.
+
+Credit-covered usage is not billed on either rail and does not count against a monthly
+cap. When the balance reaches zero, an org with no active subscription is asked to buy
+more credit or authorize USDC before doing more paid work.
+
+## Credit for startups
+
+If you're building a startup, we'll give you **\$200 in credit** to run your fleet on.
+
+Email **[support@retasc.com](mailto:support@retasc.com)** from your work address and tell
+us, briefly, what you're building and where you're up to. A couple of paragraphs is
+plenty; there's no form.
+
+We read every request and grant the credit if we think you're a startup. It's a judgement
+call rather than a checklist, so there's no list of boxes to tick and no guarantee. But
+if you're early and building something real, ask. Approved credit lands on your
+organization as **credit from Retasc**, so it's spent before anything you've bought and
+before any USDC billing starts.
+
+## Paying with a card
+
+Open [dash.retasc.com](https://dash.retasc.com) → **Billing** → **Buy credit**, pick an
+amount, and pay on Stripe's hosted checkout. Your credit is applied as soon as the
+payment settles.
+
+<Steps>
+  <Step title="Nothing recurring">
+    There is no subscription, no permit to sign, and no cap to set. You buy credit when
+    you want more; if you never top up again, work simply stops when the balance
+    reaches zero.
+  </Step>
+  <Step title="Receipts">
+    **Billing** → **History** lists every payment with a link to Stripe's own receipt.
+  </Step>
+  <Step title="You can still authorize USDC">
+    If you also authorize USDC, it takes over automatically when your credit runs out.
+    See [the order your money is used](#the-order-your-money-is-used).
+  </Step>
+</Steps>
+
+## Your spending cap (USDC)
+
+This section applies to the **USDC** rail. Card top-ups have no cap: the amount you
+bought is the limit.
+
+When you authorize USDC billing you set a **cap** (the lifetime permit allowance Retasc
+can pull against) and, optionally, a **monthly limit**. Both are your settings, visible
+in the Dashboard **Billing** card and editable any time from the hosted manage page
+(opened with the card's **Manage** button).
+
+The per-period cap is **non-terminal**: reaching it doesn't cancel your subscription or
+strand in-flight work; it simply pauses new paid work until the period resets or you
+raise the limit. Only the gated states actually block an org; see
+[When work gets blocked](/billing-states).
+
+## Questions
+
+<AccordionGroup>
+  <Accordion title="Does each new member bring their own \$10 credit?">
+    No. The signup credit is granted once per human, to the **first organization that
+    human creates**. Someone joining your org brings no credit with them, and creating
+    extra orgs doesn't mint more.
+  </Accordion>
+  <Accordion title="Can I use a card and USDC at the same time?">
+    Yes, and nothing needs configuring. Credit is always spent first (what we gave you,
+    then what you bought); USDC only starts once your credit balance is zero. Buying
+    credit doesn't cancel an authorization, and having one doesn't stop you buying
+    credit.
+  </Accordion>
+  <Accordion title="Does buying credit stop my USDC billing?">
+    It pauses it. While you hold credit, covered work is never reported to the USDC rail
+    at all, so nothing accrues behind your balance. When the credit runs out, USDC picks
+    up from the next action.
+  </Accordion>
+  <Accordion title="Can I get a refund on credit I bought?">
+    Credit is spent as your agents work, so it's meant to be used rather than returned.
+    If something has gone wrong, contact us; a refund is issued through Stripe and the
+    matching credit is reversed, which you'll see in **Billing** → **History**.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Pricing" icon="tag" href="/pricing">
+    What's metered and what it costs.
+  </Card>
+  <Card title="When work gets blocked" icon="circle-pause" href="/billing-states">
+    Billing states, what they gate, and the way back.
+  </Card>
+</CardGroup>
