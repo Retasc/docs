@@ -185,3 +185,197 @@ a:focus-visible, button:focus-visible {
   outline-offset: 2px;
   border-radius: var(--rt-radius-sm);
 }
+
+/* ---------------------------------------------------------------------------
+ * Dash UI mockups: used on the onboarding pages to show what a web-track
+ * screen actually looks like, instead of describing it in prose only. Browser
+ * chrome + a fake card, built from this file's own tokens so it matches the
+ * rest of the site rather than looking like a pasted screenshot.
+ * ------------------------------------------------------------------------- */
+.rt-mock {
+  border: 1px solid var(--rt-card-border);
+  border-radius: var(--rt-radius-card);
+  overflow: hidden;
+  background: var(--rt-bg);
+  margin: 1.5em 0;
+}
+.rt-mock-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--rt-card-border);
+  background: var(--rt-surface);
+}
+.rt-mock-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--rt-card-border);
+  flex: none;
+}
+.rt-mock-url {
+  margin-left: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  color: var(--rt-muted);
+}
+.rt-mock-body {
+  padding: 28px 22px;
+  display: flex;
+  justify-content: center;
+}
+.rt-mock-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--rt-card);
+  border: 1px solid var(--rt-card-border);
+  border-radius: var(--rt-radius-card);
+  padding: 22px;
+}
+.rt-mock-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.7em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rt-muted);
+  margin-bottom: 10px;
+}
+.rt-mock-card h5 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25em;
+  letter-spacing: -0.01em;
+  color: var(--rt-fg-strong);
+  margin: 0 0 8px;
+}
+.rt-mock-card .rt-mock-sub {
+  font-size: 0.85em;
+  color: var(--rt-ink);
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+.rt-mock-opt {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 12px 13px;
+  background: var(--rt-surface);
+  border: 1px solid var(--rt-surface-border);
+  border-radius: var(--rt-radius-lg);
+  margin-bottom: 8px;
+}
+.rt-mock-opt .rt-mock-mark {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--rt-radius-sm);
+  border: 1px solid var(--rt-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.65em;
+  color: var(--rt-secondary);
+  flex: none;
+}
+.rt-mock-opt .rt-mock-t {
+  flex: 1 1 auto;
+}
+.rt-mock-opt .rt-mock-t b {
+  display: block;
+  font-size: 0.85em;
+  font-weight: 500;
+  color: var(--rt-fg);
+}
+.rt-mock-opt .rt-mock-t span {
+  display: block;
+  font-size: 0.72em;
+  color: var(--rt-muted);
+  margin-top: 1px;
+}
+.rt-mock-opt .rt-mock-arrow {
+  font-family: var(--font-mono);
+  color: var(--rt-muted);
+  font-size: 0.9em;
+}
+.rt-mock-field { margin-bottom: 10px; }
+.rt-mock-field label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.65em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rt-muted);
+  margin-bottom: 5px;
+}
+.rt-mock-input {
+  background: var(--rt-bg);
+  border: 1px solid var(--rt-surface-border);
+  border-radius: var(--rt-radius-md);
+  height: 34px;
+  padding: 0 11px;
+  display: flex;
+  align-items: center;
+  font-size: 0.85em;
+  color: var(--rt-ink);
+}
+.rt-mock-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 16px;
+  border-radius: var(--rt-radius-md);
+  font-size: 0.85em;
+  font-weight: 500;
+  background: var(--rt-accent);
+  color: #05200e;
+  margin-top: 4px;
+}
+html.light .rt-mock-btn { color: #fff; }
+.rt-mock-code {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--rt-bg);
+  border: 1px solid var(--rt-surface-border);
+  border-radius: var(--rt-radius-md);
+  padding: 9px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.78em;
+  color: var(--rt-fg);
+  margin: 10px 0;
+}
+.rt-mock-code .rt-mock-copy {
+  font-family: var(--font-sans);
+  font-size: 0.85em;
+  color: var(--rt-muted);
+  border: 1px solid var(--rt-surface-border);
+  border-radius: var(--rt-radius-sm);
+  padding: 3px 8px;
+  flex: none;
+}
+.rt-mock-hint {
+  font-family: var(--font-mono);
+  font-size: 0.68em;
+  color: var(--rt-muted);
+  line-height: 1.6;
+}
+.rt-mock-wait {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 0.72em;
+  color: var(--rt-muted);
+  margin-top: 12px;
+}
+.rt-mock-pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--rt-warning);
+  animation: rt-mock-bp 1.6s ease-in-out infinite;
+}
+@keyframes rt-mock-bp { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .rt-mock-pulse { animation: none; } }
