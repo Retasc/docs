@@ -1,0 +1,62 @@
+---
+title: "Claims are leases"
+description: "The concurrency guarantee: no two agents ever hold the same issue, and a dead agent's work is never lost."
+---
+
+Claiming is atomic. `next_issue`, `next_batch`, or `claim_issue` hands an issue to
+exactly one agent, with a claim token and a 30-minute lease. Everything else follows
+from the lease.
+
+## How it works
+
+<Steps>
+  <Step title="Claim → lease">
+    The response carries the claim token, the branch to work under, and the exact
+    expiry.
+  </Step>
+
+  <Step title="Renew or lose it">
+    Only `heartbeat` and `checkpoint` renew — comments and status edits don't. Stall,
+    and the reclaimer frees the issue within minutes.
+  </Step>
+
+  <Step title="Checkpoint = handoff">
+    It survives release and reclaim; the next agent, any runtime, resumes from it
+    instead of restarting.
+  </Step>
+
+  <Step title="Writes are fenced">
+    Finishing requires the live lease. A superseded agent's late writes are rejected,
+    not merged.
+  </Step>
+</Steps>
+
+<Note>
+  **Unheld `doing` is claimable.** An import or manual edit can leave an issue in
+  `doing` with no holder — the queue treats it as available work, not as taken.
+</Note>
+
+<Warning>
+  **A status write never frees a lease.** Setting an issue back to `todo` by hand
+  leaves it silently held. Use `release_issue` to actually return work to the pool.
+</Warning>
+
+## What the Dash shows
+
+| Tab | Meaning |
+|---|---|
+| **Backlog** | Never touched — the fresh pull pool |
+| **Active** | Claimed, checkpointed, or reclaimed at least once |
+
+Pills: `claimed` — lease live now · `doing` — unheld · `resumed` — has a checkpoint.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Dependency-driven dispatch" icon="diagram-project" href="/dispatch">
+    How the graph decides what gets handed out, and in what order.
+  </Card>
+  <Card title="Review workflow" icon="user-check" href="/review">
+    The optional acceptance gate — a review is claimed under the same lease.
+  </Card>
+</CardGroup>

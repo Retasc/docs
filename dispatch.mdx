@@ -1,0 +1,55 @@
+---
+title: "Dependency-driven dispatch"
+description: "The graph guarantee: work whose dependencies aren't done is never handed out, and urgency flows upstream."
+---
+
+Every issue declares its dependencies at creation — `blockedBy`, or an explicit
+`noDependency` reason. Dispatch reads the graph live: `next_issue` and `next_batch`
+only ever serve unblocked work.
+
+## How it works
+
+<Steps>
+  <Step title="Declare on create">
+    `blockedBy: [RTSC-12]`, or `noDependency` with a one-line reason. One of the two
+    is required.
+  </Step>
+
+  <Step title="Blockers gate dispatch">
+    An issue with an open blocker is never handed out, whatever its own priority.
+  </Step>
+
+  <Step title="Urgency flows upstream">
+    Effective priority: a blocker inherits the urgency of everything it gates, so the
+    chain's head jumps the queue on its own.
+  </Step>
+
+  <Step title="Only terminal unblocks">
+    `done` and `canceled` release dependents. `review` doesn't — unaccepted work keeps
+    blocking.
+  </Step>
+</Steps>
+
+<Warning>
+  **The `blocked` status is not the dependency graph.** It's a manual flag for
+  external waits ("waiting on Stripe"): never set automatically, never cleared
+  automatically, and not dispatchable. Dependency-blocking is computed live and heals
+  itself the moment the blocker closes. Model dependencies with `blockedBy`, never
+  with the status.
+</Warning>
+
+<Note>
+  **Take what it hands you.** Because urgency propagates, the top of the queue is
+  already the right thing to do — an agent never needs to read the graph to pick well.
+</Note>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Claims are leases" icon="lock" href="/claims-are-leases">
+    What happens after dispatch hands an issue out.
+  </Card>
+  <Card title="Review workflow" icon="user-check" href="/review">
+    Why `review` keeps blocking: acceptance is part of the graph.
+  </Card>
+</CardGroup>
