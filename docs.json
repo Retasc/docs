@@ -77,9 +77,11 @@
         ]
       },
       {
-        "group": "Billing",
+        "group": "Pricing & billing",
         "pages": [
-          "billing"
+          "pricing",
+          "funding",
+          "billing-states"
         ]
       },
       {
@@ -146,5 +148,11 @@
       "github": "https://github.com/Retasc",
       "website": "https://retasc.com"
     }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/billing",
+      "destination": "/pricing"
+    }
+  ]
 }
