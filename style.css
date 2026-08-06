@@ -526,3 +526,33 @@ html.light .rt-mock-btn { color: #fff; }
   margin: 6px 0;
 }
 .rt-mock-secret .rt-mock-copywarn { color: var(--rt-warning); font-family: var(--font-sans); flex: none; }
+
+/* ---------------------------------------------------------------------------
+ * Connector logo row (RTSC-599): the real brand marks, ported from
+ * dash/src/components/ConnectorsPanel.tsx's GithubMark/SlackMark/etc rather
+ * than approximated, so a synced/notified/migrated platform reads exactly
+ * like it does in the product. One row per Connectors page, right after the
+ * intro paragraph.
+ * ------------------------------------------------------------------------- */
+.rt-logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0 26px;
+}
+.rt-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--rt-card);
+  border: 1px solid var(--rt-card-border);
+  border-radius: 100px;
+  padding: 7px 14px 7px 10px;
+}
+.rt-logo svg { flex: none; }
+.rt-logo span {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--rt-fg);
+}
