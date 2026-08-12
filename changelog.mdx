@@ -17,6 +17,41 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.22.0 (2026-08-12)
+
+- **RTSC-646** — the watchdog now says when it is **not** renewing a lease. Its lease set is
+  in-memory and built only from claim traffic this proxy saw, so a claim made in another
+  terminal, over direct HTTP MCP, or by a previous proxy before a harness restart was renewed
+  by nobody — silently, until the reclaimer took the issue away mid-build. Touching such a
+  lease now prints a warning naming the issue and what to do about it (`release_issue` is
+  exempt: it ends a lease rather than needing one). A heartbeat rejected as `UNAUTHORIZED` is
+  also called out loudly, once: that means the session's **credential** died, not the lease,
+  so every claim stops renewing at the same moment and each lapses at its own expiry. The
+  proxy keeps tracking and keeps trying, because re-minting the key inside the TTL recovers
+  all of them. The `mcp install --watchdog` text no longer stops at "no per-claim
+  heartbeats" — it names both bounds: the proxy must be running, and it only renews claims
+  it saw this session make.
+
+## 1.21.1 (2026-08-10)
+
+- **RTSC-643** — `retasc gate install` keys the gate to **this folder's** project, not the
+  machine-wide default. It used to read `defaultProjectPrefix` (stamped by whichever project
+  you last ran `retasc init` for), so in a bound folder it could install a commit gate keyed
+  to a different project — rejecting every valid commit — while reporting success. It now asks
+  the folder's own binding first (`whoami` over the workspace key, or the keystore's cached
+  prefix offline; a subdirectory run checks the git toplevel too), prints where the prefix
+  came from, warns when the global default disagrees, and only uses the global default when
+  the folder is genuinely unbound. Bound-but-unresolvable fails loudly instead of guessing.
+
+## 1.21.0 (2026-08-07)
+
+- **RTSC-527** — the re-import warning dates the last import in **your** timezone. The day
+  was formatted from `toISOString()`, which rolls back one east of Greenwich: at UTC+7 an
+  import made five hours ago read as yesterday's, which is the opposite of useful for a line
+  whose job is to say how long ago it was. The Dash gained the same date in the same shape
+  in this release, and moved onto the same durable per-source history the CLI already read,
+  so the two surfaces now describe one import the same way.
+
 ## 1.20.0 (2026-08-04)
 
 - **RTSC-561** — the org gained an **admin** role, and the CLI stopped refusing it.
