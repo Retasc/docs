@@ -16,8 +16,9 @@ from the lease.
   </Step>
 
   <Step title="Renew or lose it">
-    Only `heartbeat` and `checkpoint` renew — comments and status edits don't. Stall,
-    and the reclaimer frees the issue within minutes.
+    Only `heartbeat` and `checkpoint` renew — comments and status edits don't. Each
+    renewal is a full reset to 30 minutes from that call, not a top-up. Stall, and the
+    reclaimer frees the issue within minutes.
   </Step>
 
   <Step title="Checkpoint = handoff">
@@ -37,9 +38,41 @@ from the lease.
 </Note>
 
 <Warning>
-  **A status write never frees a lease.** Setting an issue back to `todo` by hand
-  leaves it silently held. Use `release_issue` to actually return work to the pool.
+  **A status write never frees a lease — except `review`.** Setting an issue back to
+  `todo` by hand leaves it silently held; use `release_issue` to actually return work to
+  the pool. Moving to `review` is the deliberate exception: it releases your lease so a
+  different-principal reviewer can claim it, and the response tells you it did. A review
+  is claimed and held under a lease of its own.
 </Warning>
+
+## Who renews the lease
+
+Only you can tell which case you are in, and it decides whether long silent work is safe:
+
+| Client | Who renews | Your duty |
+|---|---|---|
+| Stock `retasc` mcp-proxy (watchdog) | The proxy, about every 10 minutes, for claims **it saw this session make** | Silent work is safe; `checkpoint` at handoffs |
+| Direct HTTP MCP, no proxy | You | `heartbeat` or `checkpoint` before any long silence |
+| A claim the proxy never saw — another terminal, direct MCP, or a previous proxy before a restart | **Nobody** | Bare 30-minute TTL; renew it yourself |
+
+Two wrong conclusions that table exists to kill:
+
+- **False urgency** — "I have to finish inside 30 minutes." You don't. Behind the watchdog
+  a claim survives multi-hour work untouched.
+- **False safety** — "a lease can't die during a long build." Job *duration* never frees a
+  claim. Process death, machine sleep, and key rotation do, and a timer that renews you is
+  exactly what a dead proxy stops doing.
+
+<Note>
+  **Prove it at runtime, don't infer it.** `check_claim` returns `lastRenewedAt` alongside
+  `expiresAt`. Call it twice across a long stretch: a `lastRenewedAt` that moved is proof
+  something is renewing you; one frozen at claim time means nothing is. From CLI 1.22.0 the
+  watchdog also warns on stderr when it sees you touch a lease it isn't tracking, and when
+  its key stops authenticating.
+</Note>
+
+Prefer `checkpoint` over a bare `heartbeat` at any silence boundary. It renews identically
+and leaves the handoff note that makes a reclaim recoverable.
 
 ## What the Dash shows
 
@@ -57,6 +90,7 @@ Pills: `claimed` — lease live now · `doing` — unheld · `resumed` — has a
     How the graph decides what gets handed out, and in what order.
   </Card>
   <Card title="Review workflow" icon="user-check" href="/review">
-    The optional acceptance gate — a review is claimed under the same lease.
+    The optional acceptance gate — submitting releases your lease; the reviewer claims
+    their own.
   </Card>
 </CardGroup>
