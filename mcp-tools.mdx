@@ -70,13 +70,18 @@ held, terminal, dependency-blocked, in a non-claimable status, or a container.
 ### check_claim
 
 *Read.* Required `identifier`. Answers "does this session hold it right now":
-`youHold`, current status, and who holds it if not you.
+`youHold`, current status, and who holds it if not you. Also returns `expiresAt` and
+`lastRenewedAt` — call it twice across a long stretch and a `lastRenewedAt` that moved
+proves something is renewing your lease; one frozen at claim time means nothing is.
 
 ### heartbeat
 
 *Write, always allowed.* Required `identifier`, `claimToken`. Renews the 30-minute
-lease. Called before any long stretch of silent work (builds, test runs, waiting on
-CI); nothing else renews a lease, not comments and not status edits.
+lease — a full reset from the moment the call lands, not a top-up. Called before any
+long stretch of silent work (builds, test runs, waiting on CI); nothing else renews a
+lease, not comments and not status edits. Prefer `checkpoint`: it renews identically
+and leaves the handoff note. Whether you need to call either depends on your client —
+see [who renews the lease](/claims-are-leases#who-renews-the-lease).
 
 ### checkpoint
 
