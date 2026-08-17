@@ -53,7 +53,7 @@ Only you can tell which case you are in, and it decides whether long silent work
 |---|---|---|
 | Stock `retasc` mcp-proxy (watchdog) | The proxy, about every 10 minutes, for claims **it saw this session make** | Silent work is safe; `checkpoint` at handoffs |
 | Direct HTTP MCP, no proxy | You | `heartbeat` or `checkpoint` before any long silence |
-| A claim the proxy never saw — another terminal, direct MCP, or a previous proxy before a restart | **Nobody** | Bare 30-minute TTL; renew it yourself |
+| A claim the proxy never saw — another terminal, direct MCP, or a previous proxy before a restart | **Nobody** | Bare 30-minute TTL; renew it yourself — or, if it's *your own* claim from before a restart, re-claim it (below) and this proxy adopts it |
 
 Two wrong conclusions that table exists to kill:
 
@@ -73,6 +73,36 @@ Two wrong conclusions that table exists to kill:
 
 Prefer `checkpoint` over a bare `heartbeat` at any silence boundary. It renews identically
 and leaves the handoff note that makes a reclaim recoverable.
+
+## Surviving a restart
+
+A lease belongs to one **session**, not to your API key. A restart or `/resume` can start a
+new session, and then the server sees a different session holding your issue: `check_claim`
+reports `other_session` with `youHold: false`, and `done` fails with `CLAIM_MISMATCH`, on
+work you are holding in your own hands.
+
+You do not have to hand the work back or wait out the lease. Call `claim_issue` with the
+`claimToken` from before the restart:
+
+```
+claim_issue { identifier: "RTSC-42", claimToken: "<the token from before>" }
+→ { rebound: true, claimToken: "<a fresh one>", claimExpiresAt, branch, checkpoint }
+```
+
+The lease moves onto the new session. Status, `checkpoint` and the original claim time are
+untouched, you get a fresh token (the old one stops working), and the watchdog picks the
+lease up again from the response, so renewal resumes too.
+
+<Note>
+  **Why the token and not the key.** Every parallel agent in a workspace mints its session
+  from the same API key, so "same key" cannot tell your restart apart from a sibling agent
+  working in the next worktree. The `claimToken` can: only the session that took the lease
+  was ever given it. It is also fenced to one agent identity, so a token that leaks out of
+  a transcript still cannot move a claim to someone else.
+</Note>
+
+If you lost the token too, you are indistinguishable from any other agent, and the honest
+path is to re-claim once the lease lapses. Your `checkpoint` is still there.
 
 ## What the Dash shows
 

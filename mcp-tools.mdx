@@ -64,8 +64,16 @@ independent by construction, so an orchestrator can fan them out to parallel age
 
 ### claim_issue
 
-*Write.* Required `identifier`. Claims one specific issue. Fails if it is already
-held, terminal, dependency-blocked, in a non-claimable status, or a container.
+*Write.* Required `identifier`; optional `claimToken`. Claims one specific issue.
+Fails if it is already held, terminal, dependency-blocked, in a non-claimable status,
+or a container.
+
+`claimToken` is the restart door, not a way to take work: pass the token of a lease
+you already hold and it moves onto the calling session instead of being refused as
+already-held. That is how an agent recovers its own claim after a restart or
+`/resume` — see [surviving a restart](/claims-are-leases#surviving-a-restart). A
+session that never held the issue does not have the token, and the token can never
+move a claim between agents.
 
 ### check_claim
 
@@ -73,6 +81,10 @@ held, terminal, dependency-blocked, in a non-claimable status, or a container.
 `youHold`, current status, and who holds it if not you. Also returns `expiresAt` and
 `lastRenewedAt` — call it twice across a long stretch and a `lastRenewedAt` that moved
 proves something is renewing your lease; one frozen at claim time means nothing is.
+
+A status of `other_session` is not always someone else. After a restart the holder it
+names may be your own former session, and you can take the lease back — see
+[surviving a restart](/claims-are-leases#surviving-a-restart).
 
 ### heartbeat
 
