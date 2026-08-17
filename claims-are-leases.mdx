@@ -85,8 +85,16 @@ You do not have to hand the work back or wait out the lease. Call `claim_issue` 
 `claimToken` from before the restart:
 
 ```
-claim_issue { identifier: "RTSC-42", claimToken: "<the token from before>" }
-→ { rebound: true, claimToken: "<a fresh one>", claimExpiresAt, branch, checkpoint }
+claim_issue {
+  identifier: "RTSC-42",
+  claimToken: "<the token from before the restart>"
+}
+
+→ {
+  rebound:     true,
+  claimToken:  "<a fresh one>",
+  claimExpiresAt, branch, checkpoint
+}
 ```
 
 The lease moves onto the new session. Status, `checkpoint` and the original claim time are
