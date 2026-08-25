@@ -17,6 +17,18 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.36.1 (2026-08-25)
+
+- **RTSC-645** — `retasc gate install` no longer throws away your edits. It rewrites the
+  commit-msg hook and the Action on every run, so a gate you had customized (say, one that
+  also checks the branch number) used to vanish behind a green "✓ Updated" with nothing
+  saying so. Generated files now carry a hash of their own contents, so a later run can tell
+  "still exactly what we wrote" from "someone changed this". A changed file is copied to
+  `.bak` first, keeping its permissions, and the run tells you where the copy went; a second
+  round of edits goes to `.bak.2` rather than overwriting the first. Untouched files are
+  replaced silently as before, including when you re-key the gate to a different prefix, so
+  the common path gained no prompts and no flags.
+
 ## 1.36.0 (2026-08-25)
 
 - **RTSC-520** — the CLI now says when it is out of date. There was no version check
