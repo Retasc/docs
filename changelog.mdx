@@ -17,6 +17,56 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.36.0 (2026-08-25)
+
+- **RTSC-520** — the CLI now says when it is out of date. There was no version check
+  anywhere in `cli/`, so a global install went stale silently and stayed that way for as
+  long as the machine lived — and a stale CLI does not merely lack features, it *lies*:
+  its copy describes SERVER behaviour, so 1.11.0 kept telling people a decline "covers the
+  whole org, including later migrations" long after RTSC-507 made that false, and 1.10.0
+  had no Google door, so it sent Google-only humans through GitHub and minted them a
+  second identity. After any login-gated command an outdated build now prints one line
+  naming both versions and asks whether to update:
+
+  ```
+  A newer retasc is available (1.36.0, you have 1.35.2).
+  Update now? [y/N]
+  ```
+
+  Notify then ask, never a silent `npm i -g`: interactive terminals only (no TTY prints
+  the notice and nothing else, so scripted runs are unchanged), at most once a day with a
+  decline remembered, and a failed install — EACCES on a root-owned prefix is the common
+  one — reports itself and names `npm i -g @retasc/cli@latest` without ever failing the
+  command you actually ran. A successful update says it applies from your next command and
+  that agents need restarting to pick up the new MCP server. The MCP proxy never prints it.
+
+  The published version is resolved server-side from the npm registry, cached hourly, and
+  handed down on `manage:me` — a call every login-gated command already makes, so checking
+  costs no round trip and no shared rate limit, and no release step can forget to update
+  it. An optional `RETASC_CLI_MIN_HONEST` marks the oldest version whose copy still matches
+  the server; below it the notice says so plainly, because "a newer version exists" and
+  "what this build just told you may be false" are different problems.
+
+## 1.35.2 (2026-08-25)
+
+- **RTSC-743** — the last CLI replies that answered a person with a machine shape now
+  answer in sentences. A failed MCP request used to paste 200 characters of the raw
+  response body after the status, which on that endpoint is either a JSON-RPC envelope or,
+  when the failure lands at Cloudflare rather than in Convex, a page of HTML; it now says
+  what the status means and what to do about it, and reads the body for a message rather
+  than printing it. A reply that is not JSON at all (a proxy error page, a captive portal)
+  named a JSON parser's position; it now names what actually answered. `retasc login`
+  stringified GitHub's whole OAuth payload into its error, burying `error_description`,
+  the one field in it written for a person. `whoami` and `doctor` could surface a bare
+  parser complaint from `resolveBinding`, which is a poor answer to "what is broken?" from
+  the two commands you run when something already is. And `retasc import` printed the
+  summary with the wire payload's own field names as labels — `issuesCreated`,
+  `commentsInserted`, `attachmentsRehosted` — where it now prints Issues created,
+  Comments and Attachments copied. Along the way, `doctor` and `whoami` stop telling you
+  to re-run `retasc bind` when the thing that answered was a proxy rather than Retasc:
+  that failure carries no verdict on your key, and re-binding to fix it mints a new one
+  for nothing.
+
 ## 1.35.1 (2026-08-25)
 
 - **RTSC-478** — a network failure now names its own cause. Node reports every failed
