@@ -17,6 +17,275 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.35.1 (2026-08-25)
+
+- **RTSC-478** — a network failure now names its own cause. Node reports every failed
+  `fetch` as the literal `fetch failed` and puts the diagnosis on `err.cause.code`, which
+  the CLI read past, so `retasc login` on a machine whose TLS trust store Node cannot read
+  died on `✗ fetch failed` and nothing else. It now prints
+  `✗ fetch failed (UNABLE_TO_GET_ISSUER_CERT_LOCALLY)` — a searchable string naming the
+  real problem. `cli/README.md` gains a troubleshooting entry keyed on that code, covering
+  both causes: a corporate TLS-inspecting proxy, and a Homebrew `openssl@3` keg that lost
+  its CA symlink (the confusing one, since `curl` and `npm` keep working).
+
+## 1.35.0 (2026-08-25)
+
+- **RTSC-709** — `retasc issue show` and `retasc issue list` read the queue from a
+  terminal. `tidy` and `done` both reason about issue status, and until now a human asked
+  to accept their verdict had no way to see that status without opening the Dash. Both
+  default to the current `rtsc-NN/` branch's issue, `list` takes the same filters the MCP
+  surface does (status, priority, label, author, assignee, SLA, limit), and both take
+  `--json`.
+- **RTSC-709** — `retasc checkpoint` and `retasc check-claim` close the claim lifecycle.
+  `claim`, `next`, `release` and `done` all existed, so a human could take work, hand it
+  back and finish it, but could not record progress on it or answer the question
+  `workflow.md` says to settle at runtime: is anything actually renewing my lease?
+  `check-claim` prints the last renewal time and exits non-zero when you do not hold the
+  issue, so a script can branch on it.
+- **RTSC-709** — `done` reads the issue back before it closes it. It was one word that
+  closed an issue with no read path to confirm first, and it closed one whose PR was still
+  open and unreviewed. It now prints the id, the title, the status transition and whether
+  the branch is merged, and asks before closing on a TTY. `--dry-run` shows the readback
+  and the teardown plan without touching anything, `-y` skips the prompt, and a non-TTY
+  still closes, so scripts are unchanged.
+- **RTSC-709** — `cli/README.md` now records which MCP tools are deliberately Dash-and-MCP-only,
+  and why, so their absence from the CLI reads as a decision rather than an oversight.
+
+## 1.34.1 (2026-08-25)
+
+- **RTSC-741** — a rejected write no longer costs you the lease. The watchdog decided
+  when to stop heartbeating an issue by looking at the request you sent, never at whether
+  the server accepted it. So a `save_issue` that came back an error still dropped the
+  issue from the heartbeat map while you were still holding it. Nothing renewed it after
+  that, it ran out its half hour, and the reclaimer handed your work to another agent
+  while you were in the middle of it, with no sign anything had gone wrong. Every drop
+  now requires the call to have actually succeeded. The trigger is the new server-side
+  rule that moving an issue into `review` must carry a handoff: a rejection on that write
+  is the expected first attempt for any agent that has not learned the field yet, so a
+  rare edge became a common one.
+
+## 1.34.0 (2026-08-24)
+
+- **RTSC-731** — `bind` stops asking whether you want to join an org you are already in.
+  A teammate given access to a second project was shown "Join Retasc, or start your own
+  workspace?", with the second option one keystroke away from creating a duplicate
+  organization that cannot be deleted from the terminal. Invites that only add projects
+  to a membership you already have are no longer treated as onboarding, and no longer
+  suppress the single-org shortcut. Your agent still hears about them, and
+  `setup_status` now asks about them in its own words, naming the project and the
+  organization so "Retasc the org" and "Retasc the project" can't be confused.
+- **RTSC-731** — the invite questions hand back a value your agent can actually use.
+  Both onboarding questions told the agent to pass the chosen answer to `accept_invite`'s
+  `org` flag, then offered "join" as that answer — so an agent doing exactly what it was
+  told got "no invite to join is waiting for you", while one that ignored the instruction
+  and read the prose succeeded. The accept option now carries the organization itself.
+
+## 1.33.0 (2026-08-23)
+
+- **RTSC-722** — the setup questions arrive as a matrix your agent can actually render.
+  1.32.0 sent three of the four as free text, and a picker cannot draw a question with no
+  options, so the whole set collapsed back into the numbered list in prose that RTSC-720
+  existed to remove. They now carry defaults derived from the folder you are standing in:
+  in `~/the egg` you get `The Egg`, `The Egg`, `EGG`, and the folder confirm, four clicks
+  instead of three typed answers. Every question keeps a "Something else" escape.
+  Folders that name nothing about the work (`/Users`, your home directory, `src`, a
+  dotfile, anything too long for the server to accept) suggest nothing and fall back to
+  text, because a plausible wrong default is worse than no default when what you are
+  confirming is which folder gets connected. Picking a project in an org that has more
+  than four is a picker too now, instead of an unrenderable list of every project.
+
+## 1.32.0 (2026-08-23)
+
+- **RTSC-720** — when `bind --json` stops to ask, it hands your agent the exact questions
+  as data: what to call the workspace, the first project, its prefix, and a confirmation
+  naming the precise folder about to be connected — with the flag each answer fills. Your
+  agent presents them instead of paraphrasing a status line, which is the difference
+  between being asked "what should we call it?" and being told "you have no organization"
+  by an agent waiting for you to notice.
+- **RTSC-721** — `retasc unbind` exists. It puts a folder back the way it was before
+  `bind`: the keystore entry, the MCP entry in either location it can live, and the
+  agent key — revoked server-side when your session can, named for the Dash when it
+  cannot. Until now undoing a binding meant hand-editing five places, one of them keyed
+  by an id nothing surfaces, with the key left live throughout. It confirms before
+  removing anything, names the absolute folder, and leaves your sign-in alone —
+  `retasc logout` is still its own decision.
+- **RTSC-721** — `bind` heals a dead binding instead of interrogating you about it. Come
+  back months later, after the workspace was deleted or the key revoked, and `bind` used
+  to ask "Replace it?" about a binding that no longer worked — a confusing question at
+  the exact moment you were least equipped to answer it. It now says the binding is no
+  longer accepted, clears it, and reconnects. Only on the server's own refusal: a network
+  failure still lands on the cautious path, because clearing a healthy credential to fix
+  a problem your machine does not have would be worse than asking.
+
+## 1.31.1 (2026-08-23)
+
+- **RTSC-715** — setup no longer finishes by wiring a `retasc` command that is not there.
+  Run as `npx @retasc/cli@latest bind`, the CLI asked whether `retasc` was on your PATH
+  and got yes, because npx puts its own cache directory on the PATH of whatever it runs.
+  So the answer was true while `bind` ran and false the moment it exited, and your agent
+  started with `ENOENT: Executable not found in $PATH: "retasc"` after a setup that had
+  reported success. It now checks that the command it found will still resolve afterwards,
+  and falls back to a global install or a pinned `npx` launcher when it will not.
+
+## 1.31.0 (2026-08-23)
+
+- **RTSC-713** — your agent can set Retasc up for you. It runs `bind` itself now, so
+  nothing asks you to open a terminal and type a command: you paste one line into the
+  chat, click Approve in the browser that opens, and restart your agent. The command it
+  runs is `bind --json`, the door built for a machine to drive.
+- **RTSC-713** — `bind --json` reports what it did and what it still needs, one JSON
+  object per line, and prints the approve URL the moment it exists rather than at the
+  end. Your agent posts that URL to you as a link, which is what makes this work on a
+  machine where the browser does not open by itself.
+- **RTSC-713** — a setup that paused is no longer dressed as a crash. "Signed in, but you
+  have not said which project this folder is for" exits 0 and says exactly that; only a
+  real dead end exits non-zero. It used to exit 1 with `✗ UNAUTHENTICATED`, and an agent
+  reading that reasonably concluded setup had failed and stopped, one question short of
+  done, holding a session that had actually worked.
+- **RTSC-713** — sign-in no longer refuses merely because nothing is attached to a
+  terminal. It asks whether a browser can be reached, which is the thing that actually
+  matters. SSH, containers and CI still refuse, and still refuse fast: over SSH the
+  approve link targets `127.0.0.1` on whichever machine opened it, so it could never
+  reach the CLI waiting on the remote host.
+- **RTSC-713** — every outcome names the absolute folder it is about to connect, so a
+  wrong one can be caught before anything is written. A wrong folder has no symptom
+  otherwise: the agent still calls in and the Dash still looks healthy.
+- **RTSC-691** — `retasc login` opens your browser instead of asking you to retype an
+  eight-character code. Click Approve once and you are signed in, and you pick GitHub,
+  Google or a passkey in the Dash where you are usually signed in already, instead of
+  answering that question in the terminal. The device flow is still there and still
+  works; it is the fallback now rather than the only door.
+- **RTSC-691** — the code path stays for the places a browser round trip cannot work:
+  inside a container, and over SSH, where the redirect would target `127.0.0.1` on
+  whichever machine opened the link and so could never reach the CLI waiting on the
+  remote host. `RETASC_NO_BROWSER=1` forces it everywhere.
+- **RTSC-691** — `retasc release <RTSC-NN> --claim-token <token>` exists. Two error
+  messages in `retasc claim` had been telling people to run it for a while, and it was
+  not a command. The token is the one printed when you claimed; the server fences on it,
+  which is what stops one agent releasing another's work. Releasing leaves your worktree
+  and branch alone — `retasc tidy` is what reaps those.
+- **RTSC-691** — `retasc bind` prints "restart your agent" whether or not a human is
+  watching. It was suppressed when output was not a terminal, which is exactly when an
+  agent is the one reading it and the one that has to pass the message on.
+- **RTSC-691** — `bind` clears the credential-less bootstrap entry that would otherwise
+  shadow the binding it just wrote, when the two land in different scopes.
+
+## 1.30.0 (2026-08-20)
+
+- **RTSC-681** — your agent can read a file you attached to an issue. Uploading has
+  been one call since 1.24.0; reading one back needed an API key the model does not
+  have and is told not to go looking for, so a certificate attached for an agent to
+  verify was something it could see the name of and nothing else. `get_attachment_file`
+  closes it: name the attachment id, the proxy downloads it with the credential it
+  already holds and hands back a path to read. Any size, and the bytes never pass
+  through the model's context.
+- **RTSC-681** — downloads land under `.retasc/attachments/` in your workspace, one
+  folder per attachment, never overwriting anything and never following a symlink, in
+  a directory that ignores itself so a customer's certificate cannot be committed by
+  accident. There is no destination argument on purpose: a write the proxy performs
+  skips the prompt your harness would otherwise show you, so it only ever writes to
+  the one place it owns. Copy the file where you want it and your normal tools ask you
+  first, which is the point.
+
+## 1.29.0 (2026-08-19)
+
+- **RTSC-672** — every command we hand out now says `npx @retasc/cli@latest`. npx caches
+  by spec, so a bare `npx @retasc/cli` can keep serving whatever version you first ran —
+  which meant the people most likely to re-run a command, the ones who hit a bug and were
+  told it was fixed, were exactly the ones liable to be served the broken build again.
+  `@latest` is a tag, not a pin: it re-resolves every time and can never go stale, where a
+  version number written into docs absolutely can.
+- **RTSC-672** — a first-run failure names the build that produced it, so "it still
+  doesn't work" and "you're running last week's CLI" stop looking identical.
+
+## 1.28.0 (2026-08-19)
+
+- **RTSC-676** — signing in opens your browser. It used to print a URL and an
+  eight-character code and leave you to switch windows, navigate, and retype it. Now the
+  page opens for you, pre-filled when the provider supplies RFC 8628's complete URL. The
+  URL and code are still printed first and always: there is no browser inside a container
+  or over SSH, which is where `bind` runs most, so the browser is a convenience layered
+  on top and never the only way through. A missing `xdg-open` changes nothing.
+  `RETASC_NO_BROWSER=1` turns it off.
+- **RTSC-676** — the finish screen's closing lines are flush left, and it ends with a
+  blank line instead of welding the shell prompt to the last thing you read.
+
+## 1.27.0 (2026-08-19)
+
+- **RTSC-673** — `bind` ends by telling you what to do, not by dumping config. It used to
+  close on fourteen lines of MCP JSON plus "(Claude Code CLI not detected)": a block
+  instructing you to paste something we had just written to disk for you, and a note that
+  reads like a fault on a screen whose whole content is that everything worked. Between
+  them they buried the one thing a new owner needed. Now it prints a receipt card — org,
+  project, where the key went, what landed in your repo — and then says to start your
+  agent. The closing lines follow the project: an empty one invites you to describe what
+  you're building, a project with work in it tells you to say "next issue". The JSON still
+  prints when the marker could not be written anywhere, which is the case it exists for.
+
+## 1.26.0 (2026-08-19)
+
+- **RTSC-670** — `retasc bind` can sign you in again. It has opened with the device flow
+  since 1.20-era, but a leftover session guard in the command wrapper exited first, so on
+  a machine that had never signed in — the only state a new owner is ever in — `bind`
+  printed "Not signed in" and stopped. Owner onboarding dead-ended at its first
+  documented command, on every release for three weeks. The guard was correct when it was
+  written and became redundant the moment `bind` grew its own sign-in; nothing noticed
+  because no test ran the CLI with no session. Four now do.
+- **RTSC-671** — errors name the command you actually ran. Told to `npx @retasc/cli bind`
+  and then answered with "Run `retasc login` first", you were pointed at a binary that
+  invocation never installs — a recoverable stumble turned into a dead end. Every "run X
+  first" message now renders `npx -y @retasc/cli@<version> …` or `retasc …` to match how
+  you started it.
+
+## 1.25.0 (2026-08-19)
+
+- **RTSC-669** — the invite project picker takes several projects. 1.24.0 shipped it
+  single-select, which left "two of these four" expressible nowhere: the workaround —
+  repeating `--project-id` — needs ids that nothing in the CLI lists, which is the gap
+  the picker existed to close. Answer `2,4` (or `2 4`) and the invite grants exactly
+  those. Naming every project collapses to all projects, so the grant follows the org as
+  it grows rather than freezing today's list. `1) All projects` can't be combined with
+  individual ones: that's a contradiction about the widest grant there is, so it re-asks
+  instead of guessing which half you meant.
+
+## 1.24.0 (2026-08-19)
+
+- **RTSC-667** — `retasc members invite` asks instead of demanding ids. It used to
+  require `--org-id`, and the new `--project-id` made that worse: nothing in the CLI
+  lists project ids, so a scoped invite meant fetching one from the Dash. Run it with no
+  flags in a terminal and it asks which org (only the ones you can actually invite into)
+  and which projects, with **All projects** as the first option rather than the thing you
+  get by not answering. It asks nothing when there is nothing to choose — one eligible
+  org, or fewer than two projects — and a script with no TTY behaves exactly as before.
+  The flags still work and still win.
+- **RTSC-666** — the PROJECTS column in `retasc members list` comma-joins, so two
+  projects read as `XTRO, XTRO Marketing` rather than running together.
+- **RTSC-664** — invite someone to one project, not the whole org. Membership was org-level,
+  so anyone you invited read every project you had. `retasc members invite` now takes
+  `--project-id <id>`, repeatable, and the invitee lands scoped to exactly those projects.
+  Omitting it still grants every project, so an existing script keeps its behaviour untouched
+  and an org that never scopes anyone never notices this shipped. `retasc members list` gains
+  a PROJECTS column naming what each code confers, with `All` for the unscoped ones — an
+  unscoped invite is the WIDEST grant, and a column that rendered it as a dash would read as
+  "none". Enforcement is server-side at every door, agent auth included: a key whose project
+  leaves its principal's scope stops authenticating on its very next call.
+
+## 1.23.0 (2026-08-17)
+
+- **RTSC-660** — the proxy attaches files for you. Attaching a file was the one Retasc write
+  an agent could not finish on its own: the server handed back an upload URL and told the
+  caller to POST the bytes with "your API key", which under MCP lives in the proxy, not in
+  the model. Agents were resorting to reading the key out of `~/.retasc/bindings.json`, and
+  harnesses were blocking that as credential harvesting. The proxy now serves
+  `save_attachment_file(issue, path, title?)` itself: it reads the file and uploads it with
+  the key it already holds, so nothing about the credential reaches the model and the bytes
+  never pass through its context. Readable paths are confined to a root — `RETASC_ATTACH_ROOT`
+  if set, otherwise the proxy's working directory — compared after resolving symlinks on both
+  sides, with `.git` and non-regular files refused, because reading a file on the agent's
+  behalf skips the harness's own file-access prompt. Every accepted read is logged to stderr
+  with its resolved path. Calls that pass `contentBase64` instead are forwarded to the server
+  untouched.
+
 ## 1.22.0 (2026-08-12)
 
 - **RTSC-646** — the watchdog now says when it is **not** renewing a lease. Its lease set is
