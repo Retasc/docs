@@ -1,6 +1,6 @@
 ---
 title: "CLI reference"
-description: "Every retasc command: synopsis, options, requirements, and examples. Current release: 1.20.0."
+description: "Every retasc command: synopsis, options, requirements, and examples. Current release: 1.35.1."
 ---
 
 ```sh
@@ -402,6 +402,48 @@ Installs commit-to-issue traceability in the current repo: a `commit-msg` git ho
 (local, bypassable) and a GitHub Action (the authoritative CI gate), both enforcing
 an issue reference like `PFX-42` or `[no-issue]` in every commit. Prefix defaults to
 the bound project's.
+
+## Troubleshooting
+
+### `fetch failed (UNABLE_TO_GET_ISSUER_CERT_LOCALLY)` or `(SELF_SIGNED_CERT_IN_CHAIN)`
+
+Node cannot verify the TLS certificate, so every request the CLI makes dies before it
+leaves the machine. It usually surfaces on `retasc login`, because that is the first
+command that talks to the network. The code in the parentheses tells you which cause
+you have.
+
+<AccordionGroup>
+  <Accordion title="SELF_SIGNED_CERT_IN_CHAIN — a TLS-inspecting proxy">
+    Corporate proxies (Zscaler and similar) re-sign traffic with a root certificate Node
+    does not trust. Point Node at your organisation's CA bundle:
+
+    ```sh
+    export NODE_EXTRA_CA_CERTS=/path/to/your-company-ca.pem
+    ```
+
+    Put it in your shell profile so it survives a new terminal. `npm` needs the same
+    bundle, so if `npm i -g @retasc/cli` also failed, this fixes both.
+  </Accordion>
+  <Accordion title="UNABLE_TO_GET_ISSUER_CERT_LOCALLY — a Homebrew Node that lost its CA symlink">
+    Homebrew Node reads its CA roots from the OpenSSL keg, and a `brew upgrade` can leave
+    `/usr/local/etc/openssl@3/cert.pem` (or the `/opt/homebrew` equivalent on Apple
+    silicon) missing while the real bundle sits fine one directory over. Relink it:
+
+    ```sh
+    brew postinstall openssl@3
+    ```
+
+    This is the confusing one: `curl` and `npm` keep working throughout, because neither
+    reads the file Node reads. A machine that installs the CLI happily and then cannot
+    log in is almost always this.
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+  Never set `NODE_TLS_REJECT_UNAUTHORIZED=0`. It disables certificate verification for
+  every connection the process makes, including the one carrying your session token.
+  `NODE_EXTRA_CA_CERTS` fixes the same failures with verification left on.
+</Warning>
 
 ## See also
 
