@@ -17,6 +17,20 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.37.0 (2026-08-26)
+
+- **RTSC-749** — `retasc triage` reads and approves work filed from outside your org. Work
+  that arrives through a GitHub or GitLab connector is written by whoever can file on that
+  repo, and since RTSC-746 no agent can pick it up until a person has read it and approved
+  it. This is that decision from the terminal: `retasc triage` lists what is waiting,
+  `retasc triage RTSC-42` prints the full body and then asks.
+  It is deliberately hard to automate, because the CLI runs where coding agents run: there
+  is no `--approve` flag, the command refuses to run without an interactive terminal, and
+  confirming means retyping the issue id rather than pressing y. Saying no is as cheap as
+  saying yes (type `reject`) — the safe answer must never be the expensive one. The Dash
+  stays the recommended surface: an agent that can drive a real PTY on your machine could
+  drive this command too, and only logging the CLI out takes that away.
+
 ## 1.36.1 (2026-08-25)
 
 - **RTSC-645** — `retasc gate install` no longer throws away your edits. It rewrites the
