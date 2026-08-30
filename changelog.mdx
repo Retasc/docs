@@ -17,6 +17,70 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.38.2 (2026-08-30)
+
+- **RTSC-789** — `bind` keeps this folder's key instead of minting a new one on every run.
+  The guard meant to prevent that (RTSC-262) read the `--org-id`/`--project-id` flags, so it
+  only ever fired for a provisioning script. The canonical `npx @retasc/cli@latest bind`
+  leaves both undefined and could never reach it: pick the same org and the same project
+  from the menu and it minted anyway, leaving the old key live. The check now runs where
+  the target is known, after the pick, so how you got there stops mattering. A different
+  org or project still mints, as it must.
+  A kept key is resolved against the server before it is kept. `bind` clears a binding only
+  when the server answers `UNAUTHORIZED`, so a folder can reach the reuse branch holding a
+  key whose health is unknown: a 5xx, a proxy sign-in page, a refusal whose wording drifts.
+  Keeping one of those would have stranded the folder for good, since `doctor` sends that
+  exact state back to `bind`. It falls back to minting instead, which is the self-healing
+  the old mint-every-run was providing by accident.
+
+## 1.38.1 (2026-08-28)
+
+- **RTSC-780 follow-up** — `retasc init` now sets a folder up the same way every other
+  door does. 1.38.0 taught `bind`, `join` and `bind --setup` to wire every harness on the
+  machine, but `init` kept its own copy of that work: it minted a key and wrote a
+  key-bearing entry for Claude Code and nothing else. So the one command named onboarding
+  was the one that still left Codex with no Retasc tools, which is the exact failure
+  1.38.0 exists to end.
+  Fixed by deleting the duplicate rather than teaching it the same trick. Everything after
+  the org is now `bind`'s job, which also means `init` writes the keystore binding an
+  `auto` marker resolves against, guards a folder that is already bound instead of
+  overwriting it, and prints the same receipt.
+  `--scope` and `--no-watchdog` are gone from `init`: both described the shape of an entry
+  it no longer writes. `-y/--yes` and `--no-install` are there instead, matching `bind`.
+
+## 1.38.0 (2026-08-28)
+
+- **RTSC-780** — `retasc setup` wires Retasc into every MCP harness on the machine, once,
+  and `retasc bind` now runs it for you. Until this release the CLI could wire exactly one
+  harness: it spawned `claude mcp add`, and if that worked it stopped. Codex, Grok and
+  anything else got nothing, which is why an agent bound to the same project as two
+  working Claude Code sessions could sit there unable to claim a single issue.
+  The entry we write names no project and carries no key. The watchdog proxy works out
+  which project it is in from the directory it was spawned in, so one line in a global
+  config is correct in every folder, and the folder still decides the org exactly as
+  before. Adding a harness is one entry in the registry; Claude Code, Codex and Grok ship
+  today, each verified against a real installation rather than a config format from
+  memory.
+  A folder you have not bound yet is now an ordinary state rather than a broken install,
+  so it gets a real answer: the tool call comes back naming the folder and telling you to
+  run `retasc bind` in it. Previously a keyless call surfaced as an authentication or
+  network failure while the CLI's own login was global and still fine, which reads as
+  "the Retasc server is down" and sends you to check a server that is serving everyone
+  else. The server cannot name your folder; the proxy runs in it, so it can.
+  Which folder counts is bounded by the repository: a subdirectory resolves to its repo,
+  and a repo checked out inside a bound directory resolves to nothing. Binding a
+  directory must not quietly bind every unrelated project underneath it.
+  Existing markers are untouched: one naming a workspace id keeps resolving through that
+  id, and keeps priority over the folder.
+
+- **RTSC-781** — `--runtime` now says what it does. It sets the agent's label in the
+  Dash, and it never chose where config was written, but it is offered on the commands
+  that install MCP config and documented with a list of harness names, so
+  `key mint --runtime codex --install` named Codex, wired Claude Code, and said nothing.
+  The help text says label, and the commands that mint a key and write a key-bearing
+  entry now say plainly that they write for this folder only, that a key never belongs
+  in a machine-wide config, and that `retasc setup` is what wires the harness you named.
+
 ## 1.37.0 (2026-08-26)
 
 - **RTSC-749** — `retasc triage` reads and approves work filed from outside your org. Work
