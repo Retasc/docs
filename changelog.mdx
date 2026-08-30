@@ -17,6 +17,30 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.39.0 (2026-08-30)
+
+- **RTSC-793** — `retasc setup` now wires Cursor, OpenCode and Gemini CLI too, bringing it
+  to six harnesses. Until this release those three could be installed and running on your
+  machine and `setup` would say nothing about them: it only ever named harnesses it already
+  knew, so an unsupported one was not reported as skipped, it was invisible, and the receipt
+  read as complete. That is the same silent half-install the previous release existed to end,
+  one harness over.
+  Each was admitted the same way the first three were, by checking a real installation rather
+  than a config format from memory. The check that decides it is whether the harness starts
+  its MCP server in the project directory, because the entry we write names no project and
+  works out the folder for itself; one that started somewhere else would resolve every folder
+  to the same wrong place with no symptom. All three passed.
+  Cursor is wired by editing `~/.cursor/mcp.json` directly, and carefully: that file is named
+  .json but Cursor accepts comments in it, so we splice our entry in textually and leave every
+  comment, every other server and everything else exactly where it was. OpenCode and Gemini
+  are wired through their own `opencode mcp add` and `gemini mcp add`, which is better than a
+  writer of ours when a harness ships one that works: their file format stays their business.
+  Note for Cursor users: it is `cursor-agent`, the agent, that gets the tools. The `cursor`
+  command is the editor launcher and is a different program.
+  Also fixed: the setup receipt could run a path into the word beside it, printing
+  `~/.codex/config.tomlupdated`, which read like a corrupted path in the one place whose job
+  is to say plainly that everything worked.
+
 ## 1.38.2 (2026-08-30)
 
 - **RTSC-789** — `bind` keeps this folder's key instead of minting a new one on every run.
