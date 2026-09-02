@@ -17,6 +17,69 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.39.3 (2026-09-02)
+
+- **RTSC-801** — (security) `save_attachment_file` no longer reads a workspace's own secrets,
+  and no longer follows a file swapped in after it was checked. The proxy reads attachments
+  on the agent's behalf, which is what keeps the API key away from the model, and the cost of
+  that is a read the harness never prompts on: whatever this path allows, an agent can upload
+  to an issue every org member can read. Containment to the attach root was doing all the work
+  and it was never the boundary it looked like, because the files worth stealing are not
+  outside a workspace, they are in it. `.env.local`, a legacy inline-key `.mcp.json` and
+  `.retasc/` all live inside a normal root, so a prompt-injected "attach the config" was
+  confined to exactly the secrets. Anything hidden below the root is now refused, dotfiles and
+  dot-directories alike, along with `secrets.md` and, wherever `RETASC_DIR` puts it, the
+  keystore itself. A root that contains your home directory (`~` or `/`, both previously
+  accepted) is refused outright rather than carved down, since it makes every credential on
+  the machine attachable, including every other workspace's key. Those rules all judge a name,
+  so a file with more than one hard link is refused too: path resolution follows symlinks but
+  not links, and `ln .env.local notes.txt` would otherwise hand the check a name it has no
+  reason to refuse while the bytes stay the same. The one carve-out is `.retasc/attachments/`,
+  which is where the proxy writes files fetched by `get_attachment_file`: refusing that would
+  be the proxy declining to read a file the proxy itself wrote, and downloading from one issue
+  to attach to another is a real thing agents do. Anything hidden deeper inside it is still
+  refused.
+  The second half is a race: the path was resolved and stat'd, a full
+  `prepare_attachment_upload` round trip went to the server, and only then was the file opened
+  by path, so a `ln -sf` in that window was followed on the read. The read now opens the file
+  `O_NOFOLLOW` and non-blocking, and proceeds only if the descriptor's device, inode and size
+  are the ones that passed the check. Opening non-blocking is not a detail: a `mkfifo` in that
+  same window would otherwise have blocked the proxy's event loop outright, stopping every
+  heartbeat it owes and stranding every lease it holds.
+  Legitimate attachments, screenshots, logs and documents, are unaffected: none of them are
+  hidden files.
+
+## 1.39.2 (2026-09-02)
+
+- **RTSC-808** — `retasc setup` no longer writes OpenCode's config into your real home when
+  `RETASC_HOME` says otherwise. That variable exists so anything exercising the harness module
+  cannot reconfigure the machine it runs on, and every other harness honours it; OpenCode read
+  `XDG_CONFIG_HOME` first and so ignored the override wherever that variable is set. The
+  precedence is now override, then environment, then default, and `XDG_CONFIG_HOME` is still
+  honoured when no override is in play, because OpenCode really does read it.
+  This is also why CI had been red on `main` for five consecutive merges. macOS does not set
+  `XDG_CONFIG_HOME` and GitHub's Linux runners do, so the test guarding this passed on every
+  developer machine and failed on every CI run, and no PR in the repo could show a green build.
+
+## 1.39.1 (2026-09-02)
+
+- **RTSC-800** — (security) a keystore-resolved key now travels only to the keystore's own
+  url, whether the competing url arrives in the `.mcp.json` entry or in the environment.
+  1.6.0 made this promise for the entry, which covered `claim`/`tidy`/`done` but not the
+  proxy: the proxy is the one caller that ever reads a committed marker, and it passes no
+  entry at all. The harness copies the marker's `env` block into the spawned process, so a
+  `RETASC_MCP_URL` planted next to `RETASC_WORKSPACE` in a repo's committed `.mcp.json`
+  arrived as an environment url, outranked the keystore, and every teammate's proxy sent its
+  real workspace key to that host on the next start, during session-key minting, with no
+  prompt. An environment url is now honored only alongside an explicit `RETASC_MCP_KEY`,
+  where the key and the url share a trust domain.
+  Nothing legitimate loses a path: `bind` already stores the deployment's url into the
+  binding, so a self-hosted url is in the keystore before the proxy asks for it.
+  This closes the url, and only the url. A committed marker also chooses the `command` that
+  runs and can set any other variable, so a marker you do not trust is code execution by the
+  MCP config format's own design, and the harness's project-trust prompt is the boundary for
+  that. What this removes is the one variant that reads as ordinary configuration in review.
+
 ## 1.39.0 (2026-08-30)
 
 - **RTSC-793** — `retasc setup` now wires Cursor, OpenCode and Gemini CLI too, bringing it
