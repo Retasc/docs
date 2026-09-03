@@ -17,6 +17,30 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.39.4 (2026-09-03)
+
+- **RTSC-810** — `retasc unbind` revokes the key it says it revokes. It had two faults in
+  one lookup, and each on its own was enough to leave the credential live: it destructured
+  `{ keys }` off `listKeys`, which returns a bare array, and it derived the folder's key
+  prefix with a 12-character slice while the server stores 14. An exact compare between a
+  12-character string and a 14-character one is never true, so every run since `unbind`
+  shipped (RTSC-721) printed "not found server-side (already revoked, or the org is
+  gone)" and moved on. The length now mirrors the server's own `displayPrefixOf`, and the
+  test reads that file, so the two cannot drift apart again. A session child key can no
+  longer be the one revoked either: those are minted in memory by the proxy and never
+  reach the keystore, so a match on one would mean revoking a key this folder does not own.
+- **RTSC-810** — `retasc bind --org-id X --project-id Y` learns the project's prefix. The
+  provisioning form skipped every branch that looks a project up, so nothing knew the
+  prefix: the key went out nameless, the keystore entry was written without `prefix` or
+  `orgName`, and the receipt card printed an empty one. It now resolves the project the
+  same way the interactive pickers do.
+- **RTSC-810** — a key is named after the folder it was bound in, not after the project.
+  The Keys list is the folder map (`client-a` → `ENG`), which is what tells you which
+  machine a credential belongs to; `ENG key` on every row told nobody anything. Naming is
+  the server's job now, so no door can store a nameless key: the Dash mint form with the
+  name left blank and `retasc key mint` without `--name` both fall back to the project's
+  own name rather than leaving the Dash to print "Unnamed key".
+
 ## 1.39.3 (2026-09-02)
 
 - **RTSC-801** — (security) `save_attachment_file` no longer reads a workspace's own secrets,
