@@ -17,6 +17,19 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.40.0 (2026-09-04)
+
+- **RTSC-820** — every session now tells Retasc which conversation it is. `retasc setup`
+  wires a Claude Code `SessionStart` hook (`retasc hook session-start`) into
+  `~/.claude/settings.json`, idempotently and beside whatever hooks you already have; the
+  hook leaves the session's id in the keystore dir, and the watchdog proxy picks it up and
+  records it on its session key through a new `record_session` tool. Grok needs no hook:
+  the proxy reads `GROK_SESSION_ID` at startup. The Dash's Agents page then ends each
+  session's panel with the line that reopens it on the machine that ran it,
+  `claude --resume <uuid>`. Only the NAME of the transcript is stored, never its
+  contents and never a path. A session started before `setup` re-ran shows
+  "none recorded" and names the missing hook.
+
 ## 1.39.4 (2026-09-03)
 
 - **RTSC-810** — `retasc unbind` revokes the key it says it revokes. It had two faults in
