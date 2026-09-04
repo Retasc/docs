@@ -17,6 +17,14 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.41.1 (2026-09-04)
+
+- **RTSC-812** — no runtime change. Two comments in `cli/src` said project deletion did
+  not exist: `bind` called an unwanted empty project something "that cannot be deleted
+  (org-granularity delete only)", and the `import` confirm said "there is no per-project
+  delete". An owner can delete a project from the Dash now, so both were wrong, and the
+  import one sat on the last screen before an irreversible write.
+
 ## 1.41.0 (2026-09-04)
 
 - **RTSC-825** — every workspace now carries the name of the folder it is bound to. The
