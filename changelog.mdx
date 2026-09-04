@@ -17,6 +17,32 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.41.0 (2026-09-04)
+
+- **RTSC-825** — every workspace now carries the name of the folder it is bound to. The
+  server never receives a path, so the name can only come from the machine that has one:
+  `retasc bind` sends it when the key is minted, and the watchdog proxy re-sends it at
+  every session start, so a folder bound before this existed is named the next time an
+  agent runs there. Only the folder's own name travels, never the path above it, and it
+  is the folder the BINDING names, so a session opened in a subdirectory still reports the
+  bound folder rather than renaming the row to whatever directory it started in. The
+  Dash shows it as `workspace` on the Agents page and on the Connect page, and shows
+  nothing at all where a workspace has not reported one; a key retired before this
+  shipped can never report one, so it stays blank.
+
+## 1.40.0 (2026-09-04)
+
+- **RTSC-820** — every session now tells Retasc which conversation it is. `retasc setup`
+  wires a Claude Code `SessionStart` hook (`retasc hook session-start`) into
+  `~/.claude/settings.json`, idempotently and beside whatever hooks you already have; the
+  hook leaves the session's id in the keystore dir, and the watchdog proxy picks it up and
+  records it on its session key through a new `record_session` tool. Grok needs no hook:
+  the proxy reads `GROK_SESSION_ID` at startup. The Dash's Agents page then ends each
+  session's panel with the line that reopens it on the machine that ran it,
+  `claude --resume <uuid>`. Only the NAME of the transcript is stored, never its
+  contents and never a path. A session started before `setup` re-ran shows
+  "none recorded" and names the missing hook.
+
 ## 1.39.4 (2026-09-03)
 
 - **RTSC-810** — `retasc unbind` revokes the key it says it revokes. It had two faults in
