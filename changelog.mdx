@@ -17,6 +17,83 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.43.0 (2026-09-05)
+
+- **RTSC-799** - `tidy`, `done` and `claim` now work out which branch is this repo's trunk
+  instead of assuming it is called `main`. Until this release `tidy` compared every branch
+  against `origin/main`, a name written into the source with no flag, no config and no way
+  to see it. In a repo whose trunk is `master` that comparison does not fail into view:
+  `git merge-base --is-ancestor` exits 128 for an unreadable ref, the code tested only for
+  0, and so a broken lookup and an honest "not merged" produced the same word. Every branch
+  read `merged: no`, nothing was ever reapable, and because `claim` creates a worktree per
+  issue and only `tidy` removes one, the worktrees accumulated with nothing printed to say
+  why. The team who reported it had thirty of them, built up over months, and could not tell
+  from the outside whether the tool was wrong or their setup was.
+  The trunk now comes from `origin/HEAD`, which is what `git clone` already records and what
+  `git fetch` re-records when it goes stale. Override it per repo with
+  `git config --local retasc.base origin/develop`, or per run with a new `--base` on `tidy`
+  and `done`. Read at `--local` scope on purpose: a plain `git config --get` also sees
+  `~/.gitconfig`, and one machine-wide value would have quietly redefined the trunk in every
+  repo on the box and outranked each repo's own `origin/HEAD`. When the trunk cannot be
+  worked out at all, that is an error naming the ref and every way to set one, because a
+  command that cannot tell what merged means must not go on to report that nothing did.
+  Ancestry now has three answers rather than two. "Git could not tell" is carried through as
+  its own state, prints as `?`, and is never deleted, not even under `--force`: that flag
+  means "unmerged, but I know the work landed elsewhere", which is a judgement about a branch
+  git actually reported on. Every run also prints the trunk it measured against, which is the
+  line that would have turned this into a one-minute diagnosis, and a shallow clone warns,
+  since missing history produces the same uniform "no".
+  Care taken with the sharp edges, because this turns a command that deleted nothing in those
+  repos into one that deletes:
+  - A stale `origin/HEAD`, which outlives the branch it names when a remote renames its trunk
+    and which git before 2.45 never repairs, falls through to the next candidate with a note
+    rather than refusing `claim`, `tidy` and `done` in a repo that is otherwise healthy.
+  - `done` still closes the issue when the trunk cannot be resolved. The control-plane close
+    is the durable half and a CI checkout legitimately has no `origin/HEAD`; the teardown is
+    what needs a trunk, so that is what reports.
+  - The first `--prune` after upgrading asks once before deleting five or more branches, since
+    it may be clearing months of work a team believed this command never touched. Scripts and
+    the MCP auto-reap never see the question, and `--yes` skips it.
+  - `claim` fetches before it proves the base exists, so a just-pushed base still works, and
+    resolves before taking the lease, so a claim is never held for a worktree that cannot be
+    created. It also prints the trunk it branched from.
+  - A bare repository is refused rather than operated on (the old path resolved to its parent
+    directory), a detached HEAD no longer defeats the "that's your current branch" guard, and
+    the watchdog now logs a non-zero exit from an auto-reap instead of swallowing it.
+
+## 1.42.1 (2026-09-05)
+
+- **RTSC-832** — the model now actually appears. 1.42.0 read it from the SessionStart
+  hook's `model` field, and Claude Code 2.1.261 does not send one: a captured payload is
+  `session_id`, `transcript_path`, `cwd`, `hook_event_name`, `source` and nothing else.
+  The row therefore filled in only after a `/model` switch, which is backwards.
+  Claude Code does write the model on every assistant message in the transcript, so the
+  proxy reads it from there instead, and every session gets one.
+- The read is bounded to the last 64KB: transcripts reach megabytes and this runs on a
+  throttle for the whole session. Reading backwards from the end also means a `/model`
+  switch is picked up by the same read, with or without the hook.
+- Only the model STRING is ever sent. The transcript path stays on the machine that
+  wrote it, and nothing else from the file leaves it.
+
+## 1.42.0 (2026-09-05)
+
+- **RTSC-821** — a session now reports WHICH MODEL ran it. The MCP handshake carries the
+  client's name and version only, which is the CLI build and not the model, so this could
+  never have come from the connection: `retasc hook session-start` now passes the
+  SessionStart payload's `model` (plus `agent_type` and `agent_id` when the session is a
+  subagent) alongside the transcript id, and the Dash's session panel names it.
+- A second hook, `retasc hook model-switch`, is wired on `PostModelSwitch`, so changing
+  model mid-conversation reaches the Dash and it can say what the session started on.
+  `retasc setup` wires both in one write. It deliberately does NOT touch the record's
+  timestamp: that is the window that stops an old record being adopted by a later session
+  in the same folder, and a switch an hour in must not make an hour-old record look new.
+- The proxy keeps watching for a model change after the id is recorded, under the same
+  bounded budget it already had, so a session that switches model on every turn still
+  cannot make it talk to the server on every turn.
+- Absent stays ordinary. Claude Code omits `model` from some payloads and Codex, Gemini,
+  Cursor and OpenCode have no session hook at all, so a junk or missing model is dropped
+  rather than raised, and never costs the transcript id it travelled with.
+
 ## 1.41.1 (2026-09-04)
 
 - **RTSC-812** — no runtime change. Two comments in `cli/src` said project deletion did
