@@ -17,6 +17,184 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.49.1 (2026-09-09)
+
+- **RTSC-879** — the proxy sends NO `Authorization` header when it has no key, instead of
+  `Bearer ` with nothing after it. An empty bearer is not a weaker credential, it is a
+  malformed one, and where a keyless proxy now runs that difference decides whether the
+  thing works at all: in a Claude Code cloud container the documented way to supply a
+  credential is an environment API credential, which Anthropic's egress proxy injects as
+  an `Authorization` header after the request leaves the VM — and which also lets the
+  request through a network allowlist that would otherwise refuse the host. Injection
+  wants the header absent, and whether it overwrites one already present is undocumented,
+  so sending an empty bearer staked the whole path on undocumented behaviour. With a key
+  present nothing changes.
+
+## 1.49.0 (2026-09-09)
+
+- **RTSC-879** — a committed `.mcp.json` now names `npx -y @retasc/cli@<version> mcp-proxy`
+  instead of a bare `retasc`, so it starts on a machine that is not the one that wrote it.
+  `portableLauncher` used to pass an on-PATH resolution straight through on the belief that
+  a bare binary "was at least portable"; it is portable only across machines that happen to
+  have a global install. A container has none. Measured in a Claude Code cloud session on a
+  fresh clone: the MCP server died at `ENOENT: Executable not found in $PATH: retasc` before
+  it could do anything else. Startup on the shared marker now pays npx resolution (about 6s
+  cold, ~1s off the cache); user-level configs, which never travel, keep the direct binary.
+- **RTSC-879** — `retasc bind --json` can now sign in from a container. An agent-driven
+  bind takes the DEVICE grant instead of the browser one, in two steps: the first call
+  prints an approve URL and an eight-character code and **exits**, the human approves on
+  any device, and running the same command again resumes the same grant and finishes.
+  Previously an agent got the browser door, which redirects to `127.0.0.1` on the machine
+  running the CLI — unreachable when the human is somewhere else, which in a cloud
+  container they always are. New continuable outcome state `SIGN_IN_PENDING` so an agent
+  can tell "waiting on a click" from "nothing has started" and does not issue a second
+  code that invalidates the one its human is reading. CI and `RETASC_NO_BROWSER` still
+  refuse immediately: neither has anyone to approve anything.
+- **RTSC-879** — `retasc doctor` no longer installs a package to check a marker. For an
+  npx marker it probes `npx --version` rather than executing the pinned package spec,
+  which was a registry fetch on every run and reported "your agent CANNOT start Retasc"
+  for a healthy marker whenever npm was unreachable. Its remedy line is corrected too: a
+  global install can no longer change what `bind` writes into a shared marker.
+- **RTSC-879** — the repo's own committed `.mcp.json`, and the marker blocks published in
+  `web/auth.md` and the agent-skill, now show the npx form. They were the bare binary,
+  which is the exact thing this release stops emitting. Those hand-written blocks say
+  `@latest` rather than a pinned version on purpose: `release:cli` publishes from `main`
+  AFTER a merge, so a committed marker pinning the version being released would 404 for
+  every fresh clone in the window between the two — trading this release's ENOENT for an
+  E404. `bind` still writes the pinned form, which is correct because it only ever names
+  a version that already exists.
+- **[no-issue]** — test fix: the setup-hook test pinned `RETASC_HOME` to a temp dir. It
+  fell through to the real home directory, so it passed on a clean CI runner and failed
+  on any machine that had actually run `retasc setup`.
+
+## 1.48.1 (2026-09-08)
+
+- **RTSC-878** — `retasc doctor` no longer condemns the entry `retasc setup` writes. Its
+  machine-global check dated from RTSC-91, when every top-level `mcpServers.retasc` carried
+  a key or a workspace id and so routed every unbound folder to one org; presence alone was
+  a correct test for that. RTSC-780 then made one global entry mandatory, the keyless `auto`
+  marker, which carries no identity at all, and the check was never taught the difference.
+  Doctor therefore printed `✗ GLOBAL Retasc server registered` at the marker and offered
+  `claude mcp remove -s user retasc` as the fix, which strips Retasc from every folder
+  without a binding of its own. It cost a customer a day.
+- The check now reads the entry's identity: `RETASC_WORKSPACE=auto` with no key resolved is
+  reported as correct and named, so someone who just ran `setup` can see that what it wrote
+  is what belongs there. Every other shape stays illegal, including a keyless entry that
+  names a real `ws_` workspace, which still routes every unbound folder to one binding.
+- The exemption is not granted on the sentinel alone. `parseServerEntry` reads
+  `RETASC_WORKSPACE` before it looks for a key in an `Authorization` header or in
+  `RETASC_MCP_KEY`, so an entry carrying both the `auto` sentinel and a real credential
+  parses as an innocent keyless marker; judging the parse alone would have exempted a live
+  machine-global registration pointing every unbound folder at that key's org. The raw
+  entry is examined too, and anything carrying credential material or a `url` of its own
+  stays illegal whatever its `env` claims.
+
+## 1.48.0 (2026-09-08)
+
+- **RTSC-859** — `retasc key mint --hosted`: a key now says at mint what it is for.
+  `workspace` (the default, and what every bind door says explicitly) expects the local
+  watchdog; `hosted` is for a cloud agent or CI that will never have one.
+
+  Why: a workspace key sent raw to the server with no proxy is two things at once and the
+  server cannot tell which, a hosted agent working as documented or a laptop whose config
+  went stale. Both got the same advice on every claim, run `bind`, which a hosted agent
+  cannot do. With `kind` on the row, a hosted key is told the one true thing (renew your
+  own leases) and shows "no folder (hosted)" on the Agents page as a fact rather than a
+  gap; a workspace key with no runner gets the firm remedy, because for that row it is
+  true. A key that said nothing, which includes every key minted before this and any bare
+  `key mint` since, keeps the old hedged text, since nothing on the row can say which it
+  is. `--hosted` and `--install` are refused together: one wires a local watchdog, the
+  other says there will never be one.
+
+  `retasc mcp install --no-watchdog` is not deprecated (it writes exactly a hosted
+  deployment's config) but now says, once, that a key used that way should be minted
+  `--hosted`.
+
+## 1.47.0 (2026-09-08)
+
+- **RTSC-864** — `retasc key mint` now prints every remote-key config block a hosted
+  agent can paste, including the TOML one that did not exist.
+
+  A key is shown once, and until now that was all `key mint` printed. Anyone wiring a
+  host that cannot run our proxy (a claude.ai connector, Codex Cloud, CI) had to invent
+  the config, and for two of the six harnesses it was not inventable: `tomlBlock` emitted
+  only the stdio proxy shape, so Codex and Grok users had nothing correct to paste at all.
+  The new `tomlHttpBlock` fills that in, and all three blocks now print next to the key
+  while it is still on the screen.
+
+  The two TOML dialects are separate on purpose, and the reason is the dangerous part.
+  Verified against both real binaries: Codex reads `[mcp_servers.retasc.http_headers]`
+  and Grok reads `[mcp_servers.retasc.headers]`, and each loads the other's file without
+  a warning while ignoring the header. The result is a server that reports itself
+  enabled and configured, and returns UNAUTHORIZED on the first tool call.
+
+  The blocks also say, next to themselves, that a key belongs in a user-scope config or
+  a platform secret store and never in a tracked `.mcp.json`, which the repo's pre-commit
+  hook refuses anyway. Where a container DOES have an environment, the proxy with
+  `RETASC_MCP_KEY` set is still the better door: it renews leases for you.
+
+## 1.46.0 (2026-09-08)
+
+- **RTSC-855** — `retasc doctor` and `retasc setup` now say whether the **Retasc Agent
+  Skill** is installed on this machine, and print the one command that installs it.
+
+  Wiring the MCP server gives an agent the ability to claim work. The skill is what tells
+  it what a lease is, that a claim needs its own worktree, what a checkpoint is for, and
+  how a handoff into review works. Nothing connected the two, so an agent could be fully
+  wired and still have the tools without the manual, and no surface anywhere would
+  mention it. The server cannot fill the gap: MCP carries a bearer token and no
+  filesystem, so only something running on the machine can look.
+
+  The hard part is not finding the file, it is not being wrong about it. A false "not
+  installed" shown to somebody who followed our own instructions teaches them to distrust
+  everything else `doctor` says, so the check knows all three routes a skill really
+  arrives by: global (`~/.claude/skills` and each harness's equivalent), project (the
+  `skills` installer's DEFAULT scope, which lands in the working directory), and, for
+  Claude Code, an installed plugin's own folder, since `/plugin install retasc@retasc` is
+  one of the routes our public README offers and it writes none of the above. It honours
+  `CLAUDE_CONFIG_DIR`, `CODEX_HOME` and `GROK_HOME` for the same reason. The printed
+  command carries `-g` so it installs where the check looks. A harness whose convention
+  we cannot verify is skipped rather than accused, one harness holding the skill silences
+  the nudge for the rest, absence is reported with `ℹ` rather than `✗`, and neither
+  command changes its exit code over any of it.
+
+## 1.45.0 (2026-09-08)
+
+- **RTSC-862** — a binding now covers every **git worktree** of the repo it was made in.
+
+  `findBindingByPath` walks up from the current directory looking for a bound folder and
+  stops at the first `.git`, which is what stops `retasc bind` in `~` from silently
+  binding every project beneath it. But `.git` is a FILE at the root of every worktree,
+  so that stop fired on the first step inside one: every worktree resolved to nothing,
+  with no error and no hint, and the tools were simply absent. Repos whose workflow
+  creates a worktree per task (this one included) hit it constantly, and the rational
+  workaround — paste a raw key into a config that works everywhere — silently costs the
+  watchdog, session rows, transcripts and the folder name.
+
+  "Same repository" is decided by git's common dir, the one directory every worktree
+  shares, read from disk rather than by shelling out to git. A sibling repo checked out
+  inside a bound directory still resolves to nothing, so the cross-org property RTSC-91
+  exists for is untouched. Binding a worktree deliberately still wins over its repo's
+  binding.
+
+  `retasc doctor` says when a folder resolved this way, instead of the old warning that
+  the id "was bound at a different folder" — advice which, for a worktree, would have
+  minted a second key and a second agent for one repo.
+
+## 1.44.0 (2026-09-08)
+
+- **RTSC-861** — the proxy now tells Retasc which CLI version it is. It rides on
+  `mint_session_key`, the one call every proxy already makes at startup, as an optional
+  `cliVersion` argument, so an older build that sends nothing still mints exactly as
+  before.
+
+  Why it matters: the update notice (RTSC-520) fires from a `postAction` hook on
+  `retasc <command>`, and someone whose only contact with the CLI is the proxy their
+  harness spawns runs no commands and never sees it. Three live setups were found on
+  builds older than 1.41.0 with no way to find out. The server can now say so in the
+  tool result, which reaches every harness, and with this version it can name the exact
+  gap instead of inferring one from behaviour.
+
 ## 1.43.0 (2026-09-05)
 
 - **RTSC-799** - `tidy`, `done` and `claim` now work out which branch is this repo's trunk
