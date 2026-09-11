@@ -17,6 +17,23 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.50.0 (2026-09-11)
+
+- **RTSC-901** — `retasc plan`: which subscription pays for each of your agents, listed
+  and set one line per (agent, harness). Retasc cannot read this anywhere — no transcript
+  field, telemetry attribute or environment variable carries it, and the only machine
+  source sits behind the human's own keychain — so it is asked for once and kept.
+  The options are READ FROM THE SERVER on every run, never compiled in: a tier a vendor
+  ships this morning is on the list this afternoon, on the build you already have.
+- **RTSC-901** — `bind` asks the same question at setup, but only when `--runtime` was
+  STATED. That flag defaults to `claude-code`, which is a fine label for a row and the
+  wrong subject for this question: `retasc setup` wires every harness on the machine, so
+  asking "which Claude plan?" of someone setting up Codex records a fact about the wrong
+  product. Left unstated, the question falls to the first MCP handshake, which knows
+  which harness actually connected.
+- A non-interactive run answers nothing rather than defaulting. A plan nobody chose reads
+  on the Agents page exactly like one they did.
+
 ## 1.49.1 (2026-09-09)
 
 - **RTSC-879** — the proxy sends NO `Authorization` header when it has no key, instead of
