@@ -17,6 +17,24 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.51.0 (2026-09-13)
+
+- **RTSC-962** — the proxy now reports git worktrees nobody claimed, so Retasc can see
+  work an agent started without saying so. Retasc fenced the END of work and nothing at
+  the START: `done` rejects on a claim mismatch, `review` demands a handoff, but the
+  server never sees an agent edit a file — so an agent could build thousands of lines
+  against an issue the queue still showed as free, and a second agent would read it as
+  untouched and duplicate or decompose it.
+  The server still reads no git. This process does: a `rtsc-NN/<slug>` worktree with no
+  live claim behind it is reported, and the issue gets a **provisional hold** — visible
+  on `get_issue`, withheld from `next_issue` / `next_batch`, lapsing after an hour.
+  A hold is not a lease and never refuses an explicit `claim_issue`, so the agent that
+  forgot to claim always gets its own work back.
+  Only ACTIVE worktrees count (uncommitted changes, or a commit in the last day), so an
+  abandoned directory cannot park an issue; git runs asynchronously and off the critical
+  path, so the census never delays a tool call; and each unclaimed worktree is announced
+  once, not on every call. A server without the tool simply produces no holds.
+
 ## 1.50.0 (2026-09-11)
 
 - **RTSC-901** — `retasc plan`: which subscription pays for each of your agents, listed
