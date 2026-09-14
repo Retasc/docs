@@ -17,6 +17,27 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.52.0 (2026-09-14)
+
+- **RTSC-958** — a user never names an agent, so `--agent <name>` is gone from `init`,
+  `bind`, `key mint` and `join`. **Breaking if you scripted it**; those commands now exit
+  with `unknown option '--agent'`. Drop the flag and you get the same agent you would
+  have got by omitting it.
+  The flag looked like a label and was not one. An agent's identity was `{you}'s
+  {runtime}` and the roster grouped rows by that string, so a typed variant — `"Em de
+  Vries's claude-code 2"`, say — did not rename an agent, it forked a second one that
+  kept its own finished count, spend and send-back rate forever. Nothing warned anyone,
+  and there is no rename door in the product to undo it with. The help text made it
+  worse by advertising the exact shape to vary: `(default: auto, "{you}'s {runtime}")`.
+  Every custom name in the org that found this was junk or an accident: one accidental
+  fork of the author's own agent, three from a test an agent ran wrong, two fixtures.
+  No other surface names an agent either — the Dash has no naming UI, and the
+  setup-token flow always passed an empty name.
+  `retasc plan --agent <nameOrId>` is a SELECTOR, not a name, and is untouched.
+  The server keeps ACCEPTING `agentName` and ignores it, so 1.48 and 1.51 keep minting
+  rather than failing validation — an older client simply gets the generated name. That
+  half is already live, so this release removes the flag rather than changing behaviour.
+
 ## 1.51.0 (2026-09-13)
 
 - **RTSC-962** — the proxy now reports git worktrees nobody claimed, so Retasc can see
