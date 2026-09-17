@@ -10,14 +10,43 @@ description: "Every published version of the Retasc CLI, newest first."
 */}
 
 Every version of `@retasc/cli` published to npm, newest first. Dates are the npm publish
-date, and each entry names the issue behind it.
+date, and each entry names the issue behind it. One line per change; the full notes sit
+under each version's fold.
 
 ```sh
 npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.53.0 (2026-09-15)
+
+- **RTSC-1014** — every tool you start in a bound folder now gets its **own credential**, so one can be retired without stopping the others.
+
+<Accordion title="Full notes">
+
+- **RTSC-1014** — every tool you start in a bound folder now gets its **own credential**,
+  so one can be retired without stopping the others. Before this, Claude Code, Grok and
+  Codex started in the same folder all read the same `.mcp.json` and authenticated as one
+  credential: retiring any of them stopped all three and cost you a `retasc bind`.
+  The proxy mints the new credential at the `initialize` handshake — the first moment the
+  tool has a name — and caches it in the keystore, so it fires once per (folder × tool)
+  rather than once per session. **Nothing to do**: a folder bound before this upgrades
+  itself as each tool next starts, with no re-bind and no edit to `.mcp.json`.
+  Two behaviours worth knowing. A tool retired in a folder is served **nothing** there and
+  says so, rather than quietly falling back to the folder's shared key — that fallback
+  would have undone the retire. And a client that never sends `initialize` still gets a
+  per-session key exactly as before, since with no client name there is no tool to name.
+  What it is not: the folder's workspace key stays valid, so this is fleet management, not
+  a security boundary. An older CLI, or a tool pointed straight at `mcp.retasc.com` with
+  the key from `.mcp.json`, is not stopped by it.
+
+</Accordion>
+
 ## 1.52.0 (2026-09-14)
+
+- **RTSC-958** — a user never names an agent, so `--agent <name>` is gone from `init`, `bind`, `key mint` and `join`.
+
+<Accordion title="Full notes">
 
 - **RTSC-958** — a user never names an agent, so `--agent <name>` is gone from `init`,
   `bind`, `key mint` and `join`. **Breaking if you scripted it**; those commands now exit
@@ -38,7 +67,13 @@ retasc --version        # what you have
   rather than failing validation — an older client simply gets the generated name. That
   half is already live, so this release removes the flag rather than changing behaviour.
 
+</Accordion>
+
 ## 1.51.0 (2026-09-13)
+
+- **RTSC-962** — the proxy now reports git worktrees nobody claimed, so Retasc can see work an agent started without saying so.
+
+<Accordion title="Full notes">
 
 - **RTSC-962** — the proxy now reports git worktrees nobody claimed, so Retasc can see
   work an agent started without saying so. Retasc fenced the END of work and nothing at
@@ -56,7 +91,14 @@ retasc --version        # what you have
   path, so the census never delays a tool call; and each unclaimed worktree is announced
   once, not on every call. A server without the tool simply produces no holds.
 
+</Accordion>
+
 ## 1.50.0 (2026-09-11)
+
+- **RTSC-901** — `retasc plan`: which subscription pays for each of your agents, listed and set one line per (agent, harness).
+- **RTSC-901** — `bind` asks the same question at setup, but only when `--runtime` was STATED.
+
+<Accordion title="Full notes">
 
 - **RTSC-901** — `retasc plan`: which subscription pays for each of your agents, listed
   and set one line per (agent, harness). Retasc cannot read this anywhere — no transcript
@@ -73,7 +115,13 @@ retasc --version        # what you have
 - A non-interactive run answers nothing rather than defaulting. A plan nobody chose reads
   on the Agents page exactly like one they did.
 
+</Accordion>
+
 ## 1.49.1 (2026-09-09)
+
+- **RTSC-879** — the proxy sends NO `Authorization` header when it has no key, instead of `Bearer ` with nothing after it.
+
+<Accordion title="Full notes">
 
 - **RTSC-879** — the proxy sends NO `Authorization` header when it has no key, instead of
   `Bearer ` with nothing after it. An empty bearer is not a weaker credential, it is a
@@ -86,7 +134,17 @@ retasc --version        # what you have
   so sending an empty bearer staked the whole path on undocumented behaviour. With a key
   present nothing changes.
 
+</Accordion>
+
 ## 1.49.0 (2026-09-09)
+
+- **RTSC-879** — a committed `.mcp.json` now names `npx -y @retasc/cli@<version> mcp-proxy` instead of a bare `retasc`, so it starts on a machine that is not the one that wrote it.
+- **RTSC-879** — `retasc bind --json` can now sign in from a container.
+- **RTSC-879** — `retasc doctor` no longer installs a package to check a marker.
+- **RTSC-879** — the repo's own committed `.mcp.json`, and the marker blocks published in `web/auth.md` and the agent-skill, now show the npx form.
+- **[no-issue]** — test fix: the setup-hook test pinned `RETASC_HOME` to a temp dir.
+
+<Accordion title="Full notes">
 
 - **RTSC-879** — a committed `.mcp.json` now names `npx -y @retasc/cli@<version> mcp-proxy`
   instead of a bare `retasc`, so it starts on a machine that is not the one that wrote it.
@@ -123,7 +181,13 @@ retasc --version        # what you have
   fell through to the real home directory, so it passed on a clean CI runner and failed
   on any machine that had actually run `retasc setup`.
 
+</Accordion>
+
 ## 1.48.1 (2026-09-08)
+
+- **RTSC-878** — `retasc doctor` no longer condemns the entry `retasc setup` writes.
+
+<Accordion title="Full notes">
 
 - **RTSC-878** — `retasc doctor` no longer condemns the entry `retasc setup` writes. Its
   machine-global check dated from RTSC-91, when every top-level `mcpServers.retasc` carried
@@ -145,7 +209,13 @@ retasc --version        # what you have
   entry is examined too, and anything carrying credential material or a `url` of its own
   stays illegal whatever its `env` claims.
 
+</Accordion>
+
 ## 1.48.0 (2026-09-08)
+
+- **RTSC-859** — `retasc key mint --hosted`: a key now says at mint what it is for.
+
+<Accordion title="Full notes">
 
 - **RTSC-859** — `retasc key mint --hosted`: a key now says at mint what it is for.
   `workspace` (the default, and what every bind door says explicitly) expects the local
@@ -166,7 +236,13 @@ retasc --version        # what you have
   deployment's config) but now says, once, that a key used that way should be minted
   `--hosted`.
 
+</Accordion>
+
 ## 1.47.0 (2026-09-08)
+
+- **RTSC-864** — `retasc key mint` now prints every remote-key config block a hosted agent can paste, including the TOML one that did not exist.
+
+<Accordion title="Full notes">
 
 - **RTSC-864** — `retasc key mint` now prints every remote-key config block a hosted
   agent can paste, including the TOML one that did not exist.
@@ -189,7 +265,13 @@ retasc --version        # what you have
   hook refuses anyway. Where a container DOES have an environment, the proxy with
   `RETASC_MCP_KEY` set is still the better door: it renews leases for you.
 
+</Accordion>
+
 ## 1.46.0 (2026-09-08)
+
+- **RTSC-855** — `retasc doctor` and `retasc setup` now say whether the **Retasc Agent Skill** is installed on this machine, and print the one command that installs it.
+
+<Accordion title="Full notes">
 
 - **RTSC-855** — `retasc doctor` and `retasc setup` now say whether the **Retasc Agent
   Skill** is installed on this machine, and print the one command that installs it.
@@ -214,7 +296,13 @@ retasc --version        # what you have
   the nudge for the rest, absence is reported with `ℹ` rather than `✗`, and neither
   command changes its exit code over any of it.
 
+</Accordion>
+
 ## 1.45.0 (2026-09-08)
+
+- **RTSC-862** — a binding now covers every **git worktree** of the repo it was made in.
+
+<Accordion title="Full notes">
 
 - **RTSC-862** — a binding now covers every **git worktree** of the repo it was made in.
 
@@ -237,7 +325,13 @@ retasc --version        # what you have
   the id "was bound at a different folder" — advice which, for a worktree, would have
   minted a second key and a second agent for one repo.
 
+</Accordion>
+
 ## 1.44.0 (2026-09-08)
+
+- **RTSC-861** — the proxy now tells Retasc which CLI version it is.
+
+<Accordion title="Full notes">
 
 - **RTSC-861** — the proxy now tells Retasc which CLI version it is. It rides on
   `mint_session_key`, the one call every proxy already makes at startup, as an optional
@@ -251,7 +345,13 @@ retasc --version        # what you have
   tool result, which reaches every harness, and with this version it can name the exact
   gap instead of inferring one from behaviour.
 
+</Accordion>
+
 ## 1.43.0 (2026-09-05)
+
+- **RTSC-799** - `tidy`, `done` and `claim` now work out which branch is this repo's trunk instead of assuming it is called `main`.
+
+<Accordion title="Full notes">
 
 - **RTSC-799** - `tidy`, `done` and `claim` now work out which branch is this repo's trunk
   instead of assuming it is called `main`. Until this release `tidy` compared every branch
@@ -295,7 +395,13 @@ retasc --version        # what you have
     directory), a detached HEAD no longer defeats the "that's your current branch" guard, and
     the watchdog now logs a non-zero exit from an auto-reap instead of swallowing it.
 
+</Accordion>
+
 ## 1.42.1 (2026-09-05)
+
+- **RTSC-832** — the model now actually appears.
+
+<Accordion title="Full notes">
 
 - **RTSC-832** — the model now actually appears. 1.42.0 read it from the SessionStart
   hook's `model` field, and Claude Code 2.1.261 does not send one: a captured payload is
@@ -309,7 +415,13 @@ retasc --version        # what you have
 - Only the model STRING is ever sent. The transcript path stays on the machine that
   wrote it, and nothing else from the file leaves it.
 
+</Accordion>
+
 ## 1.42.0 (2026-09-05)
+
+- **RTSC-821** — a session now reports WHICH MODEL ran it.
+
+<Accordion title="Full notes">
 
 - **RTSC-821** — a session now reports WHICH MODEL ran it. The MCP handshake carries the
   client's name and version only, which is the CLI build and not the model, so this could
@@ -328,7 +440,13 @@ retasc --version        # what you have
   Cursor and OpenCode have no session hook at all, so a junk or missing model is dropped
   rather than raised, and never costs the transcript id it travelled with.
 
+</Accordion>
+
 ## 1.41.1 (2026-09-04)
+
+- **RTSC-812** — no runtime change.
+
+<Accordion title="Full notes">
 
 - **RTSC-812** — no runtime change. Two comments in `cli/src` said project deletion did
   not exist: `bind` called an unwanted empty project something "that cannot be deleted
@@ -336,7 +454,13 @@ retasc --version        # what you have
   delete". An owner can delete a project from the Dash now, so both were wrong, and the
   import one sat on the last screen before an irreversible write.
 
+</Accordion>
+
 ## 1.41.0 (2026-09-04)
+
+- **RTSC-825** — every workspace now carries the name of the folder it is bound to.
+
+<Accordion title="Full notes">
 
 - **RTSC-825** — every workspace now carries the name of the folder it is bound to. The
   server never receives a path, so the name can only come from the machine that has one:
@@ -349,7 +473,13 @@ retasc --version        # what you have
   nothing at all where a workspace has not reported one; a key retired before this
   shipped can never report one, so it stays blank.
 
+</Accordion>
+
 ## 1.40.0 (2026-09-04)
+
+- **RTSC-820** — every session now tells Retasc which conversation it is.
+
+<Accordion title="Full notes">
 
 - **RTSC-820** — every session now tells Retasc which conversation it is. `retasc setup`
   wires a Claude Code `SessionStart` hook (`retasc hook session-start`) into
@@ -362,7 +492,15 @@ retasc --version        # what you have
   contents and never a path. A session started before `setup` re-ran shows
   "none recorded" and names the missing hook.
 
+</Accordion>
+
 ## 1.39.4 (2026-09-03)
+
+- **RTSC-810** — `retasc unbind` revokes the key it says it revokes.
+- **RTSC-810** — `retasc bind --org-id X --project-id Y` learns the project's prefix.
+- **RTSC-810** — a key is named after the folder it was bound in, not after the project.
+
+<Accordion title="Full notes">
 
 - **RTSC-810** — `retasc unbind` revokes the key it says it revokes. It had two faults in
   one lookup, and each on its own was enough to leave the credential live: it destructured
@@ -386,7 +524,13 @@ retasc --version        # what you have
   name left blank and `retasc key mint` without `--name` both fall back to the project's
   own name rather than leaving the Dash to print "Unnamed key".
 
+</Accordion>
+
 ## 1.39.3 (2026-09-02)
+
+- **RTSC-801** — (security) `save_attachment_file` no longer reads a workspace's own secrets, and no longer follows a file swapped in after it was checked.
+
+<Accordion title="Full notes">
 
 - **RTSC-801** — (security) `save_attachment_file` no longer reads a workspace's own secrets,
   and no longer follows a file swapped in after it was checked. The proxy reads attachments
@@ -418,7 +562,13 @@ retasc --version        # what you have
   Legitimate attachments, screenshots, logs and documents, are unaffected: none of them are
   hidden files.
 
+</Accordion>
+
 ## 1.39.2 (2026-09-02)
+
+- **RTSC-808** — `retasc setup` no longer writes OpenCode's config into your real home when `RETASC_HOME` says otherwise.
+
+<Accordion title="Full notes">
 
 - **RTSC-808** — `retasc setup` no longer writes OpenCode's config into your real home when
   `RETASC_HOME` says otherwise. That variable exists so anything exercising the harness module
@@ -430,7 +580,13 @@ retasc --version        # what you have
   `XDG_CONFIG_HOME` and GitHub's Linux runners do, so the test guarding this passed on every
   developer machine and failed on every CI run, and no PR in the repo could show a green build.
 
+</Accordion>
+
 ## 1.39.1 (2026-09-02)
+
+- **RTSC-800** — (security) a keystore-resolved key now travels only to the keystore's own url, whether the competing url arrives in the `.mcp.json` entry or in the environment.
+
+<Accordion title="Full notes">
 
 - **RTSC-800** — (security) a keystore-resolved key now travels only to the keystore's own
   url, whether the competing url arrives in the `.mcp.json` entry or in the environment.
@@ -449,7 +605,13 @@ retasc --version        # what you have
   MCP config format's own design, and the harness's project-trust prompt is the boundary for
   that. What this removes is the one variant that reads as ordinary configuration in review.
 
+</Accordion>
+
 ## 1.39.0 (2026-08-30)
+
+- **RTSC-793** — `retasc setup` now wires Cursor, OpenCode and Gemini CLI too, bringing it to six harnesses.
+
+<Accordion title="Full notes">
 
 - **RTSC-793** — `retasc setup` now wires Cursor, OpenCode and Gemini CLI too, bringing it
   to six harnesses. Until this release those three could be installed and running on your
@@ -473,7 +635,13 @@ retasc --version        # what you have
   `~/.codex/config.tomlupdated`, which read like a corrupted path in the one place whose job
   is to say plainly that everything worked.
 
+</Accordion>
+
 ## 1.38.2 (2026-08-30)
+
+- **RTSC-789** — `bind` keeps this folder's key instead of minting a new one on every run.
+
+<Accordion title="Full notes">
 
 - **RTSC-789** — `bind` keeps this folder's key instead of minting a new one on every run.
   The guard meant to prevent that (RTSC-262) read the `--org-id`/`--project-id` flags, so it
@@ -489,7 +657,13 @@ retasc --version        # what you have
   exact state back to `bind`. It falls back to minting instead, which is the self-healing
   the old mint-every-run was providing by accident.
 
+</Accordion>
+
 ## 1.38.1 (2026-08-28)
+
+- **RTSC-780 follow-up** — `retasc init` now sets a folder up the same way every other door does.
+
+<Accordion title="Full notes">
 
 - **RTSC-780 follow-up** — `retasc init` now sets a folder up the same way every other
   door does. 1.38.0 taught `bind`, `join` and `bind --setup` to wire every harness on the
@@ -504,7 +678,14 @@ retasc --version        # what you have
   `--scope` and `--no-watchdog` are gone from `init`: both described the shape of an entry
   it no longer writes. `-y/--yes` and `--no-install` are there instead, matching `bind`.
 
+</Accordion>
+
 ## 1.38.0 (2026-08-28)
+
+- **RTSC-780** — `retasc setup` wires Retasc into every MCP harness on the machine, once, and `retasc bind` now runs it for you.
+- **RTSC-781** — `--runtime` now says what it does.
+
+<Accordion title="Full notes">
 
 - **RTSC-780** — `retasc setup` wires Retasc into every MCP harness on the machine, once,
   and `retasc bind` now runs it for you. Until this release the CLI could wire exactly one
@@ -537,7 +718,13 @@ retasc --version        # what you have
   entry now say plainly that they write for this folder only, that a key never belongs
   in a machine-wide config, and that `retasc setup` is what wires the harness you named.
 
+</Accordion>
+
 ## 1.37.0 (2026-08-26)
+
+- **RTSC-749** — `retasc triage` reads and approves work filed from outside your org.
+
+<Accordion title="Full notes">
 
 - **RTSC-749** — `retasc triage` reads and approves work filed from outside your org. Work
   that arrives through a GitHub or GitLab connector is written by whoever can file on that
@@ -551,7 +738,13 @@ retasc --version        # what you have
   stays the recommended surface: an agent that can drive a real PTY on your machine could
   drive this command too, and only logging the CLI out takes that away.
 
+</Accordion>
+
 ## 1.36.1 (2026-08-25)
+
+- **RTSC-645** — `retasc gate install` no longer throws away your edits.
+
+<Accordion title="Full notes">
 
 - **RTSC-645** — `retasc gate install` no longer throws away your edits. It rewrites the
   commit-msg hook and the Action on every run, so a gate you had customized (say, one that
@@ -563,7 +756,13 @@ retasc --version        # what you have
   replaced silently as before, including when you re-key the gate to a different prefix, so
   the common path gained no prompts and no flags.
 
+</Accordion>
+
 ## 1.36.0 (2026-08-25)
+
+- **RTSC-520** — the CLI now says when it is out of date.
+
+<Accordion title="Full notes">
 
 - **RTSC-520** — the CLI now says when it is out of date. There was no version check
   anywhere in `cli/`, so a global install went stale silently and stayed that way for as
@@ -593,7 +792,13 @@ retasc --version        # what you have
   the server; below it the notice says so plainly, because "a newer version exists" and
   "what this build just told you may be false" are different problems.
 
+</Accordion>
+
 ## 1.35.2 (2026-08-25)
+
+- **RTSC-743** — the last CLI replies that answered a person with a machine shape now answer in sentences.
+
+<Accordion title="Full notes">
 
 - **RTSC-743** — the last CLI replies that answered a person with a machine shape now
   answer in sentences. A failed MCP request used to paste 200 characters of the raw
@@ -613,7 +818,13 @@ retasc --version        # what you have
   that failure carries no verdict on your key, and re-binding to fix it mints a new one
   for nothing.
 
+</Accordion>
+
 ## 1.35.1 (2026-08-25)
+
+- **RTSC-478** — a network failure now names its own cause.
+
+<Accordion title="Full notes">
 
 - **RTSC-478** — a network failure now names its own cause. Node reports every failed
   `fetch` as the literal `fetch failed` and puts the diagnosis on `err.cause.code`, which
@@ -624,7 +835,16 @@ retasc --version        # what you have
   both causes: a corporate TLS-inspecting proxy, and a Homebrew `openssl@3` keg that lost
   its CA symlink (the confusing one, since `curl` and `npm` keep working).
 
+</Accordion>
+
 ## 1.35.0 (2026-08-25)
+
+- **RTSC-709** — `retasc issue show` and `retasc issue list` read the queue from a terminal.
+- **RTSC-709** — `retasc checkpoint` and `retasc check-claim` close the claim lifecycle.
+- **RTSC-709** — `done` reads the issue back before it closes it.
+- **RTSC-709** — `cli/README.md` now records which MCP tools are deliberately Dash-and-MCP-only, and why, so their absence from the CLI reads as a decision rather than an oversight.
+
+<Accordion title="Full notes">
 
 - **RTSC-709** — `retasc issue show` and `retasc issue list` read the queue from a
   terminal. `tidy` and `done` both reason about issue status, and until now a human asked
@@ -647,7 +867,13 @@ retasc --version        # what you have
 - **RTSC-709** — `cli/README.md` now records which MCP tools are deliberately Dash-and-MCP-only,
   and why, so their absence from the CLI reads as a decision rather than an oversight.
 
+</Accordion>
+
 ## 1.34.1 (2026-08-25)
+
+- **RTSC-741** — a rejected write no longer costs you the lease.
+
+<Accordion title="Full notes">
 
 - **RTSC-741** — a rejected write no longer costs you the lease. The watchdog decided
   when to stop heartbeating an issue by looking at the request you sent, never at whether
@@ -660,7 +886,14 @@ retasc --version        # what you have
   is the expected first attempt for any agent that has not learned the field yet, so a
   rare edge became a common one.
 
+</Accordion>
+
 ## 1.34.0 (2026-08-24)
+
+- **RTSC-731** — `bind` stops asking whether you want to join an org you are already in.
+- **RTSC-731** — the invite questions hand back a value your agent can actually use.
+
+<Accordion title="Full notes">
 
 - **RTSC-731** — `bind` stops asking whether you want to join an org you are already in.
   A teammate given access to a second project was shown "Join Retasc, or start your own
@@ -676,7 +909,13 @@ retasc --version        # what you have
   told got "no invite to join is waiting for you", while one that ignored the instruction
   and read the prose succeeded. The accept option now carries the organization itself.
 
+</Accordion>
+
 ## 1.33.0 (2026-08-23)
+
+- **RTSC-722** — the setup questions arrive as a matrix your agent can actually render.
+
+<Accordion title="Full notes">
 
 - **RTSC-722** — the setup questions arrive as a matrix your agent can actually render.
   1.32.0 sent three of the four as free text, and a picker cannot draw a question with no
@@ -690,7 +929,15 @@ retasc --version        # what you have
   confirming is which folder gets connected. Picking a project in an org that has more
   than four is a picker too now, instead of an unrenderable list of every project.
 
+</Accordion>
+
 ## 1.32.0 (2026-08-23)
+
+- **RTSC-720** — when `bind --json` stops to ask, it hands your agent the exact questions as data: what to call the workspace, the first project, its prefix, and a confirmation naming the precise folder about to be connected — with the flag each answer fills.
+- **RTSC-721** — `retasc unbind` exists.
+- **RTSC-721** — `bind` heals a dead binding instead of interrogating you about it.
+
+<Accordion title="Full notes">
 
 - **RTSC-720** — when `bind --json` stops to ask, it hands your agent the exact questions
   as data: what to call the workspace, the first project, its prefix, and a confirmation
@@ -713,7 +960,13 @@ retasc --version        # what you have
   failure still lands on the cautious path, because clearing a healthy credential to fix
   a problem your machine does not have would be worse than asking.
 
+</Accordion>
+
 ## 1.31.1 (2026-08-23)
+
+- **RTSC-715** — setup no longer finishes by wiring a `retasc` command that is not there.
+
+<Accordion title="Full notes">
 
 - **RTSC-715** — setup no longer finishes by wiring a `retasc` command that is not there.
   Run as `npx @retasc/cli@latest bind`, the CLI asked whether `retasc` was on your PATH
@@ -723,7 +976,22 @@ retasc --version        # what you have
   reported success. It now checks that the command it found will still resolve afterwards,
   and falls back to a global install or a pinned `npx` launcher when it will not.
 
+</Accordion>
+
 ## 1.31.0 (2026-08-23)
+
+- **RTSC-713** — your agent can set Retasc up for you.
+- **RTSC-713** — `bind --json` reports what it did and what it still needs, one JSON object per line, and prints the approve URL the moment it exists rather than at the end.
+- **RTSC-713** — a setup that paused is no longer dressed as a crash.
+- **RTSC-713** — sign-in no longer refuses merely because nothing is attached to a terminal.
+- **RTSC-713** — every outcome names the absolute folder it is about to connect, so a wrong one can be caught before anything is written.
+- **RTSC-691** — `retasc login` opens your browser instead of asking you to retype an eight-character code.
+- **RTSC-691** — the code path stays for the places a browser round trip cannot work: inside a container, and over SSH, where the redirect would target `127.0.0.1` on whichever machine opened the link and so could never reach the CLI waiting on the remote host.
+- **RTSC-691** — `retasc release <RTSC-NN> --claim-token <token>` exists.
+- **RTSC-691** — `retasc bind` prints "restart your agent" whether or not a human is watching.
+- **RTSC-691** — `bind` clears the credential-less bootstrap entry that would otherwise shadow the binding it just wrote, when the two land in different scopes.
+
+<Accordion title="Full notes">
 
 - **RTSC-713** — your agent can set Retasc up for you. It runs `bind` itself now, so
   nothing asks you to open a terminal and type a command: you paste one line into the
@@ -766,7 +1034,14 @@ retasc --version        # what you have
 - **RTSC-691** — `bind` clears the credential-less bootstrap entry that would otherwise
   shadow the binding it just wrote, when the two land in different scopes.
 
+</Accordion>
+
 ## 1.30.0 (2026-08-20)
+
+- **RTSC-681** — your agent can read a file you attached to an issue.
+- **RTSC-681** — downloads land under `.retasc/attachments/` in your workspace, one folder per attachment, never overwriting anything and never following a symlink, in a directory that ignores itself so a customer's certificate cannot be committed by accident.
+
+<Accordion title="Full notes">
 
 - **RTSC-681** — your agent can read a file you attached to an issue. Uploading has
   been one call since 1.24.0; reading one back needed an API key the model does not
@@ -783,7 +1058,14 @@ retasc --version        # what you have
   the one place it owns. Copy the file where you want it and your normal tools ask you
   first, which is the point.
 
+</Accordion>
+
 ## 1.29.0 (2026-08-19)
+
+- **RTSC-672** — every command we hand out now says `npx @retasc/cli@latest`.
+- **RTSC-672** — a first-run failure names the build that produced it, so "it still doesn't work" and "you're running last week's CLI" stop looking identical.
+
+<Accordion title="Full notes">
 
 - **RTSC-672** — every command we hand out now says `npx @retasc/cli@latest`. npx caches
   by spec, so a bare `npx @retasc/cli` can keep serving whatever version you first ran —
@@ -794,7 +1076,14 @@ retasc --version        # what you have
 - **RTSC-672** — a first-run failure names the build that produced it, so "it still
   doesn't work" and "you're running last week's CLI" stop looking identical.
 
+</Accordion>
+
 ## 1.28.0 (2026-08-19)
+
+- **RTSC-676** — signing in opens your browser.
+- **RTSC-676** — the finish screen's closing lines are flush left, and it ends with a blank line instead of welding the shell prompt to the last thing you read.
+
+<Accordion title="Full notes">
 
 - **RTSC-676** — signing in opens your browser. It used to print a URL and an
   eight-character code and leave you to switch windows, navigate, and retype it. Now the
@@ -806,7 +1095,13 @@ retasc --version        # what you have
 - **RTSC-676** — the finish screen's closing lines are flush left, and it ends with a
   blank line instead of welding the shell prompt to the last thing you read.
 
+</Accordion>
+
 ## 1.27.0 (2026-08-19)
+
+- **RTSC-673** — `bind` ends by telling you what to do, not by dumping config.
+
+<Accordion title="Full notes">
 
 - **RTSC-673** — `bind` ends by telling you what to do, not by dumping config. It used to
   close on fourteen lines of MCP JSON plus "(Claude Code CLI not detected)": a block
@@ -818,7 +1113,14 @@ retasc --version        # what you have
   you're building, a project with work in it tells you to say "next issue". The JSON still
   prints when the marker could not be written anywhere, which is the case it exists for.
 
+</Accordion>
+
 ## 1.26.0 (2026-08-19)
+
+- **RTSC-670** — `retasc bind` can sign you in again.
+- **RTSC-671** — errors name the command you actually ran.
+
+<Accordion title="Full notes">
 
 - **RTSC-670** — `retasc bind` can sign you in again. It has opened with the device flow
   since 1.20-era, but a leftover session guard in the command wrapper exited first, so on
@@ -833,7 +1135,13 @@ retasc --version        # what you have
   first" message now renders `npx -y @retasc/cli@<version> …` or `retasc …` to match how
   you started it.
 
+</Accordion>
+
 ## 1.25.0 (2026-08-19)
+
+- **RTSC-669** — the invite project picker takes several projects.
+
+<Accordion title="Full notes">
 
 - **RTSC-669** — the invite project picker takes several projects. 1.24.0 shipped it
   single-select, which left "two of these four" expressible nowhere: the workaround —
@@ -844,7 +1152,15 @@ retasc --version        # what you have
   individual ones: that's a contradiction about the widest grant there is, so it re-asks
   instead of guessing which half you meant.
 
+</Accordion>
+
 ## 1.24.0 (2026-08-19)
+
+- **RTSC-667** — `retasc members invite` asks instead of demanding ids.
+- **RTSC-666** — the PROJECTS column in `retasc members list` comma-joins, so two projects read as `XTRO, XTRO Marketing` rather than running together.
+- **RTSC-664** — invite someone to one project, not the whole org.
+
+<Accordion title="Full notes">
 
 - **RTSC-667** — `retasc members invite` asks instead of demanding ids. It used to
   require `--org-id`, and the new `--project-id` made that worse: nothing in the CLI
@@ -866,7 +1182,13 @@ retasc --version        # what you have
   "none". Enforcement is server-side at every door, agent auth included: a key whose project
   leaves its principal's scope stops authenticating on its very next call.
 
+</Accordion>
+
 ## 1.23.0 (2026-08-17)
+
+- **RTSC-660** — the proxy attaches files for you.
+
+<Accordion title="Full notes">
 
 - **RTSC-660** — the proxy attaches files for you. Attaching a file was the one Retasc write
   an agent could not finish on its own: the server handed back an upload URL and told the
@@ -882,7 +1204,13 @@ retasc --version        # what you have
   with its resolved path. Calls that pass `contentBase64` instead are forwarded to the server
   untouched.
 
+</Accordion>
+
 ## 1.22.0 (2026-08-12)
+
+- **RTSC-646** — the watchdog now says when it is **not** renewing a lease.
+
+<Accordion title="Full notes">
 
 - **RTSC-646** — the watchdog now says when it is **not** renewing a lease. Its lease set is
   in-memory and built only from claim traffic this proxy saw, so a claim made in another
@@ -897,7 +1225,13 @@ retasc --version        # what you have
   heartbeats" — it names both bounds: the proxy must be running, and it only renews claims
   it saw this session make.
 
+</Accordion>
+
 ## 1.21.1 (2026-08-10)
+
+- **RTSC-643** — `retasc gate install` keys the gate to **this folder's** project, not the machine-wide default.
+
+<Accordion title="Full notes">
 
 - **RTSC-643** — `retasc gate install` keys the gate to **this folder's** project, not the
   machine-wide default. It used to read `defaultProjectPrefix` (stamped by whichever project
@@ -908,7 +1242,13 @@ retasc --version        # what you have
   came from, warns when the global default disagrees, and only uses the global default when
   the folder is genuinely unbound. Bound-but-unresolvable fails loudly instead of guessing.
 
+</Accordion>
+
 ## 1.21.0 (2026-08-07)
+
+- **RTSC-527** — the re-import warning dates the last import in **your** timezone.
+
+<Accordion title="Full notes">
 
 - **RTSC-527** — the re-import warning dates the last import in **your** timezone. The day
   was formatted from `toISOString()`, which rolls back one east of Greenwich: at UTC+7 an
@@ -917,14 +1257,27 @@ retasc --version        # what you have
   in this release, and moved onto the same durable per-source history the CLI already read,
   so the two surfaces now describe one import the same way.
 
+</Accordion>
+
 ## 1.20.0 (2026-08-04)
+
+- **RTSC-561** — the org gained an **admin** role, and the CLI stopped refusing it.
+
+<Accordion title="Full notes">
 
 - **RTSC-561** — the org gained an **admin** role, and the CLI stopped refusing it.
   `retasc billing` gated on `role !== "owner"` client-side, so it would have refused an
   admin locally for a call the server allows. Owner-only copy in `bind` and the command
   help now names both roles.
 
+</Accordion>
+
 ## 1.19.0 (2026-08-03)
+
+- **RTSC-495** — `retasc bind --setup <code>` sets a folder up with no sign-in and nothing to answer, so an agent can do it on behalf of someone who does not use a terminal.
+- **RTSC-532** — the agent says which folder it is in, and the key remembers.
+
+<Accordion title="Full notes">
 
 - **RTSC-495** — `retasc bind --setup <code>` sets a folder up with no sign-in and nothing
   to answer, so an agent can do it on behalf of someone who does not use a terminal.
@@ -955,7 +1308,13 @@ retasc --version        # what you have
   The key it creates is named after that folder, so the Keys page shows which folder each
   key belongs to (`client-a`) instead of naming them all after the project (`ENG key`).
 
+</Accordion>
+
 ## 1.18.0 (2026-08-02)
+
+- **RTSC-530** — setting up from scratch now asks where your work comes from, and imports it in the same command.
+
+<Accordion title="Full notes">
 
 - **RTSC-530** — setting up from scratch now asks where your work comes from, and imports it
   in the same command.
@@ -984,7 +1343,13 @@ retasc --version        # what you have
   just picking from the list. Declining at the import confirmation falls back to naming a
   project rather than abandoning setup: you still asked to bind the folder.
 
+</Accordion>
+
 ## 1.17.0 (2026-08-02)
+
+- **RTSC-529** — the column mapping is a numbered picker, like every other prompt.
+
+<Accordion title="Full notes">
 
 - **RTSC-529** — the column mapping is a numbered picker, like every other prompt.
 
@@ -1006,7 +1371,13 @@ retasc --version        # what you have
   Typing the word still works for anyone who has learned the vocabulary; it just isn't what
   the prompt advertises.
 
+</Accordion>
+
 ## 1.16.1 (2026-08-02)
+
+- **RTSC-528** — two things the first real `retasc import` run turned up.
+
+<Accordion title="Full notes">
 
 - **RTSC-528** — two things the first real `retasc import` run turned up.
 
@@ -1029,7 +1400,13 @@ retasc --version        # what you have
   The suggestion is no longer repeated among the alternatives, which is what made the old
   line read as four equal options behind a mysterious bracket.
 
+</Accordion>
+
 ## 1.16.0 (2026-08-02)
+
+- **RTSC-526** — `retasc import` catches up with the Dash on four things.
+
+<Accordion title="Full notes">
 
 - **RTSC-526** — `retasc import` catches up with the Dash on four things.
 
@@ -1051,7 +1428,13 @@ retasc --version        # what you have
   the mapping and the moment the import runs, its issues land in `todo`. They used to show
   as a number; now they are listed, with what to do about it.
 
+</Accordion>
+
 ## 1.15.0 (2026-08-02)
+
+- **RTSC-524** — new command: `retasc import`.
+
+<Accordion title="Full notes">
 
 - **RTSC-524** — new command: `retasc import`. Bring a Linear, Jira, Asana, ClickUp or
   Shortcut project across without opening a browser.
@@ -1085,7 +1468,13 @@ retasc --version        # what you have
   imported identity the migration just created for you, through the same prompt
   `retasc join` uses.
 
+</Accordion>
+
 ## 1.14.0 (2026-08-02)
+
+- **RTSC-523** — setup asks before installing anything on your machine.
+
+<Accordion title="Full notes">
 
 - **RTSC-523** — setup asks before installing anything on your machine.
 
@@ -1118,7 +1507,13 @@ retasc --version        # what you have
   them seconds and a network dependency every single time. `--no-install` on `bind` and
   `join` declines without a TTY, for a developer whose own agent is doing the setup.
 
+</Accordion>
+
 ## 1.13.1 (2026-08-02)
+
+- **RTSC-522** — the changelog is public, and five releases that were never written down now are.
+
+<Accordion title="Full notes">
 
 - **RTSC-522** — the changelog is public, and five releases that were never written down now
   are.
@@ -1136,7 +1531,13 @@ retasc --version        # what you have
   GitHub", which stopped being the whole truth at 1.11.0, and the bug-report link pointed at
   a private repository that 404s for everyone npm showed it to.
 
+</Accordion>
+
 ## 1.13.0 (2026-08-02)
+
+- **RTSC-521** — five commands stopped answering you with a JSON dump.
+
+<Accordion title="Full notes">
 
 - **RTSC-521** — five commands stopped answering you with a JSON dump.
 
@@ -1177,7 +1578,14 @@ retasc --version        # what you have
 
   `whoami`'s binding block is unchanged. It was already the useful half.
 
+</Accordion>
+
 ## 1.12.0 (2026-08-02)
+
+- **RTSC-519** — `retasc bind` now tells you it finished, and what to do next.
+- **RTSC-507** — "none of these are me" now covers the tools you were asked about, not the whole org forever.
+
+<Accordion title="Full notes">
 
 - **RTSC-519** — `retasc bind` now tells you it finished, and what to do next.
 
@@ -1232,7 +1640,13 @@ retasc --version        # what you have
   run. Against an older backend the CLI would say a later import will ask again, and it
   would not.
 
+</Accordion>
+
 ## 1.11.0 (2026-08-02)
+
+- **RTSC-508** — you can now sign in with **Google**, not only GitHub.
+
+<Accordion title="Full notes">
 
 - **RTSC-508** — you can now sign in with **Google**, not only GitHub.
 
@@ -1284,7 +1698,13 @@ retasc --version        # what you have
   (`operations/runbooks/google-device-client.md`). Where they aren't set, the CLI says so
   in one line and names GitHub as the way in meanwhile, rather than failing opaquely.
 
+</Accordion>
+
 ## 1.10.0 (2026-08-01)
+
+- **RTSC-477** — new command: `retasc identity`.
+
+<Accordion title="Full notes">
 
 - **RTSC-477** — new command: `retasc identity`. It shows the people a migration carried
   into your org and asks which one is you — the same question `retasc join` asks, on demand.
@@ -1312,7 +1732,14 @@ retasc --version        # what you have
   migration that really did carry you across. That case now says so, and points at the
   owner, who is the only one who can undo it.
 
+</Accordion>
+
 ## 1.9.0 (2026-07-31)
+
+- **RTSC-492** — `retasc join` is now the whole of an invited teammate's setup, in one command run from the folder their agent will work in.
+- **RTSC-498** — `retasc doctor` now says which platform the CLI is actually tested on.
+
+<Accordion title="Full notes">
 
 **Behaviour change, read this if you script `join`:** `retasc join <code>` used to redeem an
 invite and stop. It now also sets up the folder you run it in — mints a key, writes a
@@ -1372,7 +1799,13 @@ there is no TTY to run one in.
   properly; anything else is told it's untested without being promised a roadmap it
   isn't on.
 
+</Accordion>
+
 ## 1.8.0 (2026-07-31)
+
+- **RTSC-493** — the MCP marker no longer names a command that may not exist.
+
+<Accordion title="Full notes">
 
 - **RTSC-493** — the MCP marker no longer names a command that may not exist. It
   used to hardcode `retasc`, which is only on PATH after a global install — but the
@@ -1391,7 +1824,13 @@ there is no TTY to run one in.
   `retasc doctor` now checks the same thing, so a folder bound by an older version
   reports why its agent cannot start and names the repair.
 
+</Accordion>
+
 ## 1.7.2 (2026-07-21)
+
+- **RTSC-297** — `retasc bind` no longer strands a new org silently.
+
+<Accordion title="Full notes">
 
 - **RTSC-297** — `retasc bind` no longer strands a new org silently. It creates
   the org server-side before the project picker runs, so aborting at the project
@@ -1402,7 +1841,13 @@ there is no TTY to run one in.
   before the workspace is bound. Selecting a pre-existing org and then aborting
   is untouched — nothing is reclaimed.
 
+</Accordion>
+
 ## 1.7.1 (2026-07-21)
+
+- **RTSC-321** — the liveness watchdog now stops heartbeating an issue the moment it moves to `review` (RTSC-257): the server releases the lease there, so the proxy no longer pings a dead lease until the next heartbeat fails.
+
+<Accordion title="Full notes">
 
 - **RTSC-321** — the liveness watchdog now stops heartbeating an issue the moment
   it moves to `review` (RTSC-257): the server releases the lease there, so the
@@ -1412,7 +1857,13 @@ there is no TTY to run one in.
   the failed-heartbeat path, since it can't be told apart from a `doing → todo`
   edit by request args alone.
 
+</Accordion>
+
 ## 1.7.0 (2026-07-21)
+
+- **RTSC-306** — `retasc claim` / `retasc next` now pull **lane-scoped by default**: only issues assigned to your principal or left unassigned, never another human's work.
+
+<Accordion title="Full notes">
 
 - **RTSC-306** — `retasc claim` / `retasc next` now pull **lane-scoped by
   default**: only issues assigned to your principal or left unassigned, never
@@ -1422,14 +1873,27 @@ there is no TTY to run one in.
   ready work is stranded in another lane, the CLI says so and points you at
   `--all-lanes` instead of reading as "nothing to do".
 
+</Accordion>
+
 ## 1.6.3 (2026-07-20)
+
+- **RTSC-266** — README now links the setup page, the docs quickstart, and the parallel-agents guide instead of only the bare homepage.
+
+<Accordion title="Full notes">
 
 - **RTSC-266** — README now links the setup page, the docs quickstart, and the
   parallel-agents guide instead of only the bare homepage. npm package pages are
   a real entry point and only re-render on publish, so this ships as its own
   patch release. No code changes.
 
+</Accordion>
+
 ## 1.6.2 (2026-07-20)
+
+- **RTSC-269** — `retasc bind`'s org/project picker no longer treats a typo as "create new".
+- **RTSC-269** — the picker gives up after 3 invalid answers instead of looping, and a closed stdin (Ctrl-D, or a pipe running dry) now exits with an error rather than hanging.
+
+<Accordion title="Full notes">
 
 - **RTSC-269** — `retasc bind`'s org/project picker no longer treats a typo as
   "create new". Answering `1)` (a fumbled `1`) used to select nothing and fall
@@ -1443,7 +1907,14 @@ there is no TTY to run one in.
   rather than hanging. `readline.question()` never settles at EOF, so any prompt
   in `bind` could previously wedge the CLI with no output and no exit.
 
+</Accordion>
+
 ## 1.6.1 (2026-07-20)
+
+- **RTSC-263** — owner/member permission denials now print a readable reason and the next step instead of an opaque `Server Error`.
+- **RTSC-263** — `formatError` now strips U+0085, U+2028 and U+2029 in addition to the ASCII control characters.
+
+<Accordion title="Full notes">
 
 - **RTSC-263** — owner/member permission denials now print a readable reason and the
   next step instead of an opaque `Server Error`. Hitting an owner-only command as a
@@ -1455,7 +1926,18 @@ there is no TTY to run one in.
   interpolating a user-controlled name could previously forge extra lines in terminal
   output.
 
+</Accordion>
+
 ## 1.6.0 (2026-07-20)
+
+- **RTSC-262** — `doctor` and `whoami` no longer report "not bound" for a folder whose Retasc MCP is registered in **Claude Code local scope** (the `claude mcp add` default — stored in Claude's own config, not `./.mcp.json`).
+- **RTSC-262** — `claim`/`tidy`/`done` resolve the key through the same entry selection, so the CLI can no longer say "✓ bound" in one command and "No Retasc MCP key found" in another for the same folder.
+- **RTSC-262** — the illegal-global-server check is now **presence-based**: a hand-added user-scope entry is detected in every shape (including keyless), and an unreadable `~/.claude.json` reports "cannot verify" instead of a false all-clear.
+- **RTSC-262** — honest failure modes: server-unreachable (timeouts, 5xx, rate limits) is no longer reported as a rejected key, `whoami`/`doctor` requests are bounded by a 10s timeout, and server-derived strings are stripped of control characters before printing.
+- **RTSC-262** — `bind` hardening: re-binding to the *same* org/project is an idempotent success (no key churn for provisioning scripts); replacing a *different* binding non-interactively without `--yes` now fails loudly with exit 1 instead of silently succeeding as a no-op; a cloned repo's committed marker no longer triggers the replace prompt (minting your own key under it is what `bind` is for).
+- **RTSC-262** — (security) a keystore-resolved key now only ever travels to the keystore's own URL — a hostile `RETASC_MCP_URL` planted next to a committed secret-free marker can no longer redirect a teammate's real key.
+
+<Accordion title="Full notes">
 
 - **RTSC-262** — `doctor` and `whoami` no longer report "not bound" for a folder whose
   Retasc MCP is registered in **Claude Code local scope** (the `claude mcp add` default —
@@ -1481,7 +1963,13 @@ there is no TTY to run one in.
   keystore's own URL — a hostile `RETASC_MCP_URL` planted next to a committed secret-free
   marker can no longer redirect a teammate's real key.
 
+</Accordion>
+
 ## 1.5.0 (2026-07-20)
+
+- **RTSC-261** — backend failures you're meant to act on now print what actually went wrong instead of `✗ Server Error`.
+
+<Accordion title="Full notes">
 
 - **RTSC-261** — backend failures you're meant to act on now print what actually went
   wrong instead of `✗ Server Error`. Convex masks any plain server throw in production, so
@@ -1503,7 +1991,14 @@ there is no TTY to run one in.
   state. **Upgrade before your teammates redeem invites**: an older CLI can't read the new
   payload and prints it as raw JSON.
 
+</Accordion>
+
 ## 1.4.0 (2026-07-19)
+
+- **RTSC-279** — new `retasc billing` command: the org's whole billing picture in the terminal instead of only in the Dash.
+- **RTSC-279** — (server-side, no CLI change) the MCP usage meter now reports **two** clearly-named figures instead of one misleading `wouldBeBillUsd`: `lifetimeMeteredEstimateUsd` (all-time activity repriced at today's rate card — a diagnostic, not an amount owed) and `pendingUsd` (what is actually owed right now, the same figure the Dash shows).
+
+<Accordion title="Full notes">
 
 - **RTSC-279** — new `retasc billing` command: the org's whole billing picture in the
   terminal instead of only in the Dash. Prints the subscription and spending caps, what's
@@ -1521,7 +2016,13 @@ there is no TTY to run one in.
   same figure the Dash shows). A new `billing_summary` MCP tool exposes the full billing
   detail to agents whose human principal owns the org.
 
+</Accordion>
+
 ## 1.3.2 (2026-07-17)
+
+- **RTSC-250** — serialize `patchConfig` under a cross-process advisory lock so concurrent CLI/MCP processes can't lose an update.
+
+<Accordion title="Full notes">
 
 - **RTSC-250** — serialize `patchConfig` under a cross-process advisory lock so
   concurrent CLI/MCP processes can't lose an update. Previously a lock-free
@@ -1533,15 +2034,18 @@ there is no TTY to run one in.
   new owner's lock. Also sweeps orphaned `.config.json.<uuid>.tmp` files left by a
   hard kill, age-gated so a concurrent writer's in-flight temp is never touched.
 
+</Accordion>
+
 ## 1.3.1 (2026-07-17)
 
-- **RTSC-179** — atomic config write (temp file + rename) so a reader never sees
-  a truncated `config.json`; adds `RETASC_DIR` support.
-- **RTSC-178** — token refresh now classifies transient backend errors vs a
-  genuinely expired refresh token, so a one-off backend blip no longer drags a
-  valid session through a full device re-login.
+- **RTSC-179** — atomic config write (temp file + rename) so a reader never sees a truncated `config.json`; adds `RETASC_DIR` support.
+- **RTSC-178** — token refresh now classifies transient backend errors vs a genuinely expired refresh token, so a one-off backend blip no longer drags a valid session through a full device re-login.
 
 ## 1.3.0 (2026-07-08)
+
+- Auto-reap branches on MCP close: when the watchdog proxy observes a session's own claim close terminally and successfully, it removes that issue's clean, merged `rtsc-NN/*` worktree and branch out-of-band (`retasc tidy --prune --only <id>`), instead of orphaning them until a human ran `retasc tidy`.
+
+<Accordion title="Full notes">
 
 - Auto-reap branches on MCP close: when the watchdog proxy observes a session's
   own claim close terminally and successfully, it removes that issue's clean,
@@ -1549,18 +2053,21 @@ there is no TTY to run one in.
   <id>`), instead of orphaning them until a human ran `retasc tidy`. Exposes
   `tidy --only <RTSC-NN>`.
 
+</Accordion>
+
 ## 1.2.4 (2026-07-07)
 
-- **RTSC-170** — credential-file permission hardening: `config.json`,
-  `bindings.json`, and the fallback `.mcp.json` are written `0600` (dirs `0700`)
-  with no world-readable creation window.
+- **RTSC-170** — credential-file permission hardening: `config.json`, `bindings.json`, and the fallback `.mcp.json` are written `0600` (dirs `0700`) with no world-readable creation window.
 
 ## 1.2.3 (2026-07-05)
 
-- **RTSC-150** — watchdog `isClaimLost` fix: no longer drops a live lease when a
-  payload field merely contains the string `CLAIM_LOST`.
+- **RTSC-150** — watchdog `isClaimLost` fix: no longer drops a live lease when a payload field merely contains the string `CLAIM_LOST`.
 
 ## 1.2.2 (2026-07-04)
+
+- **RTSC-148** — `retasc claim` takes the issue as a positional argument, and never silently falls through to `next_issue`.
+
+<Accordion title="Full notes">
 
 - **RTSC-148** — `retasc claim` takes the issue as a positional argument, and never
   silently falls through to `next_issue`.
@@ -1571,7 +2078,13 @@ there is no TTY to run one in.
   Commander, which was how "claim this specific issue" quietly became "claim whatever is
   next".
 
+</Accordion>
+
 ## 1.2.1 (2026-07-04)
+
+- **RTSC-143** — one tolerant tool-result parser, and a loud failure when the claim fence is off.
+
+<Accordion title="Full notes">
 
 - **RTSC-143** — one tolerant tool-result parser, and a loud failure when the claim fence
   is off.
@@ -1586,12 +2099,17 @@ there is no TTY to run one in.
   the proxy appends that notice to `whoami` so the agent sees the degraded state rather than
   it sitting in an MCP log file nobody opens.
 
+</Accordion>
+
 ## 1.2.0 (2026-07-04)
 
-- **RTSC-137** — org-membership commands: `retasc members invite|list|revoke` and
-  `retasc join`.
+- **RTSC-137** — org-membership commands: `retasc members invite|list|revoke` and `retasc join`.
 
 ## 1.1.3 (2026-07-02)
+
+- **RTSC-131** — `retasc --version` reads `package.json` instead of a frozen literal.
+
+<Accordion title="Full notes">
 
 - **RTSC-131** — `retasc --version` reads `package.json` instead of a frozen literal.
 
@@ -1599,12 +2117,17 @@ there is no TTY to run one in.
   now read at runtime relative to the compiled file, making `package.json` the single source
   of truth.
 
+</Accordion>
+
 ## 1.1.2 (2026-07-02)
 
-- **RTSC-130** — republish the bind auto-wire fix that had changed CLI source
-  without a version bump (npm versions are immutable).
+- **RTSC-130** — republish the bind auto-wire fix that had changed CLI source without a version bump (npm versions are immutable).
 
 ## 1.1.1 (2026-06-28)
+
+- **RTSC-98** — `claim`, `tidy` and `done` resolve the keystore key through the same resolver the proxy uses.
+
+<Accordion title="Full notes">
 
 - **RTSC-98** — `claim`, `tidy` and `done` resolve the keystore key through the same
   resolver the proxy uses.
@@ -1615,7 +2138,13 @@ there is no TTY to run one in.
   one (`resolveConn` in `lib/keystore.ts`): explicit `RETASC_MCP_KEY`, then a legacy inline
   key, then the canonical secret-free marker. Legacy markers keep working.
 
+</Accordion>
+
 ## 1.1.0 (2026-06-28)
+
+- **RTSC-92** — workspace keys move to a home keystore, and the folder marker becomes secret-free.
+
+<Accordion title="Full notes">
 
 - **RTSC-92** — workspace keys move to a home keystore, and the folder marker becomes
   secret-free.
@@ -1628,6 +2157,8 @@ there is no TTY to run one in.
   `doctor` reports whether a binding is keystore-backed or legacy, and flags a workspace id
   already bound at a different folder. A cloned repo whose marker has no key on this machine
   is reported as such rather than as broken.
+
+</Accordion>
 
 ## 1.0.0 (2026-06-27)
 
