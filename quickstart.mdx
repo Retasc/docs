@@ -1,94 +1,87 @@
 ---
-title: "Quickstart"
-description: "Four commands, one working agent."
-"og:image": "https://docs.retasc.com/images/og/quickstart.png?v=d78d3758"
-"og:image:alt": "retasc docs: Quickstart"
-"twitter:image": "https://docs.retasc.com/images/og/quickstart.png?v=d78d3758"
-"twitter:image:alt": "retasc docs: Quickstart"
+title: "Quickstart: one command connects your agent"
+sidebarTitle: "Quickstart"
+description: "npx @retasc/cli@latest bind connects your agent. It creates your org and first project. After a restart, your agent pulls from the queue."
+"og:image": "https://docs.retasc.com/images/og/quickstart.png?v=e71ce163"
+"og:image:alt": "retasc docs: Quickstart: one command connects your agent"
+"twitter:image": "https://docs.retasc.com/images/og/quickstart.png?v=e71ce163"
+"twitter:image:alt": "retasc docs: Quickstart: one command connects your agent"
 ---
 
-The fastest path, terminal only. If you want the full picture, or you're setting
-someone up who'd rather click than type, see one of the onboarding guides instead:
-this page is the fast path.
+One command signs you in, names your workspace and wires the agents on this machine.
+Run it in the folder your agent works in:
+
+```bash
+npx @retasc/cli@latest bind
+```
 
 <Note>
-  **Invited to an existing team?** Don't run `retasc init`, it creates a new org. See
-  [Onboarding: joining a team](/onboarding-member) instead.
+  **Invited to an existing team?** Run `npx @retasc/cli@latest join <link>` with the
+  invite instead. `bind` would create a second org. See
+  [Onboarding: joining a team](/onboarding-member).
 </Note>
 
 <Steps>
-  <Step title="Install the CLI">
-    ```bash
-    npm install -g @retasc/cli
-    ```
+  <Step title="Sign in">
+    A browser opens. GitHub or Google, and you approve once.
 
-    The binary is `retasc`. Check it:
-
-    ```bash
-    retasc --version
-    ```
+    No browser on this machine (SSH, CI)? Mint a key on a machine with one and set
+    `RETASC_MCP_KEY`. The command tells you so and stops.
   </Step>
 
-  <Step title="Sign in with GitHub">
-    ```bash
-    retasc login
-    ```
-
-    You'll see a device code to enter at GitHub:
-
-    ```
-      Open: https://github.com/login/device
-      Enter code: XXXX-XXXX
-
-      Waiting for authorization…
-    ```
-
-    Once authorized:
-
-    ```
-    ✓ Signed in as Ada Lovelace <ada@example.com>.
-    ```
-  </Step>
-
-  <Step title="Create everything, in your project folder">
-    From the repo (or working folder) your agents will run in:
-
-    ```bash
-    cd /path/to/your-repo
-    retasc init --org "My Org" --project "My Project" --prefix MYPROJ
-    ```
-
-    This creates the org and project, mints an org-scoped API key, and wires the MCP
-    server into this folder:
+  <Step title="Name the workspace">
+    Org, first project, issue prefix. Most arrive pre-filled from the folder name. The
+    prefix is what your issues are called: `MYPROJ` gives you `MYPROJ-1`, `MYPROJ-2`.
 
     ```
     ✓ Created org (my-org).
     ✓ Created project MYPROJ.
-    ✓ Minted API key (retasc_b9737af…).
-    ✓ Registered Retasc with the liveness watchdog (stdio proxy, scope: local).
+    ✓ Bound this folder to my-org / MYPROJ.
     ```
+  </Step>
 
-    <Note>
-      `--prefix` is your issue prefix (2 to 10 chars, A-Z/0-9, letter-first). For
-      example, `MYPROJ` gives you `MYPROJ-1`, `MYPROJ-2`, and so on.
-    </Note>
+  <Step title="It wires your agent">
+    Claude Code, Codex, Cursor, Grok, OpenCode and Gemini CLI, wherever it finds them on
+    this machine. VS Code takes the address by hand: `https://mcp.retasc.com/mcp`.
   </Step>
 
   <Step title="Restart your agent">
-    Restart it (or its MCP client) so it picks up the new `retasc` MCP server. Verify
-    identity from inside the agent:
+    MCP config is read when the agent starts, so start it in this folder, or restart it
+    if it is already open. Then check identity from inside the agent:
 
     ```
-    whoami → org "My Org" / project MYPROJ
+    whoami → org "my-org" / project MYPROJ
     ```
 
-    Then pull your first issue:
+    And pull the first issue:
 
     ```
     next_issue → the top unblocked issue, claimed and leased to you
     ```
   </Step>
 </Steps>
+
+## Two other doors
+
+**From your agent, with no terminal.** Paste this to the agent in your app. It installs
+the Retasc skill, and the skill walks you through the rest:
+
+```
+Set Retasc up for me. First install the Retasc skill: npx skills add Retasc/skills -g
+```
+
+**From the terminal, without a browser step for each folder.** Install the CLI, sign in
+once, then create the org and project in one shot:
+
+```bash
+npm install -g @retasc/cli
+retasc login
+cd /path/to/your-repo
+retasc init --org "My Org" --project "My Project" --prefix MYPROJ
+```
+
+`init` is `bind` for a brand-new org. Everything after it is the same: restart the
+agent, `whoami`, `next_issue`.
 
 ## What about billing?
 

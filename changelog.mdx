@@ -1,10 +1,11 @@
 ---
-title: "Changelog"
-description: "Every published version of the Retasc CLI, newest first."
-"og:image": "https://docs.retasc.com/images/og/changelog.png?v=d21a296b"
-"og:image:alt": "retasc docs: Changelog"
-"twitter:image": "https://docs.retasc.com/images/og/changelog.png?v=d21a296b"
-"twitter:image:alt": "retasc docs: Changelog"
+title: "Changelog: every published CLI version"
+sidebarTitle: "Changelog"
+description: "Every Retasc CLI release includes the date it was published to npm. The release notes identify the issue behind every change."
+"og:image": "https://docs.retasc.com/images/og/changelog.png?v=eecded73"
+"og:image:alt": "retasc docs: Changelog: every published CLI version"
+"twitter:image": "https://docs.retasc.com/images/og/changelog.png?v=eecded73"
+"twitter:image:alt": "retasc docs: Changelog: every published CLI version"
 ---
 
 {/*
@@ -22,25 +23,9 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
-## 1.53.1 (2026-09-18)
+## 1.53.0
 
-- **RTSC-1042** — the proxy now sweeps this machine's dead worktrees on the first claim of a session.
-
-<Accordion title="Full notes">
-
-- **RTSC-1042** — the proxy now sweeps this machine's dead worktrees on the first
-  claim of a session. Reap used to run only when *this* session marked an issue
-  `done`, so an author who sent work to `review` kept the tree after the reviewer
-  merged and closed it on another laptop. `retasc tidy --prune --auto` deletes
-  local trees whose issue is `done` or `canceled` and whose commits are already
-  on trunk or fully pushed to origin, with a one-hour grace and a cap of ten per
-  session. A branch that never landed on trunk is not deleted from origin.
-  **Nothing to do**: the next claim on a machine with leftover trees starts the
-  drain.
-
-</Accordion>
-
-## 1.53.0 (2026-09-15)
+<div className="rt-when">2026-09-15</div>
 
 - **RTSC-1014** — every tool you start in a bound folder now gets its **own credential**, so one can be retired without stopping the others.
 
@@ -64,7 +49,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.52.0 (2026-09-14)
+## 1.52.0
+
+<div className="rt-when">2026-09-14</div>
 
 - **RTSC-958** — a user never names an agent, so `--agent <name>` is gone from `init`, `bind`, `key mint` and `join`.
 
@@ -91,7 +78,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.51.0 (2026-09-13)
+## 1.51.0
+
+<div className="rt-when">2026-09-13</div>
 
 - **RTSC-962** — the proxy now reports git worktrees nobody claimed, so Retasc can see work an agent started without saying so.
 
@@ -115,7 +104,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.50.0 (2026-09-11)
+## 1.50.0
+
+<div className="rt-when">2026-09-11</div>
 
 - **RTSC-901** — `retasc plan`: which subscription pays for each of your agents, listed and set one line per (agent, harness).
 - **RTSC-901** — `bind` asks the same question at setup, but only when `--runtime` was STATED.
@@ -139,7 +130,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.49.1 (2026-09-09)
+## 1.49.1
+
+<div className="rt-when">2026-09-09</div>
 
 - **RTSC-879** — the proxy sends NO `Authorization` header when it has no key, instead of `Bearer ` with nothing after it.
 
@@ -158,7 +151,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.49.0 (2026-09-09)
+## 1.49.0
+
+<div className="rt-when">2026-09-09</div>
 
 - **RTSC-879** — a committed `.mcp.json` now names `npx -y @retasc/cli@<version> mcp-proxy` instead of a bare `retasc`, so it starts on a machine that is not the one that wrote it.
 - **RTSC-879** — `retasc bind --json` can now sign in from a container.
@@ -205,7 +200,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.48.1 (2026-09-08)
+## 1.48.1
+
+<div className="rt-when">2026-09-08</div>
 
 - **RTSC-878** — `retasc doctor` no longer condemns the entry `retasc setup` writes.
 
@@ -233,7 +230,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.48.0 (2026-09-08)
+## 1.48.0
+
+<div className="rt-when">2026-09-08</div>
 
 - **RTSC-859** — `retasc key mint --hosted`: a key now says at mint what it is for.
 
@@ -260,7 +259,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.47.0 (2026-09-08)
+## 1.47.0
+
+<div className="rt-when">2026-09-08</div>
 
 - **RTSC-864** — `retasc key mint` now prints every remote-key config block a hosted agent can paste, including the TOML one that did not exist.
 
@@ -289,7 +290,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.46.0 (2026-09-08)
+## 1.46.0
+
+<div className="rt-when">2026-09-08</div>
 
 - **RTSC-855** — `retasc doctor` and `retasc setup` now say whether the **Retasc Agent Skill** is installed on this machine, and print the one command that installs it.
 
@@ -320,7 +323,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.45.0 (2026-09-08)
+## 1.45.0
+
+<div className="rt-when">2026-09-08</div>
 
 - **RTSC-862** — a binding now covers every **git worktree** of the repo it was made in.
 
@@ -349,7 +354,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.44.0 (2026-09-08)
+## 1.44.0
+
+<div className="rt-when">2026-09-08</div>
 
 - **RTSC-861** — the proxy now tells Retasc which CLI version it is.
 
@@ -369,7 +376,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.43.0 (2026-09-05)
+## 1.43.0
+
+<div className="rt-when">2026-09-05</div>
 
 - **RTSC-799** - `tidy`, `done` and `claim` now work out which branch is this repo's trunk instead of assuming it is called `main`.
 
@@ -419,7 +428,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.42.1 (2026-09-05)
+## 1.42.1
+
+<div className="rt-when">2026-09-05</div>
 
 - **RTSC-832** — the model now actually appears.
 
@@ -439,7 +450,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.42.0 (2026-09-05)
+## 1.42.0
+
+<div className="rt-when">2026-09-05</div>
 
 - **RTSC-821** — a session now reports WHICH MODEL ran it.
 
@@ -464,7 +477,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.41.1 (2026-09-04)
+## 1.41.1
+
+<div className="rt-when">2026-09-04</div>
 
 - **RTSC-812** — no runtime change.
 
@@ -478,7 +493,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.41.0 (2026-09-04)
+## 1.41.0
+
+<div className="rt-when">2026-09-04</div>
 
 - **RTSC-825** — every workspace now carries the name of the folder it is bound to.
 
@@ -497,7 +514,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.40.0 (2026-09-04)
+## 1.40.0
+
+<div className="rt-when">2026-09-04</div>
 
 - **RTSC-820** — every session now tells Retasc which conversation it is.
 
@@ -516,7 +535,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.39.4 (2026-09-03)
+## 1.39.4
+
+<div className="rt-when">2026-09-03</div>
 
 - **RTSC-810** — `retasc unbind` revokes the key it says it revokes.
 - **RTSC-810** — `retasc bind --org-id X --project-id Y` learns the project's prefix.
@@ -548,7 +569,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.39.3 (2026-09-02)
+## 1.39.3
+
+<div className="rt-when">2026-09-02</div>
 
 - **RTSC-801** — (security) `save_attachment_file` no longer reads a workspace's own secrets, and no longer follows a file swapped in after it was checked.
 
@@ -586,7 +609,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.39.2 (2026-09-02)
+## 1.39.2
+
+<div className="rt-when">2026-09-02</div>
 
 - **RTSC-808** — `retasc setup` no longer writes OpenCode's config into your real home when `RETASC_HOME` says otherwise.
 
@@ -604,7 +629,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.39.1 (2026-09-02)
+## 1.39.1
+
+<div className="rt-when">2026-09-02</div>
 
 - **RTSC-800** — (security) a keystore-resolved key now travels only to the keystore's own url, whether the competing url arrives in the `.mcp.json` entry or in the environment.
 
@@ -629,7 +656,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.39.0 (2026-08-30)
+## 1.39.0
+
+<div className="rt-when">2026-08-30</div>
 
 - **RTSC-793** — `retasc setup` now wires Cursor, OpenCode and Gemini CLI too, bringing it to six harnesses.
 
@@ -659,7 +688,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.38.2 (2026-08-30)
+## 1.38.2
+
+<div className="rt-when">2026-08-30</div>
 
 - **RTSC-789** — `bind` keeps this folder's key instead of minting a new one on every run.
 
@@ -681,7 +712,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.38.1 (2026-08-28)
+## 1.38.1
+
+<div className="rt-when">2026-08-28</div>
 
 - **RTSC-780 follow-up** — `retasc init` now sets a folder up the same way every other door does.
 
@@ -702,7 +735,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.38.0 (2026-08-28)
+## 1.38.0
+
+<div className="rt-when">2026-08-28</div>
 
 - **RTSC-780** — `retasc setup` wires Retasc into every MCP harness on the machine, once, and `retasc bind` now runs it for you.
 - **RTSC-781** — `--runtime` now says what it does.
@@ -742,7 +777,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.37.0 (2026-08-26)
+## 1.37.0
+
+<div className="rt-when">2026-08-26</div>
 
 - **RTSC-749** — `retasc triage` reads and approves work filed from outside your org.
 
@@ -762,7 +799,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.36.1 (2026-08-25)
+## 1.36.1
+
+<div className="rt-when">2026-08-25</div>
 
 - **RTSC-645** — `retasc gate install` no longer throws away your edits.
 
@@ -780,7 +819,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.36.0 (2026-08-25)
+## 1.36.0
+
+<div className="rt-when">2026-08-25</div>
 
 - **RTSC-520** — the CLI now says when it is out of date.
 
@@ -816,7 +857,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.35.2 (2026-08-25)
+## 1.35.2
+
+<div className="rt-when">2026-08-25</div>
 
 - **RTSC-743** — the last CLI replies that answered a person with a machine shape now answer in sentences.
 
@@ -842,7 +885,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.35.1 (2026-08-25)
+## 1.35.1
+
+<div className="rt-when">2026-08-25</div>
 
 - **RTSC-478** — a network failure now names its own cause.
 
@@ -859,7 +904,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.35.0 (2026-08-25)
+## 1.35.0
+
+<div className="rt-when">2026-08-25</div>
 
 - **RTSC-709** — `retasc issue show` and `retasc issue list` read the queue from a terminal.
 - **RTSC-709** — `retasc checkpoint` and `retasc check-claim` close the claim lifecycle.
@@ -891,7 +938,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.34.1 (2026-08-25)
+## 1.34.1
+
+<div className="rt-when">2026-08-25</div>
 
 - **RTSC-741** — a rejected write no longer costs you the lease.
 
@@ -910,7 +959,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.34.0 (2026-08-24)
+## 1.34.0
+
+<div className="rt-when">2026-08-24</div>
 
 - **RTSC-731** — `bind` stops asking whether you want to join an org you are already in.
 - **RTSC-731** — the invite questions hand back a value your agent can actually use.
@@ -933,7 +984,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.33.0 (2026-08-23)
+## 1.33.0
+
+<div className="rt-when">2026-08-23</div>
 
 - **RTSC-722** — the setup questions arrive as a matrix your agent can actually render.
 
@@ -953,7 +1006,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.32.0 (2026-08-23)
+## 1.32.0
+
+<div className="rt-when">2026-08-23</div>
 
 - **RTSC-720** — when `bind --json` stops to ask, it hands your agent the exact questions as data: what to call the workspace, the first project, its prefix, and a confirmation naming the precise folder about to be connected — with the flag each answer fills.
 - **RTSC-721** — `retasc unbind` exists.
@@ -984,7 +1039,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.31.1 (2026-08-23)
+## 1.31.1
+
+<div className="rt-when">2026-08-23</div>
 
 - **RTSC-715** — setup no longer finishes by wiring a `retasc` command that is not there.
 
@@ -1000,7 +1057,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.31.0 (2026-08-23)
+## 1.31.0
+
+<div className="rt-when">2026-08-23</div>
 
 - **RTSC-713** — your agent can set Retasc up for you.
 - **RTSC-713** — `bind --json` reports what it did and what it still needs, one JSON object per line, and prints the approve URL the moment it exists rather than at the end.
@@ -1058,7 +1117,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.30.0 (2026-08-20)
+## 1.30.0
+
+<div className="rt-when">2026-08-20</div>
 
 - **RTSC-681** — your agent can read a file you attached to an issue.
 - **RTSC-681** — downloads land under `.retasc/attachments/` in your workspace, one folder per attachment, never overwriting anything and never following a symlink, in a directory that ignores itself so a customer's certificate cannot be committed by accident.
@@ -1082,7 +1143,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.29.0 (2026-08-19)
+## 1.29.0
+
+<div className="rt-when">2026-08-19</div>
 
 - **RTSC-672** — every command we hand out now says `npx @retasc/cli@latest`.
 - **RTSC-672** — a first-run failure names the build that produced it, so "it still doesn't work" and "you're running last week's CLI" stop looking identical.
@@ -1100,7 +1163,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.28.0 (2026-08-19)
+## 1.28.0
+
+<div className="rt-when">2026-08-19</div>
 
 - **RTSC-676** — signing in opens your browser.
 - **RTSC-676** — the finish screen's closing lines are flush left, and it ends with a blank line instead of welding the shell prompt to the last thing you read.
@@ -1119,7 +1184,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.27.0 (2026-08-19)
+## 1.27.0
+
+<div className="rt-when">2026-08-19</div>
 
 - **RTSC-673** — `bind` ends by telling you what to do, not by dumping config.
 
@@ -1137,7 +1204,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.26.0 (2026-08-19)
+## 1.26.0
+
+<div className="rt-when">2026-08-19</div>
 
 - **RTSC-670** — `retasc bind` can sign you in again.
 - **RTSC-671** — errors name the command you actually ran.
@@ -1159,7 +1228,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.25.0 (2026-08-19)
+## 1.25.0
+
+<div className="rt-when">2026-08-19</div>
 
 - **RTSC-669** — the invite project picker takes several projects.
 
@@ -1176,7 +1247,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.24.0 (2026-08-19)
+## 1.24.0
+
+<div className="rt-when">2026-08-19</div>
 
 - **RTSC-667** — `retasc members invite` asks instead of demanding ids.
 - **RTSC-666** — the PROJECTS column in `retasc members list` comma-joins, so two projects read as `XTRO, XTRO Marketing` rather than running together.
@@ -1206,7 +1279,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.23.0 (2026-08-17)
+## 1.23.0
+
+<div className="rt-when">2026-08-17</div>
 
 - **RTSC-660** — the proxy attaches files for you.
 
@@ -1228,7 +1303,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.22.0 (2026-08-12)
+## 1.22.0
+
+<div className="rt-when">2026-08-12</div>
 
 - **RTSC-646** — the watchdog now says when it is **not** renewing a lease.
 
@@ -1249,7 +1326,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.21.1 (2026-08-10)
+## 1.21.1
+
+<div className="rt-when">2026-08-10</div>
 
 - **RTSC-643** — `retasc gate install` keys the gate to **this folder's** project, not the machine-wide default.
 
@@ -1266,7 +1345,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.21.0 (2026-08-07)
+## 1.21.0
+
+<div className="rt-when">2026-08-07</div>
 
 - **RTSC-527** — the re-import warning dates the last import in **your** timezone.
 
@@ -1281,7 +1362,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.20.0 (2026-08-04)
+## 1.20.0
+
+<div className="rt-when">2026-08-04</div>
 
 - **RTSC-561** — the org gained an **admin** role, and the CLI stopped refusing it.
 
@@ -1294,7 +1377,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.19.0 (2026-08-03)
+## 1.19.0
+
+<div className="rt-when">2026-08-03</div>
 
 - **RTSC-495** — `retasc bind --setup <code>` sets a folder up with no sign-in and nothing to answer, so an agent can do it on behalf of someone who does not use a terminal.
 - **RTSC-532** — the agent says which folder it is in, and the key remembers.
@@ -1332,7 +1417,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.18.0 (2026-08-02)
+## 1.18.0
+
+<div className="rt-when">2026-08-02</div>
 
 - **RTSC-530** — setting up from scratch now asks where your work comes from, and imports it in the same command.
 
@@ -1367,7 +1454,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.17.0 (2026-08-02)
+## 1.17.0
+
+<div className="rt-when">2026-08-02</div>
 
 - **RTSC-529** — the column mapping is a numbered picker, like every other prompt.
 
@@ -1395,7 +1484,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.16.1 (2026-08-02)
+## 1.16.1
+
+<div className="rt-when">2026-08-02</div>
 
 - **RTSC-528** — two things the first real `retasc import` run turned up.
 
@@ -1424,7 +1515,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.16.0 (2026-08-02)
+## 1.16.0
+
+<div className="rt-when">2026-08-02</div>
 
 - **RTSC-526** — `retasc import` catches up with the Dash on four things.
 
@@ -1452,7 +1545,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.15.0 (2026-08-02)
+## 1.15.0
+
+<div className="rt-when">2026-08-02</div>
 
 - **RTSC-524** — new command: `retasc import`.
 
@@ -1492,7 +1587,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.14.0 (2026-08-02)
+## 1.14.0
+
+<div className="rt-when">2026-08-02</div>
 
 - **RTSC-523** — setup asks before installing anything on your machine.
 
@@ -1531,7 +1628,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.13.1 (2026-08-02)
+## 1.13.1
+
+<div className="rt-when">2026-08-02</div>
 
 - **RTSC-522** — the changelog is public, and five releases that were never written down now are.
 
@@ -1555,7 +1654,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.13.0 (2026-08-02)
+## 1.13.0
+
+<div className="rt-when">2026-08-02</div>
 
 - **RTSC-521** — five commands stopped answering you with a JSON dump.
 
@@ -1602,7 +1703,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.12.0 (2026-08-02)
+## 1.12.0
+
+<div className="rt-when">2026-08-02</div>
 
 - **RTSC-519** — `retasc bind` now tells you it finished, and what to do next.
 - **RTSC-507** — "none of these are me" now covers the tools you were asked about, not the whole org forever.
@@ -1664,7 +1767,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.11.0 (2026-08-02)
+## 1.11.0
+
+<div className="rt-when">2026-08-02</div>
 
 - **RTSC-508** — you can now sign in with **Google**, not only GitHub.
 
@@ -1722,7 +1827,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.10.0 (2026-08-01)
+## 1.10.0
+
+<div className="rt-when">2026-08-01</div>
 
 - **RTSC-477** — new command: `retasc identity`.
 
@@ -1756,7 +1863,9 @@ retasc --version        # what you have
 
 </Accordion>
 
-## 1.9.0 (2026-07-31)
+## 1.9.0
+
+<div className="rt-when">2026-07-31</div>
 
 - **RTSC-492** — `retasc join` is now the whole of an invited teammate's setup, in one command run from the folder their agent will work in.
 - **RTSC-498** — `retasc doctor` now says which platform the CLI is actually tested on.
@@ -1823,7 +1932,9 @@ there is no TTY to run one in.
 
 </Accordion>
 
-## 1.8.0 (2026-07-31)
+## 1.8.0
+
+<div className="rt-when">2026-07-31</div>
 
 - **RTSC-493** — the MCP marker no longer names a command that may not exist.
 
@@ -1848,7 +1959,9 @@ there is no TTY to run one in.
 
 </Accordion>
 
-## 1.7.2 (2026-07-21)
+## 1.7.2
+
+<div className="rt-when">2026-07-21</div>
 
 - **RTSC-297** — `retasc bind` no longer strands a new org silently.
 
@@ -1865,7 +1978,9 @@ there is no TTY to run one in.
 
 </Accordion>
 
-## 1.7.1 (2026-07-21)
+## 1.7.1
+
+<div className="rt-when">2026-07-21</div>
 
 - **RTSC-321** — the liveness watchdog now stops heartbeating an issue the moment it moves to `review` (RTSC-257): the server releases the lease there, so the proxy no longer pings a dead lease until the next heartbeat fails.
 
@@ -1881,7 +1996,9 @@ there is no TTY to run one in.
 
 </Accordion>
 
-## 1.7.0 (2026-07-21)
+## 1.7.0
+
+<div className="rt-when">2026-07-21</div>
 
 - **RTSC-306** — `retasc claim` / `retasc next` now pull **lane-scoped by default**: only issues assigned to your principal or left unassigned, never another human's work.
 
@@ -1897,7 +2014,9 @@ there is no TTY to run one in.
 
 </Accordion>
 
-## 1.6.3 (2026-07-20)
+## 1.6.3
+
+<div className="rt-when">2026-07-20</div>
 
 - **RTSC-266** — README now links the setup page, the docs quickstart, and the parallel-agents guide instead of only the bare homepage.
 
@@ -1910,7 +2029,9 @@ there is no TTY to run one in.
 
 </Accordion>
 
-## 1.6.2 (2026-07-20)
+## 1.6.2
+
+<div className="rt-when">2026-07-20</div>
 
 - **RTSC-269** — `retasc bind`'s org/project picker no longer treats a typo as "create new".
 - **RTSC-269** — the picker gives up after 3 invalid answers instead of looping, and a closed stdin (Ctrl-D, or a pipe running dry) now exits with an error rather than hanging.
@@ -1931,7 +2052,9 @@ there is no TTY to run one in.
 
 </Accordion>
 
-## 1.6.1 (2026-07-20)
+## 1.6.1
+
+<div className="rt-when">2026-07-20</div>
 
 - **RTSC-263** — owner/member permission denials now print a readable reason and the next step instead of an opaque `Server Error`.
 - **RTSC-263** — `formatError` now strips U+0085, U+2028 and U+2029 in addition to the ASCII control characters.
@@ -1950,7 +2073,9 @@ there is no TTY to run one in.
 
 </Accordion>
 
-## 1.6.0 (2026-07-20)
+## 1.6.0
+
+<div className="rt-when">2026-07-20</div>
 
 - **RTSC-262** — `doctor` and `whoami` no longer report "not bound" for a folder whose Retasc MCP is registered in **Claude Code local scope** (the `claude mcp add` default — stored in Claude's own config, not `./.mcp.json`).
 - **RTSC-262** — `claim`/`tidy`/`done` resolve the key through the same entry selection, so the CLI can no longer say "✓ bound" in one command and "No Retasc MCP key found" in another for the same folder.
@@ -1987,7 +2112,9 @@ there is no TTY to run one in.
 
 </Accordion>
 
-## 1.5.0 (2026-07-20)
+## 1.5.0
+
+<div className="rt-when">2026-07-20</div>
 
 - **RTSC-261** — backend failures you're meant to act on now print what actually went wrong instead of `✗ Server Error`.
 
@@ -2015,7 +2142,9 @@ there is no TTY to run one in.
 
 </Accordion>
 
-## 1.4.0 (2026-07-19)
+## 1.4.0
+
+<div className="rt-when">2026-07-19</div>
 
 - **RTSC-279** — new `retasc billing` command: the org's whole billing picture in the terminal instead of only in the Dash.
 - **RTSC-279** — (server-side, no CLI change) the MCP usage meter now reports **two** clearly-named figures instead of one misleading `wouldBeBillUsd`: `lifetimeMeteredEstimateUsd` (all-time activity repriced at today's rate card — a diagnostic, not an amount owed) and `pendingUsd` (what is actually owed right now, the same figure the Dash shows).
@@ -2040,7 +2169,9 @@ there is no TTY to run one in.
 
 </Accordion>
 
-## 1.3.2 (2026-07-17)
+## 1.3.2
+
+<div className="rt-when">2026-07-17</div>
 
 - **RTSC-250** — serialize `patchConfig` under a cross-process advisory lock so concurrent CLI/MCP processes can't lose an update.
 
@@ -2058,12 +2189,16 @@ there is no TTY to run one in.
 
 </Accordion>
 
-## 1.3.1 (2026-07-17)
+## 1.3.1
+
+<div className="rt-when">2026-07-17</div>
 
 - **RTSC-179** — atomic config write (temp file + rename) so a reader never sees a truncated `config.json`; adds `RETASC_DIR` support.
 - **RTSC-178** — token refresh now classifies transient backend errors vs a genuinely expired refresh token, so a one-off backend blip no longer drags a valid session through a full device re-login.
 
-## 1.3.0 (2026-07-08)
+## 1.3.0
+
+<div className="rt-when">2026-07-08</div>
 
 - Auto-reap branches on MCP close: when the watchdog proxy observes a session's own claim close terminally and successfully, it removes that issue's clean, merged `rtsc-NN/*` worktree and branch out-of-band (`retasc tidy --prune --only <id>`), instead of orphaning them until a human ran `retasc tidy`.
 
@@ -2077,15 +2212,21 @@ there is no TTY to run one in.
 
 </Accordion>
 
-## 1.2.4 (2026-07-07)
+## 1.2.4
+
+<div className="rt-when">2026-07-07</div>
 
 - **RTSC-170** — credential-file permission hardening: `config.json`, `bindings.json`, and the fallback `.mcp.json` are written `0600` (dirs `0700`) with no world-readable creation window.
 
-## 1.2.3 (2026-07-05)
+## 1.2.3
+
+<div className="rt-when">2026-07-05</div>
 
 - **RTSC-150** — watchdog `isClaimLost` fix: no longer drops a live lease when a payload field merely contains the string `CLAIM_LOST`.
 
-## 1.2.2 (2026-07-04)
+## 1.2.2
+
+<div className="rt-when">2026-07-04</div>
 
 - **RTSC-148** — `retasc claim` takes the issue as a positional argument, and never silently falls through to `next_issue`.
 
@@ -2102,7 +2243,9 @@ there is no TTY to run one in.
 
 </Accordion>
 
-## 1.2.1 (2026-07-04)
+## 1.2.1
+
+<div className="rt-when">2026-07-04</div>
 
 - **RTSC-143** — one tolerant tool-result parser, and a loud failure when the claim fence is off.
 
@@ -2123,11 +2266,15 @@ there is no TTY to run one in.
 
 </Accordion>
 
-## 1.2.0 (2026-07-04)
+## 1.2.0
+
+<div className="rt-when">2026-07-04</div>
 
 - **RTSC-137** — org-membership commands: `retasc members invite|list|revoke` and `retasc join`.
 
-## 1.1.3 (2026-07-02)
+## 1.1.3
+
+<div className="rt-when">2026-07-02</div>
 
 - **RTSC-131** — `retasc --version` reads `package.json` instead of a frozen literal.
 
@@ -2141,11 +2288,15 @@ there is no TTY to run one in.
 
 </Accordion>
 
-## 1.1.2 (2026-07-02)
+## 1.1.2
+
+<div className="rt-when">2026-07-02</div>
 
 - **RTSC-130** — republish the bind auto-wire fix that had changed CLI source without a version bump (npm versions are immutable).
 
-## 1.1.1 (2026-06-28)
+## 1.1.1
+
+<div className="rt-when">2026-06-28</div>
 
 - **RTSC-98** — `claim`, `tidy` and `done` resolve the keystore key through the same resolver the proxy uses.
 
@@ -2162,7 +2313,9 @@ there is no TTY to run one in.
 
 </Accordion>
 
-## 1.1.0 (2026-06-28)
+## 1.1.0
+
+<div className="rt-when">2026-06-28</div>
 
 - **RTSC-92** — workspace keys move to a home keystore, and the folder marker becomes secret-free.
 
@@ -2182,6 +2335,8 @@ there is no TTY to run one in.
 
 </Accordion>
 
-## 1.0.0 (2026-06-27)
+## 1.0.0
+
+<div className="rt-when">2026-06-27</div>
 
 - **RTSC-89** — initial npm publish as `@retasc/cli` (bin stays `retasc`).

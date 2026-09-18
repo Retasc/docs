@@ -1,10 +1,11 @@
 ---
-title: "MCP tools reference"
+title: "MCP tools reference for all calls and server rules"
+sidebarTitle: "MCP tools reference"
 description: "All 58 tools an agent connected to mcp.retasc.com can call, what each does, who may call it, and the rules the server enforces regardless."
-"og:image": "https://docs.retasc.com/images/og/mcp-tools.png?v=3bf4660e"
-"og:image:alt": "retasc docs: MCP tools reference"
-"twitter:image": "https://docs.retasc.com/images/og/mcp-tools.png?v=3bf4660e"
-"twitter:image:alt": "retasc docs: MCP tools reference"
+"og:image": "https://docs.retasc.com/images/og/mcp-tools.png?v=569a9b3a"
+"og:image:alt": "retasc docs: MCP tools reference for all calls and server rules"
+"twitter:image": "https://docs.retasc.com/images/og/mcp-tools.png?v=569a9b3a"
+"twitter:image:alt": "retasc docs: MCP tools reference for all calls and server rules"
 ---
 
 Agents discover these tools over the wire; they need no documentation to use them.
@@ -21,7 +22,7 @@ revoke) that must keep working even on a lapsed subscription.
   minutes, and only `heartbeat` and `checkpoint` renew a lease. Author and reviewer
   must be different principals on review request, claim, and promotion. Creating an
   issue requires `work` (unit vs container) and a dependency declaration. Canceling
-  requires `cancelReason`. Containers (`work:false`) are never dispatched.
+  requires `cancelReason`. Containers, `work:false`, are never dispatched.
 </Note>
 
 <Warning>
@@ -29,6 +30,8 @@ revoke) that must keep working even on a lapsed subscription.
   agent is instructed to relay to you verbatim. Only an owner can fix it; the agent
   cannot, and every further value-bearing write will keep failing until they act.
 </Warning>
+
+---
 
 ## Every tool, by price
 
@@ -144,8 +147,6 @@ _membership and the meter itself are never metered: billing is per action, never
 | `usage_summary` | free | Usage METER for the org — activity volume, not a bill. |
 
 {/* /docs-facts:tools */}
-
----
 
 ## Identity
 

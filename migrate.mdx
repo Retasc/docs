@@ -1,10 +1,11 @@
 ---
-title: "Migrate from another tracker"
+title: "Linear, Jira, ClickUp, Asana or Shortcut migration"
+sidebarTitle: "Migrate from another tracker"
 description: "Linear, Jira, ClickUp, Asana, or Shortcut, in one pull: issues, comments, labels, relations, and attachment files, authors included."
-"og:image": "https://docs.retasc.com/images/og/migrate.png?v=6e59e421"
-"og:image:alt": "retasc docs: Migrate from another tracker"
-"twitter:image": "https://docs.retasc.com/images/og/migrate.png?v=6e59e421"
-"twitter:image:alt": "retasc docs: Migrate from another tracker"
+"og:image": "https://docs.retasc.com/images/og/migrate.png?v=f2f6dd79"
+"og:image:alt": "retasc docs: Linear, Jira, ClickUp, Asana or Shortcut migration"
+"twitter:image": "https://docs.retasc.com/images/og/migrate.png?v=f2f6dd79"
+"twitter:image:alt": "retasc docs: Linear, Jira, ClickUp, Asana or Shortcut migration"
 ---
 
 Five sources, one flow: paste a token, pick the project, say what your columns mean,
@@ -46,8 +47,8 @@ org at a time.
 
 | Source | You pick a… | Identifiers | Token from |
 |---|---|---|---|
-| **Linear** | team | kept (`TEAM-N`) | Settings → Security & access → Personal API keys |
-| **Jira** (Cloud only) | project | kept (`PROJ-42`) | id.atlassian.com → Security → API tokens |
+| **Linear** | team | kept as `TEAM-N` | Settings → Security & access → Personal API keys |
+| **Jira** (Cloud only) | project | kept as `PROJ-42` | id.atlassian.com → Security → API tokens |
 | **ClickUp** | list | renumbered `PREFIX-N` | Settings → Apps → API Token |
 | **Asana** | project | renumbered `PREFIX-N` | Settings → Apps → Developer → Personal access tokens |
 | **Shortcut** | team | story numbers kept | Settings → API Tokens |
@@ -86,12 +87,10 @@ org at a time.
   </Step>
 </Steps>
 
-<div className="rt-shots">
-  <img className="rt-shot-dark" src="/images/ui/import-columns-dark.png" alt="The Dash's import mapping: each source column pointed at a Retasc status" />
-  <img className="rt-shot-light" src="/images/ui/import-columns-light.png" alt="The Dash's import mapping: each source column pointed at a Retasc status" />
-  <img className="rt-shot-dark rt-shot-phone" src="/images/ui/import-columns-dark-phone.png" alt="The Dash's import mapping: each source column pointed at a Retasc status" />
-  <img className="rt-shot-light rt-shot-phone" src="/images/ui/import-columns-light-phone.png" alt="The Dash's import mapping: each source column pointed at a Retasc status" />
-</div>
+<img src="/images/ui/import-columns-light.png" alt="The Dash's import mapping: each source column pointed at a Retasc status" className="rt-shot rt-shot-light rt-shot-wide" />
+<img src="/images/ui/import-columns-light-phone.png" alt="The Dash's import mapping: each source column pointed at a Retasc status" className="rt-shot rt-shot-light rt-shot-narrow" />
+<img src="/images/ui/import-columns-dark.png" alt="The Dash's import mapping: each source column pointed at a Retasc status" className="rt-shot rt-shot-dark rt-shot-wide" />
+<img src="/images/ui/import-columns-dark-phone.png" alt="The Dash's import mapping: each source column pointed at a Retasc status" className="rt-shot rt-shot-dark rt-shot-narrow" />
 
 <Warning>
   **Re-importing overwrites your Retasc edits.** A second run never duplicates; it
