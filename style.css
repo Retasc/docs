@@ -237,11 +237,36 @@ span[style*="webkit-mask"] {
   .prose th, .prose td { min-width: 18ch; }
 }
 
-#sidebar a[data-active="true"],
-#sidebar a.active,
-.sidebar a[aria-current="page"],
-#table-of-contents a[data-active="true"] {
-  color: var(--success) !important;
+/* Current page / current heading. Mintlify paints these with
+ * `text-primary dark:text-primary-light`. That `primary-light` token is
+ * docs.json colors.light — which, if it holds light-palette ink, is
+ * #1a1a1a on the dark shell (1.1:1, the row looks missing). The colour
+ * also lands on a child span, so the <a> alone is not enough.
+ *
+ * Live markup (2026-09-18): #navigation-items a[aria-current="page"],
+ * #table-of-contents-layout a[aria-current="location"]. #sidebar /
+ * .sidebar / [data-active] do not exist on this shell. */
+#navigation-items a,
+#navigation-items a *,
+#sidebar a,
+#sidebar a * {
+  color: var(--fg) !important;
+}
+#table-of-contents-layout a {
+  color: var(--secondary) !important;
+}
+#navigation-items a[aria-current="page"],
+#navigation-items a[aria-current="page"] *,
+#sidebar a[aria-current="page"],
+#sidebar a[aria-current="page"] *,
+#table-of-contents-layout a[aria-current="location"],
+#table-of-contents-layout a[aria-current="true"],
+#table-of-contents a[aria-current="location"] {
+  color: var(--fg-strong) !important;
+}
+#navigation-items a[aria-current="page"],
+#sidebar a[aria-current="page"] {
+  background: var(--surface) !important;
 }
 #sidebar, #navigation-items { font-family: var(--font-sans); font-size: 13px; }
 

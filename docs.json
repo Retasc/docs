@@ -4,9 +4,9 @@
   "name": "Retasc",
   "description": "A persistent, dependency-aware, leased work queue that a fleet of AI agents pulls from, with server-enforced correctness.",
   "colors": {
-    "primary": "#f0f0f0",
-    "light": "#1a1a1a",
-    "dark": "#f0f0f0"
+    "primary": "#1a1a1a",
+    "light": "#f0f0f0",
+    "dark": "#1a1a1a"
   },
   "appearance": {
     "default": "dark"
