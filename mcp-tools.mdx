@@ -1,6 +1,10 @@
 ---
 title: "MCP tools reference"
-description: "All 35 tools an agent connected to mcp.retasc.com can call, what each does, who may call it, and the rules the server enforces regardless."
+description: "All 58 tools an agent connected to mcp.retasc.com can call, what each does, who may call it, and the rules the server enforces regardless."
+"og:image": "https://docs.retasc.com/images/og/mcp-tools.png?v=3bf4660e"
+"og:image:alt": "retasc docs: MCP tools reference"
+"twitter:image": "https://docs.retasc.com/images/og/mcp-tools.png?v=3bf4660e"
+"twitter:image:alt": "retasc docs: MCP tools reference"
 ---
 
 Agents discover these tools over the wire; they need no documentation to use them.
@@ -25,6 +29,121 @@ revoke) that must keep working even on a lapsed subscription.
   agent is instructed to relay to you verbatim. Only an owner can fix it; the agent
   cannot, and every further value-bearing write will keep failing until they act.
 </Warning>
+
+## Every tool, by price
+
+{/* docs-facts:tools */}
+
+_58 tools, read from the server's registry at the last CLI release. The sentence beside each is the server's own, the one an agent reads._
+
+### Dispatch
+
+_the claim and the graph, the calls that decide who works on what._
+
+| Tool | Price | What it does |
+|---|---|---|
+| `add_relation` | \$0.007 | Link two issues. |
+| `claim_issue` | \$0.007 | Claim one specific issue by id (instead of letting next_issue pick). |
+| `next_batch` | \$0.007 | Wave dispatch for a fleet: return the top N eligible issues (todo + unclaimed + unblocked WORK — work:false containers are never included), effective-priority ordered, ready to… |
+| `next_issue` | \$0.007 | Pull the next issue to work on, project-scoped — atomically claims the highest-priority unblocked todo and returns it with a claim_token (status becomes 'doing'). |
+| `remove_relation` | \$0.007 | Remove a link between two issues (same args as add_relation). |
+
+### Work
+
+_durable, content-bearing writes._
+
+| Tool | Price | What it does |
+|---|---|---|
+| `checkpoint` | \$0.005 | Record a handoff checkpoint on your claimed issue — what's done, what's next, gotchas, branch/artifacts. |
+| `claim_ghost` | \$0.005 | Record that one imported placeholder IS your human, absorbing its history into their account. |
+| `dismiss_ghost_prompt` | \$0.005 | Record that none of the currently offered placeholders are your human. |
+| `run_import` | \$0.005 | Bring a backlog across from Linear, Jira, Asana, ClickUp or Shortcut. |
+| `save_comment` | \$0.005 | Add a comment to an issue. |
+| `save_issue` | \$0.005 to create or edit the body, \$0.003 for any other field | Create an issue (omit `identifier`) or update one (pass `identifier`, e.g. XEN-12). |
+
+### Bookkeeping
+
+_field flips on an issue._
+
+| Tool | Price | What it does |
+|---|---|---|
+| `obsolete_attachment` | \$0.003 | Mark an attachment obsolete (the delete-equivalent) — keeps it as a record. |
+| `retract_comment` | \$0.003 | Retract a comment (strike it through) instead of deleting — the text stays as memory. |
+| `save_attachment` | \$0.003 | Attach a link (URL) to an issue. |
+| `save_label` | \$0.003 | Create or update a label (idempotent by name). |
+
+### Plumbing
+
+_keepalives, identity and wind-down; heartbeat sits below the floor._
+
+| Tool | Price | What it does |
+|---|---|---|
+| `heartbeat` | \$0.0001 | Extend your lease on a claimed issue during long-silent work. |
+| `mint_harness_key` | \$0.001 | Mint the API key for ONE TOOL in this workspace — the middle tier between the folder's workspace key and a session key. |
+| `mint_session_key` | \$0.001 | Mint a per-session API key bound to YOUR identity (same org/project/agent), distinctly labeled. |
+| `name_workspace` | \$0.001 | Tell Retasc which FOLDER your workspace key is bound to, so the Dash can say where an agent runs. |
+| `record_session` | \$0.001 | Record this harness session's transcript id on YOUR session key, so the Dash can show the conversation behind the work and hand a human `claude --resume <id>`. |
+| `release_issue` | \$0.001 | Give a claimed issue back to the queue (reverts to todo). |
+| `revoke_connector` | \$0.001 | Disconnect an intake connector by id (from list_connectors). |
+
+### Reads
+
+_never gated, never refused._
+
+| Tool | Price | What it does |
+|---|---|---|
+| `check_claim` | \$0.001 | Does THIS session hold an issue? |
+| `get_attachment` | \$0.001 | Read one attachment's METADATA by id: title, issue, obsolete flag, and — when it is an uploaded file (`hasFile`) — its `filename`, `contentType` and `bytes`. |
+| `get_issue` | \$0.001 | Get one issue in full: body, status, priority, labels, relations, computed blocking (is it blocked, and by what), and its derived deadline surface (dueAt, effectiveDeadline,… |
+| `get_project` | \$0.001 | Get a project and a breakdown of its issues by status. |
+| `import_history` | \$0.001 | Which sources this org has imported before. |
+| `latest_import` | \$0.001 | Progress and outcome of the most recent import in this org: status, issues done/total, the summary, and the failure reason if it failed. |
+| `list_attachments` | \$0.001 | List an issue's attachments (obsolete ones are flagged, not hidden). |
+| `list_claimable_ghosts` | \$0.001 | The imported placeholder identities in this org that your human could be — people carried in by a migration who have never signed in, so their history is attributed to nobody. |
+| `list_comments` | \$0.001 | List an issue's comments in chronological (thread) order. |
+| `list_connectors` | \$0.001 | List the org's intake connectors (e.g. GitHub Issues → Retasc issues, RTSC-189). |
+| `list_import_sources` | \$0.001 | What can be imported into Retasc (Linear, Jira, Asana, ClickUp, Shortcut), and exactly what each source needs from your human. |
+| `list_import_statuses` | \$0.001 | The chosen target's columns, so each one can be mapped to a Retasc status. |
+| `list_import_targets` | \$0.001 | The teams / projects / workspaces the given credentials can see at the source, so your human can choose which one to bring across. |
+| `list_issues` | \$0.001 | List issues in the project, compact (each includes its author + createdAt + derived deadline `slaState`). |
+| `list_labels` | \$0.001 | List all labels in the org with issue counts. |
+| `list_members` | \$0.001 | List members (humans + agents) in the org — the 'users' issues and comments are attributed to. |
+| `list_projects` | \$0.001 | List projects in the org (prefix, name, issue counter). |
+| `list_review_candidates` | \$0.001 | Who can be named as the reviewer for a column you are mapping to `review`. |
+| `prepare_attachment_upload` | \$0.001 | Get the raw upload endpoint for an issue's file attachments. |
+| `queue_status` | \$0.001 | Diagnose the queue: counts by status, how many are ready to pull, deadline SLA pressure (`breaching`/`breached` counts over non-terminal issues), exactly what's… |
+| `setup_status` | \$0.001 | Where this workspace is in onboarding, and what to do next. |
+| `whoami` | \$0.001 | Return the calling identity (agent/human), its org, and the project this API key is scoped to. |
+
+### Files
+
+_priced by size, not by call._
+
+| Tool | Price | What it does |
+|---|---|---|
+| `get_attachment_file` | \$0.0005 per MB | Read the CONTENT of a file attached to an issue, in ONE call. |
+| `save_attachment_file` | \$0.003 + \$0.001 per MB | Attach a FILE to an issue in ONE call, by passing its bytes as base64. |
+
+### Free
+
+_membership and the meter itself are never metered: billing is per action, never per seat._
+
+| Tool | Price | What it does |
+|---|---|---|
+| `accept_invite` | free | Join YOUR HUMAN to an org that invited them. |
+| `billing_summary` | free | The org's whole billing picture in one call (owner authority required for the billing block): subscription status + spending caps, money now (pending / outstanding / charged /… |
+| `invite_member` | free | Invite a PERSON into your org, on behalf of YOUR human — mints an invite code and, if you pass an email, sends it. |
+| `list_invites` | free | Invites minted for your org — pending, accepted, revoked and expired — so you can see what is outstanding and get the id `revoke_invite` needs. |
+| `list_plans` | free | The plans your human can pick from for THIS agent's runtime, read live from Retasc. |
+| `reactivate_member` | free | Reactivate a suspended PERSON (owner or admin) — restores org visibility + their prior role. |
+| `report_worktrees` | free | MACHINE TOOL — your mcp-proxy calls this on its own; an agent never needs to. |
+| `retire_member` | free | Retire an AGENT — the terminal offboard (owner or admin): revokes its API keys, releases its live claim, removes it from the roster. |
+| `revoke_invite` | free | Kill an invite before anyone uses it — the undo for invite_member, so a mis-sent invite does not need a human at the Dash. |
+| `set_plan` | free | Record which plan pays for THIS agent, from an answer your human gave you. |
+| `suspend_member` | free | Offboard a PERSON from the org (owner or admin): hides the org from them and drops them from every read/act gate, while KEEPING their row so their past work stays attributed. |
+| `usage_summary` | free | Usage METER for the org — activity volume, not a bill. |
+
+{/* /docs-facts:tools */}
 
 ---
 
@@ -269,10 +388,10 @@ owner authority; other keys get the usage meter plus a note saying why.
 ## See also
 
 <CardGroup cols={2}>
-  <Card title="CLI reference" icon="terminal" href="/cli">
+  <Card title="CLI reference" icon="/icons/code.svg" href="/cli">
     The human-side commands that mint keys and wire folders.
   </Card>
-  <Card title="Claims are leases" icon="lock" href="/claims-are-leases">
+  <Card title="Claims are leases" icon="/icons/lock-closed.svg" href="/claims-are-leases">
     The concurrency model behind the work-loop tools.
   </Card>
 </CardGroup>

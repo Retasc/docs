@@ -1,6 +1,10 @@
 ---
 title: "GitHub & GitLab sync"
 description: "Keep an external tracker in lockstep: issues sync in as work items, and outside contributors' PRs become review-work that closes itself when the PR does."
+"og:image": "https://docs.retasc.com/images/og/sync.png?v=b623a1a1"
+"og:image:alt": "retasc docs: GitHub & GitLab sync"
+"twitter:image": "https://docs.retasc.com/images/og/sync.png?v=b623a1a1"
+"twitter:image:alt": "retasc docs: GitHub & GitLab sync"
 ---
 
 One webhook per repo, two independent streams. An owner or admin sets it up from
@@ -58,25 +62,11 @@ One webhook per repo, two independent streams. An owner or admin sets it up from
   </Step>
 </Steps>
 
-<div className="rt-mock">
-  <div className="rt-mock-bar">
-    <span className="rt-mock-dot"></span><span className="rt-mock-dot"></span><span className="rt-mock-dot"></span>
-    <span className="rt-mock-url">dash.retasc.com/connectors</span>
-  </div>
-  <div className="rt-mock-body">
-    <div className="rt-mock-card">
-      <div className="rt-mock-eyebrow">Connect a repo</div>
-      <div className="rt-mock-field"><label>Repository</label><div className="rt-mock-input">acme/backend</div></div>
-      <div className="rt-mock-togrow"><span>Sync issues → label <code>support</code></span><span className="rt-mock-toggle"></span></div>
-      <div className="rt-mock-togrow"><span>Sync PRs → reviewer <b>Dana</b> (required)</span><span className="rt-mock-toggle"></span></div>
-      <span className="rt-mock-btn">Connect</span>
-    </div>
-    <div className="rt-mock-card">
-      <div className="rt-mock-eyebrow">Finish in GitHub <span className="rt-mock-badge pend">Pending</span></div>
-      <div className="rt-mock-field"><label>Payload URL</label><div className="rt-mock-input">https://…convex.site/webhooks/github/int_8h2k…</div></div>
-      <div className="rt-mock-field"><label>Secret, shown once</label><div className="rt-mock-secret">whsec_9f3a51c8e2…<span className="rt-mock-copywarn">copy now</span></div></div>
-    </div>
-  </div>
+<div className="rt-shots">
+  <img className="rt-shot-dark" src="/images/ui/connector-github-dark.png" alt="The GitHub connector in the Dash: the repo field, the webhook URL and its signing secret" />
+  <img className="rt-shot-light" src="/images/ui/connector-github-light.png" alt="The GitHub connector in the Dash: the repo field, the webhook URL and its signing secret" />
+  <img className="rt-shot-dark rt-shot-phone" src="/images/ui/connector-github-dark-phone.png" alt="The GitHub connector in the Dash: the repo field, the webhook URL and its signing secret" />
+  <img className="rt-shot-light rt-shot-phone" src="/images/ui/connector-github-light-phone.png" alt="The GitHub connector in the Dash: the repo field, the webhook URL and its signing secret" />
 </div>
 
 <Warning>
@@ -94,10 +84,10 @@ connecting a new repo is Dash-only, so a raw token never transits MCP.
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Review workflow" icon="user-check" href="/review">
+  <Card title="Review workflow" icon="/icons/check-circled.svg" href="/review">
     What happens to a synced PR once it lands in review.
   </Card>
-  <Card title="Notifications" icon="bell" href="/notifications">
+  <Card title="Notifications" icon="/icons/bell.svg" href="/notifications">
     A DM the moment a synced item lands on your lane.
   </Card>
 </CardGroup>

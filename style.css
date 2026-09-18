@@ -1,539 +1,337 @@
 /* ---------------------------------------------------------------------------
- * Retasc docs: look & feel lifted verbatim from the retasc.com landing
- * (web/index.html). The landing is monochrome + ONE green accent (#4ade80 dark /
- * #16a34a light). There is NO blue anywhere the eye lands: links are monochrome,
- * every highlight/badge/active-state/code-prompt is green. This file mirrors that.
+ * Retasc docs: the design system on Mintlify's shell.
  *
- * Mintlify auto-loads this file. We drive everything off the landing's tokens.
+ * operations/design-system.md §docs.retasc.com. We do not own the markup
+ * (nav, TOC, search, code blocks, footer). Tokens, type, and the rules
+ * below go on top of it. Three things look like hacks and are structural:
+ * they are commented at the rule.
  * ------------------------------------------------------------------------- */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@300;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600&display=swap");
 
-/* ---- Tokens (verbatim from the landing: "Protocol Dark") ---- */
-:root {
-  --rt-bg: #0a0a0a;
-  --rt-card: #111;
-  --rt-card-border: #1a1a1a;
-  --rt-surface: #191919;
-  --rt-surface-border: #252525;
-  --rt-fg: #f0f0f0;
-  --rt-fg-strong: #fff;
-  --rt-secondary: #999;
-  --rt-muted: #666;
-  --rt-dim: #444;
-  --rt-ink: #cfcfcf;
-
-  /* The single accent: green. NO blue. */
-  --rt-accent: #4ade80;
-  --rt-accent-bg: rgba(74, 222, 128, 0.08);
-  --rt-accent-border: rgba(74, 222, 128, 0.15);
-  --rt-accent-underline: rgba(74, 222, 128, 0.40);
-
-  --rt-warning: #facc15;
-  --rt-warning-bg: rgba(250, 204, 21, 0.08);
-  --rt-warning-border: rgba(250, 204, 21, 0.18);
-  --rt-error: #f87171;
-  --rt-error-bg: rgba(248, 113, 113, 0.08);
-  --rt-error-border: rgba(248, 113, 113, 0.18);
-
-  --rt-radius-sm: 4px;
-  --rt-radius-md: 6px;
-  --rt-radius-lg: 8px;
-  --rt-radius-card: 10px;
-
-  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+/* Same ladder as dash/src/styles/tokens.css and web/styles.css. Names without
+ * a prefix so the gate (docsaudit.py) can read --bg/--dim/--sep off :root. */
+:root,
+:root.dark,
+html.dark {
+  color-scheme: dark;
+  --bg: #0a0a0a;
+  --card: #202020;
+  --card-border: #404040;
+  --surface: #2e2e2e;
+  --surface-border: #4d4d4d;
+  --panel: #202020;
+  --panel-sunk: #161616;
+  --panel-inset: #161616;
+  --fg: #f0f0f0;
+  --fg-strong: #fff;
+  --ink: #cfcfcf;
+  --secondary: #a9a9a9;
+  --muted: #9a9a9a;
+  --dim: #444;
+  --sep: #7a7a7a;
+  --success: #4ade80;
+  --success-bg: rgba(74, 222, 128, 0.08);
+  --success-border: rgba(74, 222, 128, 0.32);
+  --warning: #facc15;
+  --warning-bg: rgba(250, 204, 21, 0.08);
+  --warning-border: rgba(250, 204, 21, 0.34);
+  --error: #f87171;
+  --error-bg: rgba(248, 113, 113, 0.08);
+  --error-border: rgba(248, 113, 113, 0.34);
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-card: 10px;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  scrollbar-color: var(--dim) transparent;
 }
 
-/* Light palette: the landing's "Structural Light" warm paper. */
+/* Light: the landing's Structural Light. Mintlify sets html.light or drops .dark. */
 html.light,
-:root.light {
-  --rt-bg: #E8E4DF;
-  --rt-card: #f5f2ee;
-  --rt-card-border: #d5d0ca;
-  --rt-surface: #ece8e3;
-  --rt-surface-border: #d0ccc7;
-  --rt-fg: #1a1a1a;
-  --rt-fg-strong: #000;
-  --rt-secondary: #555;
-  --rt-muted: #888;
-  --rt-dim: #bbb;
-  --rt-ink: #333;
-  --rt-accent: #16a34a;
-  --rt-accent-bg: rgba(22, 163, 74, 0.10);
-  --rt-accent-border: rgba(22, 163, 74, 0.20);
-  --rt-accent-underline: rgba(22, 163, 74, 0.45);
-  --rt-warning: #ca8a04;
-  --rt-error: #dc2626;
+:root.light,
+html:not(.dark) {
+  color-scheme: light;
+  --bg: #e8e4df;
+  --card: #f1ede7;
+  --card-border: #b3aba1;
+  --surface: #ece8e3;
+  --surface-border: #d0ccc7;
+  --panel: #f1ede7;
+  --panel-sunk: #e0dcd6;
+  --panel-inset: #e0dcd6;
+  --fg: #1a1a1a;
+  --fg-strong: #000;
+  --ink: #333;
+  --secondary: #555;
+  --muted: #666;
+  --dim: #bbb;
+  --sep: #767676;
+  --success: #16a34a;
+  --success-bg: rgba(22, 163, 74, 0.10);
+  --success-border: rgba(22, 163, 74, 0.32);
+  --warning: #ca8a04;
+  --warning-bg: rgba(202, 136, 4, 0.10);
+  --warning-border: rgba(202, 136, 4, 0.34);
+  --error: #dc2626;
+  --error-bg: rgba(220, 38, 38, 0.08);
+  --error-border: rgba(220, 38, 38, 0.34);
+  scrollbar-color: var(--dim) transparent;
 }
 
-/* ---- Base type ---- */
-body,
-.prose,
-p, li, td, th {
-  font-family: var(--font-sans);
+/* Overrides carry !important. The shell ships Tailwind utilities in its own
+ * markup. A token cannot beat a utility class at equal weight, and we cannot
+ * edit the markup. design-system.md §docs.retasc.com. */
+
+html, body {
+  background: var(--bg) !important;
+  color: var(--fg) !important;
+  font-family: var(--font-sans) !important;
+  font-size: 16px;
   -webkit-font-smoothing: antialiased;
+}
+
+#content-area, #navbar, #sidebar, #footer, #header, #table-of-contents-layout, #mobile-nav {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+}
+
+.prose, p, li, td, th {
+  font-family: var(--font-sans);
+  color: var(--fg);
+  font-size: 16px;
+  line-height: 1.6;
 }
 
 h1, h2, h3, h4, h5, h6,
 .prose h1, .prose h2, .prose h3, .prose h4 {
   font-family: var(--font-display);
   letter-spacing: -0.02em;
-  color: var(--rt-fg-strong);
+  color: var(--fg-strong);
+  hyphens: none;
+  -webkit-hyphens: none;
+  overflow-wrap: normal;
 }
-h1, .prose h1 { font-weight: 600; }
+h1, .prose h1 { font-size: 23px; font-weight: 600; }
+h2, .prose h2 { font-size: 20px; font-weight: 600; }
+h3, .prose h3 { font-size: 17px; font-weight: 600; }
 
 ::selection {
-  background: var(--rt-accent-bg);
-  color: var(--rt-fg);
+  background: var(--success-bg);
+  color: var(--fg);
 }
 
-/* ---- Links: monochrome like the landing, green only on hover/underline.
-        NEVER blue. The !important floor guarantees Mintlify's default link
-        color (and any theme blue) never wins. ---- */
+/* Links: monochrome, green only on hover. Never blue. */
 .prose a,
 #content-area a:not(.card):not([class*="button"]) {
-  color: var(--rt-fg-strong) !important;
+  color: var(--fg-strong) !important;
   text-decoration: underline;
-  text-decoration-color: var(--rt-accent-underline);
+  text-decoration-color: var(--success-border);
   text-underline-offset: 2px;
-  transition: color 0.15s, text-decoration-color 0.15s;
 }
 .prose a:hover,
 #content-area a:not(.card):not([class*="button"]):hover {
-  color: var(--rt-accent) !important;
-  text-decoration-color: var(--rt-accent);
+  color: var(--success) !important;
+  text-decoration-color: var(--success);
 }
 
-/* ---- Code: JetBrains Mono everywhere, landing surface colors ---- */
+/* The trailing arrow is text in the line it ends. Navbar/footer anchors are
+ * display:flex; gap:6px — a pseudo-element is a flex item, so the arrow sat
+ * 9px out until the rule zeroed the gap. Spaced by its own 3px margin. */
+#navbar a, #footer a, #header a {
+  gap: 0 !important;
+}
+.prose a[href^="http"]::after,
+#navbar a[href^="http"]:not(:has(img)):not(:has(svg))::after,
+#footer a[href^="http"]:not(:has(img)):not(:has(svg))::after {
+  content: "↗";
+  font-size: 9px;
+  margin-left: 3px;
+  display: inline;
+  text-decoration: none;
+}
+
 code, kbd, pre, .font-mono,
 .prose code, .prose pre {
-  font-family: var(--font-mono);
-  font-size: 1em;
+  font-family: var(--font-mono) !important;
+  font-size: 14px;
 }
-
-/* Inline code: subtle surface chip like the landing's <code>. */
 .prose :not(pre) > code {
-  background: var(--rt-surface);
-  border: 1px solid var(--rt-surface-border);
-  border-radius: var(--rt-radius-sm);
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
   padding: 0.12em 0.36em;
-  color: var(--rt-fg);
+  color: var(--fg);
   font-weight: 400;
+  font-size: 14px;
+}
+pre, .prose pre {
+  background: var(--panel-sunk) !important;
+  border: 1px solid var(--card-border) !important;
+  border-radius: var(--radius-lg) !important;
 }
 
-/* Code blocks: card background + faint border, like the landing's .codeblock. */
-pre,
-.prose pre {
-  background: #0d0d0d !important;
-  border: 1px solid var(--rt-card-border);
-  border-radius: var(--rt-radius-lg);
+#content-area .card, .card, a.card {
+  background: var(--card) !important;
+  border: 1px solid var(--card-border) !important;
+  border-radius: var(--radius-card) !important;
 }
-html.light pre,
-:root.light .prose pre {
-  background: var(--rt-card) !important;
-}
-
-/* ---- Cards (CardGroup / Card): the landing's .surface/.claim-card:
-        #111 bg, #1a1a1a border, 10px radius, hover → dim border + lift. ---- */
-#content-area .card,
-.card,
-a.card {
-  background: var(--rt-card);
-  border: 1px solid var(--rt-card-border);
-  border-radius: var(--rt-radius-card);
-  transition: border-color 0.15s ease, transform 0.15s ease;
-}
-#content-area a.card:hover,
-a.card:hover {
-  border-color: var(--rt-dim);
-  transform: translateY(-3px);
+#content-area a.card:hover, a.card:hover {
+  border-color: var(--sep) !important;
 }
 .card h2, .card h3, .card .font-semibold {
   font-family: var(--font-display);
 }
 
-/* ---- Tables: the landing's .matrix: quiet rows, mono header voice ---- */
+/* Local SVG icons arrive as <img>, so they cannot inherit currentColor.
+ * Mintlify also draws some as a mask filled with the primary colour.
+ * Paint the mask in ink. */
+.card [style*="mask"],
+[class*="icon"][style*="mask"],
+span[style*="mask-image"],
+span[style*="webkit-mask"] {
+  background-color: var(--fg) !important;
+}
+
+/* A table scrolls; it does not shatter. The scroller is the wrapping DIV,
+ * never the table: table { display:block; overflow-x:auto } lets the
+ * anonymous inner table size to the block, so nothing ever scrolls. Two
+ * more boxes have to shrink first — the shell pins the row above the
+ * scroller to min-width: fit-content. A cell needs a FLOOR as well as the
+ * 40ch cap: 16ch, rising to 18ch on a phone. */
+#content-area, .prose, .prose > div, [class*="prose"] {
+  min-width: 0 !important;
+}
+.prose :has(> table),
+.prose .table-wrapper,
+.prose div:has(> table) {
+  overflow-x: auto;
+  max-width: 100%;
+  min-width: 0;
+}
 .prose table {
-  border: 1px solid var(--rt-card-border);
-  border-radius: var(--rt-radius-lg);
+  display: table !important;
+  width: 100%;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
   overflow: hidden;
 }
+.prose th, .prose td {
+  min-width: 16ch;
+  max-width: 40ch;
+  font-size: 14px;
+}
 .prose thead th {
-  background: var(--rt-surface);
-  border-bottom: 1px solid var(--rt-card-border);
+  background: var(--surface);
+  border-bottom: 1px solid var(--card-border);
   font-family: var(--font-sans);
   font-weight: 600;
-  color: var(--rt-fg);
+  color: var(--fg);
 }
-.prose tbody tr { border-top: 1px solid var(--rt-card-border); }
+.prose tbody tr { border-top: 1px solid var(--card-border); }
+@media (max-width: 640px) {
+  .prose th, .prose td { min-width: 18ch; }
+}
 
-/* ---- Accents: anything Mintlify tints with the primary is now green.
-        Kill any residual blue on active nav / sidebar / TOC. ---- */
 #sidebar a[data-active="true"],
 #sidebar a.active,
 .sidebar a[aria-current="page"],
 #table-of-contents a[data-active="true"] {
-  color: var(--rt-accent) !important;
+  color: var(--success) !important;
 }
-#sidebar, #navigation-items { font-family: var(--font-sans); }
+#sidebar, #navigation-items { font-family: var(--font-sans); font-size: 13px; }
 
-/* Focus ring: green (the landing used a faint outline; never blue). */
 a:focus-visible, button:focus-visible {
-  outline: 2px solid var(--rt-accent);
+  outline: 2px solid var(--success);
   outline-offset: 2px;
-  border-radius: var(--rt-radius-sm);
+  border-radius: var(--radius-sm);
 }
 
-/* ---------------------------------------------------------------------------
- * Dash UI mockups: used on the onboarding pages to show what a web-track
- * screen actually looks like, instead of describing it in prose only. Browser
- * chrome + a fake card, built from this file's own tokens so it matches the
- * rest of the site rather than looking like a pasted screenshot.
- * ------------------------------------------------------------------------- */
-.rt-mock {
-  border: 1px solid var(--rt-card-border);
-  border-radius: var(--rt-radius-card);
-  overflow: hidden;
-  background: var(--rt-bg);
+/* One theme switch, and it is the footer's. The header's is hidden. Two
+ * switches on one page is a duplicate control. */
+#theme-preference-menu-trigger {
+  display: none !important;
+}
+
+/* Sibling controls in one bar are one control family. The phone bar's
+ * overflow menu is a bare 20x28 glyph beside a 32-square search button;
+ * it wears the search button's plate. */
+button.lg\:hidden.h-14 + button,
+#navbar button.h-14 {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: var(--radius-md) !important;
+}
+
+/* Hairline under the code copy button: a header rule catching the floating
+ * buttons. The header of a code block is a bar, not a ruled box. */
+[data-component-part="code-block-header"] {
+  border-bottom: none !important;
+  background: transparent !important;
+}
+[data-component-part="code-block-header"] button {
+  background: var(--surface) !important;
+  border: 1px solid var(--surface-border) !important;
+  border-radius: var(--radius-md) !important;
+}
+
+/* Footer padding: the shell shipped 112px. Ours is a row, not a hero. */
+#footer {
+  padding-top: 24px !important;
+  padding-bottom: 24px !important;
+}
+
+/* Light/dark image pairs use our own rt-shot-light / rt-shot-dark classes.
+ * Mintlify's Tailwind build does not scan MDX, so dark:hidden written in a
+ * page compiles to nothing and both cuts render at once. A picture of the
+ * Dash ships FOUR cuts: two palettes by two widths. <picture> with a
+ * <source media> cannot be used: the shell wraps every image in a zoom
+ * trigger, so the <img> stops being a direct child of the picture and the
+ * source is ignored. Four images, one shown, switched at the same 640px
+ * the tables use. */
+.rt-shots {
   margin: 1.5em 0;
-}
-.rt-mock-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--rt-card-border);
-  background: var(--rt-surface);
-}
-.rt-mock-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--rt-card-border);
-  flex: none;
-}
-.rt-mock-url {
-  margin-left: 6px;
-  font-family: var(--font-mono);
-  font-size: 0.8em;
-  color: var(--rt-muted);
-}
-.rt-mock-body {
-  padding: 28px 22px;
-  display: flex;
-  justify-content: center;
-}
-.rt-mock-card {
-  width: 100%;
-  max-width: 420px;
-  background: var(--rt-card);
-  border: 1px solid var(--rt-card-border);
-  border-radius: var(--rt-radius-card);
-  padding: 22px;
-}
-.rt-mock-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.7em;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--rt-muted);
-  margin-bottom: 10px;
-}
-.rt-mock-card h5 {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.25em;
-  letter-spacing: -0.01em;
-  color: var(--rt-fg-strong);
-  margin: 0 0 8px;
-}
-.rt-mock-card .rt-mock-sub {
-  font-size: 0.85em;
-  color: var(--rt-ink);
-  line-height: 1.55;
-  margin-bottom: 16px;
-}
-.rt-mock-opt {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 12px 13px;
-  background: var(--rt-surface);
-  border: 1px solid var(--rt-surface-border);
-  border-radius: var(--rt-radius-lg);
-  margin-bottom: 8px;
-}
-.rt-mock-opt .rt-mock-mark {
-  width: 20px;
-  height: 20px;
-  border-radius: var(--rt-radius-sm);
-  border: 1px solid var(--rt-dim);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-mono);
-  font-size: 0.65em;
-  color: var(--rt-secondary);
-  flex: none;
-}
-.rt-mock-opt .rt-mock-t {
-  flex: 1 1 auto;
-}
-.rt-mock-opt .rt-mock-t b {
-  display: block;
-  font-size: 0.85em;
-  font-weight: 500;
-  color: var(--rt-fg);
-}
-.rt-mock-opt .rt-mock-t span {
-  display: block;
-  font-size: 0.72em;
-  color: var(--rt-muted);
-  margin-top: 1px;
-}
-.rt-mock-opt .rt-mock-arrow {
-  font-family: var(--font-mono);
-  color: var(--rt-muted);
-  font-size: 0.9em;
-}
-.rt-mock-field { margin-bottom: 10px; }
-.rt-mock-field label {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 0.65em;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--rt-muted);
-  margin-bottom: 5px;
-}
-.rt-mock-input {
-  background: var(--rt-bg);
-  border: 1px solid var(--rt-surface-border);
-  border-radius: var(--rt-radius-md);
-  height: 34px;
-  padding: 0 11px;
-  display: flex;
-  align-items: center;
-  font-size: 0.85em;
-  color: var(--rt-ink);
-}
-.rt-mock-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 9px 16px;
-  border-radius: var(--rt-radius-md);
-  font-size: 0.85em;
-  font-weight: 500;
-  background: var(--rt-accent);
-  color: #05200e;
-  margin-top: 4px;
-}
-html.light .rt-mock-btn { color: #fff; }
-.rt-mock-code {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  background: var(--rt-bg);
-  border: 1px solid var(--rt-surface-border);
-  border-radius: var(--rt-radius-md);
-  padding: 9px 12px;
-  font-family: var(--font-mono);
-  font-size: 0.78em;
-  color: var(--rt-fg);
-  margin: 10px 0;
-}
-.rt-mock-code .rt-mock-copy {
-  font-family: var(--font-sans);
-  font-size: 0.85em;
-  color: var(--rt-muted);
-  border: 1px solid var(--rt-surface-border);
-  border-radius: var(--rt-radius-sm);
-  padding: 3px 8px;
-  flex: none;
-}
-.rt-mock-hint {
-  font-family: var(--font-mono);
-  font-size: 0.68em;
-  color: var(--rt-muted);
-  line-height: 1.6;
-}
-.rt-mock-wait {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-family: var(--font-mono);
-  font-size: 0.72em;
-  color: var(--rt-muted);
-  margin-top: 12px;
-}
-.rt-mock-pulse {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--rt-warning);
-  animation: rt-mock-bp 1.6s ease-in-out infinite;
-}
-@keyframes rt-mock-bp { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .rt-mock-pulse { animation: none; } }
-
-/* Connector-page mockup pieces (RTSC-601): toggles, step flows, badges,
-   status-mapping rows, progress. Extends the rt-mock system above. */
-.rt-mock-togrow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  font-size: 0.8em;
-  color: var(--rt-fg);
-  padding: 7px 0;
-  border-bottom: 1px solid var(--rt-card-border);
-}
-.rt-mock-togrow:last-of-type { border-bottom: none; }
-.rt-mock-toggle {
-  width: 32px;
-  height: 18px;
-  border-radius: 999px;
-  background: var(--rt-accent);
-  position: relative;
-  flex: none;
-}
-.rt-mock-toggle::after {
-  content: "";
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--rt-bg);
-}
-.rt-mock-toggle.off { background: var(--rt-surface-border); }
-.rt-mock-toggle.off::after { right: auto; left: 2px; background: var(--rt-muted); }
-.rt-mock-flow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin: 10px 0;
-}
-.rt-mock-fstep {
-  background: var(--rt-surface);
-  border: 1px solid var(--rt-surface-border);
-  border-radius: var(--rt-radius-md);
-  padding: 7px 11px;
-  font-size: 0.74em;
-  color: var(--rt-fg);
-}
-.rt-mock-fstep b {
-  display: block;
-  font-size: 0.82em;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--rt-accent);
-  margin-bottom: 1px;
-}
-.rt-mock-farrow { color: var(--rt-muted); font-size: 0.85em; }
-.rt-mock-badge {
-  font-size: 0.62em;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 2.5px 9px;
-  border-radius: 999px;
-}
-.rt-mock-badge.ok {
-  background: var(--rt-accent-bg);
-  color: var(--rt-accent);
-  border: 1px solid var(--rt-accent-border);
-}
-.rt-mock-badge.pend {
-  background: var(--rt-warning-bg);
-  color: var(--rt-warning);
-  border: 1px solid var(--rt-warning-border);
-}
-.rt-mock-maphead {
-  font-size: 0.66em;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--rt-muted);
-  margin: 10px 0 2px;
-}
-.rt-mock-maprow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  font-size: 0.78em;
-  color: var(--rt-fg);
-  padding: 5px 0;
-}
-.rt-mock-sel {
-  background: var(--rt-bg);
-  border: 1px solid var(--rt-surface-border);
-  border-radius: var(--rt-radius-sm);
-  padding: 3px 20px 3px 9px;
-  font-family: var(--font-mono);
-  font-size: 0.92em;
-  color: var(--rt-accent);
-  position: relative;
-  flex: none;
-}
-.rt-mock-sel::after {
-  content: "\25BE";
-  position: absolute;
-  right: 6px;
-  color: var(--rt-muted);
-  font-size: 0.75em;
-}
-.rt-mock-revrow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.72em;
-  color: var(--rt-muted);
-  padding: 2px 0 6px 14px;
-}
-.rt-mock-revrow .rt-mock-sel { color: var(--rt-fg); }
-.rt-mock-progress {
-  height: 8px;
-  border-radius: 5px;
-  background: var(--rt-surface-border);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-card);
   overflow: hidden;
-  margin: 8px 0 4px;
+  background: var(--card);
 }
-.rt-mock-progress-fill {
-  height: 100%;
-  width: 64%;
-  background: var(--rt-accent);
-  border-radius: 5px;
+.rt-shots img {
+  display: none;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  border-radius: 0;
 }
-.rt-mock-secret {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--rt-bg);
-  border: 1px dashed var(--rt-warning-border);
-  border-radius: var(--rt-radius-md);
-  padding: 8px 10px;
-  font-family: var(--font-mono);
-  font-size: 0.74em;
-  color: var(--rt-fg);
-  margin: 6px 0;
+html.dark .rt-shots img.rt-shot-dark:not(.rt-shot-phone),
+:root.dark .rt-shots img.rt-shot-dark:not(.rt-shot-phone) {
+  display: block;
 }
-.rt-mock-secret .rt-mock-copywarn { color: var(--rt-warning); font-family: var(--font-sans); flex: none; }
+html.light .rt-shots img.rt-shot-light:not(.rt-shot-phone),
+html:not(.dark) .rt-shots img.rt-shot-light:not(.rt-shot-phone) {
+  display: block;
+}
+@media (max-width: 640px) {
+  html.dark .rt-shots img.rt-shot-dark:not(.rt-shot-phone),
+  :root.dark .rt-shots img.rt-shot-dark:not(.rt-shot-phone),
+  html.light .rt-shots img.rt-shot-light:not(.rt-shot-phone),
+  html:not(.dark) .rt-shots img.rt-shot-light:not(.rt-shot-phone) {
+    display: none;
+  }
+  html.dark .rt-shots img.rt-shot-dark.rt-shot-phone,
+  :root.dark .rt-shots img.rt-shot-dark.rt-shot-phone {
+    display: block;
+  }
+  html.light .rt-shots img.rt-shot-light.rt-shot-phone,
+  html:not(.dark) .rt-shots img.rt-shot-light.rt-shot-phone {
+    display: block;
+  }
+}
 
-/* ---------------------------------------------------------------------------
- * Connector logo row (RTSC-599): the real brand marks, ported from
- * dash/src/components/ConnectorsPanel.tsx's GithubMark/SlackMark/etc rather
- * than approximated, so a synced/notified/migrated platform reads exactly
- * like it does in the product. One row per Connectors page, right after the
- * intro paragraph.
- * ------------------------------------------------------------------------- */
+/* Connector logo row: real brand marks, one row per Connectors page. */
 .rt-logos {
   display: flex;
   flex-wrap: wrap;
@@ -544,8 +342,8 @@ html.light .rt-mock-btn { color: #fff; }
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--rt-card);
-  border: 1px solid var(--rt-card-border);
+  background: var(--card);
+  border: 1px solid var(--card-border);
   border-radius: 100px;
   padding: 7px 14px 7px 10px;
 }
@@ -554,5 +352,5 @@ html.light .rt-mock-btn { color: #fff; }
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 500;
-  color: var(--rt-fg);
+  color: var(--fg);
 }

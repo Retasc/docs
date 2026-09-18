@@ -1,6 +1,10 @@
 ---
 title: "Notifications"
 description: "DMs when your issues move, on Telegram, Discord, or Slack. Self-service, per user, no role required."
+"og:image": "https://docs.retasc.com/images/og/notifications.png?v=80012615"
+"og:image:alt": "retasc docs: Notifications"
+"twitter:image": "https://docs.retasc.com/images/og/notifications.png?v=80012615"
+"twitter:image:alt": "retasc docs: Notifications"
 ---
 
 All three connectors send the same relationship-routed DMs: the event decides who is
@@ -46,59 +50,37 @@ when you connect, and each event mutes independently. Setup is self-service from
 
 ## Connect Telegram
 
-<div className="rt-mock-flow">
-  <div className="rt-mock-fstep"><b>1 · Dash</b>Connect Telegram</div>
-  <span className="rt-mock-farrow">→</span>
-  <div className="rt-mock-fstep"><b>2 · Telegram</b>opens @RetascBot, tap Start</div>
-  <span className="rt-mock-farrow">→</span>
-  <div className="rt-mock-fstep"><b>3</b>Connected</div>
-</div>
+1. Once per workspace, add Retasc to Slack.
+2. Each person pastes `/retasc connect <code>` in any channel.
+3. Connected.
+
 
 The link is single-use and lives 15 minutes. The Dash flips to Connected on its own,
 no refresh needed.
 
 ## Connect Discord
 
-<div className="rt-mock-flow">
-  <div className="rt-mock-fstep"><b>1 · Dash</b>Connect Discord: a code + server invite</div>
-  <span className="rt-mock-farrow">→</span>
-  <div className="rt-mock-fstep"><b>2 · Discord</b>join the Retasc server</div>
-  <span className="rt-mock-farrow">→</span>
-  <div className="rt-mock-fstep"><b>3</b>type <code>/connect &lt;code&gt;</code></div>
-  <span className="rt-mock-farrow">→</span>
-  <div className="rt-mock-fstep"><b>4</b>DMs arrive from the Retasc bot</div>
-</div>
+1. In the Dash, connect Discord: a code plus a server invite.
+2. Join the Retasc server in Discord.
+3. Type `/connect <code>`.
+4. DMs arrive from the Retasc bot.
 
 ## Connect Slack
 
-<div className="rt-mock-flow">
-  <div className="rt-mock-fstep"><b>1 · once per workspace</b>Add Retasc to Slack</div>
-  <span className="rt-mock-farrow">→</span>
-  <div className="rt-mock-fstep"><b>2 · per person</b>paste <code>/retasc connect &lt;code&gt;</code> in any channel</div>
-  <span className="rt-mock-farrow">→</span>
-  <div className="rt-mock-fstep"><b>3</b>Connected</div>
-</div>
+1. Once per workspace, add Retasc to Slack.
+2. Each person pastes `/retasc connect <code>` in any channel.
+3. Connected.
 
 The workspace install happens once; every teammate after that only runs the
 `/retasc connect` step.
 
 ## After connecting
 
-<div className="rt-mock">
-  <div className="rt-mock-bar">
-    <span className="rt-mock-dot"></span><span className="rt-mock-dot"></span><span className="rt-mock-dot"></span>
-    <span className="rt-mock-url">dash.retasc.com/connectors</span>
-  </div>
-  <div className="rt-mock-body">
-    <div className="rt-mock-card">
-      <div className="rt-mock-eyebrow">Telegram <span className="rt-mock-badge ok">Connected</span></div>
-      <div className="rt-mock-togrow"><span>Work done</span><span className="rt-mock-toggle"></span></div>
-      <div className="rt-mock-togrow"><span>Assigned to you</span><span className="rt-mock-toggle"></span></div>
-      <div className="rt-mock-togrow"><span>Review requested</span><span className="rt-mock-toggle"></span></div>
-      <div className="rt-mock-togrow"><span>Work canceled</span><span className="rt-mock-toggle off"></span></div>
-      <span className="rt-mock-btn">Send test</span>
-    </div>
-  </div>
+<div className="rt-shots">
+  <img className="rt-shot-dark" src="/images/ui/connector-telegram-dark.png" alt="The Telegram connector in the Dash: connected, with a toggle per event and a Send test button" />
+  <img className="rt-shot-light" src="/images/ui/connector-telegram-light.png" alt="The Telegram connector in the Dash: connected, with a toggle per event and a Send test button" />
+  <img className="rt-shot-dark rt-shot-phone" src="/images/ui/connector-telegram-dark-phone.png" alt="The Telegram connector in the Dash: connected, with a toggle per event and a Send test button" />
+  <img className="rt-shot-light rt-shot-phone" src="/images/ui/connector-telegram-light-phone.png" alt="The Telegram connector in the Dash: connected, with a toggle per event and a Send test button" />
 </div>
 
 **Send test** pushes a real DM through the live path, so "it works" is verified, not
@@ -119,10 +101,10 @@ when you reconnect.
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Sync: GitHub & GitLab" icon="code-branch" href="/sync">
+  <Card title="Sync: GitHub & GitLab" icon="/icons/link-2.svg" href="/sync">
     Keep an external tracker in lockstep; outside PRs become review-work.
   </Card>
-  <Card title="Migrate from another tracker" icon="boxes-packing" href="/migrate">
+  <Card title="Migrate from another tracker" icon="/icons/archive.svg" href="/migrate">
     Linear, Jira, ClickUp, Asana, or Shortcut, in one pull.
   </Card>
 </CardGroup>
