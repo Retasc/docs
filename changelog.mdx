@@ -18,6 +18,24 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.53.1 (2026-09-18)
+
+- **RTSC-1042** — the proxy now sweeps this machine's dead worktrees on the first claim of a session.
+
+<Accordion title="Full notes">
+
+- **RTSC-1042** — the proxy now sweeps this machine's dead worktrees on the first
+  claim of a session. Reap used to run only when *this* session marked an issue
+  `done`, so an author who sent work to `review` kept the tree after the reviewer
+  merged and closed it on another laptop. `retasc tidy --prune --auto` deletes
+  local trees whose issue is `done` or `canceled` and whose commits are already
+  on trunk or fully pushed to origin, with a one-hour grace and a cap of ten per
+  session. A branch that never landed on trunk is not deleted from origin.
+  **Nothing to do**: the next claim on a machine with leftover trees starts the
+  drain.
+
+</Accordion>
+
 ## 1.53.0 (2026-09-15)
 
 - **RTSC-1014** — every tool you start in a bound folder now gets its **own credential**, so one can be retired without stopping the others.
