@@ -61,13 +61,13 @@
   --ease-move: cubic-bezier(.4, 0, .2, 1);
 }
 
-/* ---- Structural Light (web/styles.css light blocks). Mintlify puts .light or
-        .dark on <html>; the media query covers a first paint before it does. ---- */
-html.light, html:not(.dark):not(.light) { --scheme: light; }
-@media (prefers-color-scheme: light) { html:not(.dark) { --is-light: 1; } }
-@media (prefers-color-scheme: dark) { html:not(.light):not(.dark) { color-scheme: dark; } }
+/* ---- Structural Light (web/styles.css light blocks). Mintlify writes .dark or
+        .light on <html>, and the shell PAINTS DARK BEFORE IT WRITES EITHER: the light
+        tokens therefore hang off .light alone. `html:not(.dark)` also matched that first
+        paint and put #1a1a1a ink on a #0a0a0a ground, which is where the nav titles went
+        (Retasc/docs#61). ---- */
 html.light,
-html:not(.dark) {
+:root.light {
   color-scheme: light;
   --bg: #E8E4DF;
   --card: #F1EDE7; --card-border: #b3aba1;
@@ -448,12 +448,12 @@ html.dark [data-component-part="card-icon"] img, html.dark img[src^="/icons/"] {
    The cost is honest: the browser fetches all four (it already fetched both palettes), about
    60KB a cut. */
 #content-area .rt-shot { display: none; width: 100%; height: auto; margin: 1.4em 0; border-radius: var(--radius-card); }
-html:not(.dark) #content-area .rt-shot-light.rt-shot-wide { display: block; }
+html.light #content-area .rt-shot-light.rt-shot-wide { display: block; }
 html.dark #content-area .rt-shot-dark.rt-shot-wide { display: block; }
 @media (max-width: 640px) {
-  html:not(.dark) #content-area .rt-shot-light.rt-shot-wide { display: none; }
+  html.light #content-area .rt-shot-light.rt-shot-wide { display: none; }
   html.dark #content-area .rt-shot-dark.rt-shot-wide { display: none; }
-  html:not(.dark) #content-area .rt-shot-light.rt-shot-narrow { display: block; }
+  html.light #content-area .rt-shot-light.rt-shot-narrow { display: block; }
   html.dark #content-area .rt-shot-dark.rt-shot-narrow { display: block; }
 }
 /* The shell hangs an "Expand image" button off every picture, and on these it renders as a
@@ -470,8 +470,9 @@ html.dark #content-area .rt-shot-dark.rt-shot-wide { display: block; }
    width. Chrome draws the document scrollbar from the root's colour-scheme, so that is
    pinned to OUR palette too — left to the OS it painted a black trough beside a cream page
    whenever the reader's system theme disagreed with the one they picked here. */
-:root { color-scheme: light; }
-html.dark { color-scheme: dark; }
+/* Dark is the shell's default and the ground before any class is written, so the root
+   scheme is dark and .light turns it over (the light token block above). */
+:root { color-scheme: dark; }
 html { scrollbar-color: var(--dim) transparent; scrollbar-width: thin; }
 html::-webkit-scrollbar { width: 10px; height: 10px; background: transparent; }
 html::-webkit-scrollbar-track { background: transparent; }
