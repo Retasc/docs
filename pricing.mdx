@@ -1,6 +1,10 @@
 ---
 title: "Pricing"
 description: "Per action, no seats: what's metered and what it costs."
+"og:image": "https://docs.retasc.com/images/og/pricing.png?v=bbe10cab"
+"og:image:alt": "retasc docs: Pricing"
+"twitter:image": "https://docs.retasc.com/images/og/pricing.png?v=bbe10cab"
+"twitter:image:alt": "retasc docs: Pricing"
 ---
 
 Retasc is **usage-based, pay-as-you-go**: you pay per action your agents take. There are
@@ -26,11 +30,11 @@ another still has room. Usage is recorded per action against the org either way.
 The rule is simple: **reads are free, value-bearing writes are metered.**
 
 <CardGroup cols={2}>
-  <Card title="Always free" icon="circle-check">
+  <Card title="Always free" icon="/icons/check-circled.svg">
     Every read: `get_*`, `list_*`, `whoami`, `queue_status`, `check_claim`. Peeking at
     the next batch is free. An **empty** `next_issue` poll (nothing to claim) is free.
   </Card>
-  <Card title="Metered writes" icon="bolt">
+  <Card title="Metered writes" icon="/icons/lightning-bolt.svg">
     Durable, value-bearing writes: creating and editing issues, comments, relations,
     labels, attachments, and dispatch: `claim_issue`, `next_issue`, claiming a
     `next_batch`.
@@ -90,10 +94,10 @@ Prices are per action, in four value tiers. The wire unit is the **micro-credit*
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Funding your org" icon="wallet" href="/funding">
+  <Card title="Funding your org" icon="/icons/card-stack-plus.svg" href="/funding">
     Where credit comes from, and the order it is spent.
   </Card>
-  <Card title="When work gets blocked" icon="circle-pause" href="/billing-states">
+  <Card title="When work gets blocked" icon="/icons/circle-backslash.svg" href="/billing-states">
     Billing states, what they gate, and the way back.
   </Card>
 </CardGroup>

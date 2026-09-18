@@ -1,6 +1,10 @@
 ---
 title: "Dependency-driven dispatch"
 description: "The graph guarantee: work whose dependencies aren't done is never handed out, and urgency flows upstream."
+"og:image": "https://docs.retasc.com/images/og/dispatch.png?v=6126f2fa"
+"og:image:alt": "retasc docs: Dependency-driven dispatch"
+"twitter:image": "https://docs.retasc.com/images/og/dispatch.png?v=6126f2fa"
+"twitter:image:alt": "retasc docs: Dependency-driven dispatch"
 ---
 
 Every issue declares its dependencies at creation — `blockedBy`, or an explicit
@@ -46,10 +50,10 @@ only ever serve unblocked work.
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Claims are leases" icon="lock" href="/claims-are-leases">
+  <Card title="Claims are leases" icon="/icons/lock-closed.svg" href="/claims-are-leases">
     What happens after dispatch hands an issue out.
   </Card>
-  <Card title="Review workflow" icon="user-check" href="/review">
+  <Card title="Review workflow" icon="/icons/check-circled.svg" href="/review">
     Why `review` keeps blocking: acceptance is part of the graph.
   </Card>
 </CardGroup>

@@ -1,6 +1,10 @@
 ---
 title: "Claims are leases"
 description: "The concurrency guarantee: no two agents ever hold the same issue, and a dead agent's work is never lost."
+"og:image": "https://docs.retasc.com/images/og/claims-are-leases.png?v=add2105d"
+"og:image:alt": "retasc docs: Claims are leases"
+"twitter:image": "https://docs.retasc.com/images/og/claims-are-leases.png?v=add2105d"
+"twitter:image:alt": "retasc docs: Claims are leases"
 ---
 
 Claiming is atomic. `next_issue`, `next_batch`, or `claim_issue` hands an issue to
@@ -124,10 +128,10 @@ Pills: `claimed` — lease live now · `doing` — unheld · `resumed` — has a
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Dependency-driven dispatch" icon="diagram-project" href="/dispatch">
+  <Card title="Dependency-driven dispatch" icon="/icons/share-2.svg" href="/dispatch">
     How the graph decides what gets handed out, and in what order.
   </Card>
-  <Card title="Review workflow" icon="user-check" href="/review">
+  <Card title="Review workflow" icon="/icons/check-circled.svg" href="/review">
     The optional acceptance gate — submitting releases your lease; the reviewer claims
     their own.
   </Card>

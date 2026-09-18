@@ -1,6 +1,10 @@
 ---
 title: "CLI reference"
-description: "Every retasc command: synopsis, options, requirements, and examples. Current release: 1.35.1."
+description: "Every retasc command: synopsis, options, requirements, and examples."
+"og:image": "https://docs.retasc.com/images/og/cli.png?v=467849dc"
+"og:image:alt": "retasc docs: CLI reference"
+"twitter:image": "https://docs.retasc.com/images/og/cli.png?v=467849dc"
+"twitter:image:alt": "retasc docs: CLI reference"
 ---
 
 ```sh
@@ -18,6 +22,55 @@ retasc --version        # what you have
 - **Failure.** Errors print `✗ CODE: message` with a hint on its own line, and exit 1.
 - **Secrets are never flags.** Anything secret is typed with echo off, or read from an
   environment variable. There is no `--token`.
+
+## Every command
+
+{/* docs-facts:commands */}
+
+_38 commands, from `retasc --help` at 1.53.1. Each is described in full below or in `retasc <command> --help`._
+
+| Command | What it does |
+|---|---|
+| `retasc login [options]` | Sign in with GitHub or Google (device flow). |
+| `retasc logout` | Forget the local session. |
+| `retasc whoami [options]` | Show THIS folder's org/project binding, plus the signed-in user and their orgs. |
+| `retasc init [options]` | Create an org + project, mint an agent key, and wire it into your agent — one shot. |
+| `retasc bind [options]` | Bind THIS workspace folder to one org + project (pick/create), and wire the watchdog. |
+| `retasc unbind [options]` | Disconnect THIS folder from Retasc: keystore entry, MCP entry, and revoke the key. |
+| `retasc doctor` | Check that THIS workspace is correctly and safely bound to one org/project. |
+| `retasc billing [options]` | Show the org's billing: subscription, what's owed now, and the charge + on-chain payment history across every payment link ever used (owner or admin). |
+| `retasc triage [options] [issue]` | Read and approve work filed from OUTSIDE your org. Agents can't pick these up until a person approves them, and a person means you: this needs an interactive terminal and there is deliberately no --approve flag. The Dash is the recommended surface (an agent that can drive a real PTY on this machine could drive this command too). |
+| `retasc org create [options]` | Manage orgs. |
+| `retasc project create [options]` | Manage projects. |
+| `retasc project rename-prefix [options]` | Rename a project's issue prefix (rewrites every issue id + reference). |
+| `retasc key mint [options]` | Mint/rotate/revoke/list agent API keys. |
+| `retasc key list [options]` | List an org's agent keys, newest first. |
+| `retasc key rotate [options]` | Mint/rotate/revoke/list agent API keys. |
+| `retasc key revoke [options]` | Mint/rotate/revoke/list agent API keys. |
+| `retasc members invite [options]` | Mint a single-use invite code for an org (owner or admin). Shown once. |
+| `retasc members list [options]` | List an org's invites and their status (owner or admin). |
+| `retasc members revoke [options]` | Revoke an unused invite (owner or admin). |
+| `retasc join [options] <link>` | Join an org from an invite link and set this folder up completely — one command. |
+| `retasc identity [options]` | Link imported history to your account: shows the people a migration carried into this org and asks which one is you. |
+| `retasc import [options]` | Bring a Linear/Jira/Asana/ClickUp/Shortcut project across into a new Retasc project. |
+| `retasc plan [options]` | Show or set which plan pays for each of your agents. |
+| `retasc setup [options]` | Detect the MCP harnesses on this machine and wire Retasc into each, once. |
+| `retasc mcp install [options]` | Register the Retasc MCP server with your agent (Claude Code) or write .mcp.json. |
+| `retasc hook session-start` | Claude Code SessionStart hook: record this session's transcript id for the proxy. |
+| `retasc hook model-switch` | Claude Code PostModelSwitch hook: update this session's model for the proxy. |
+| `retasc gate install [options]` | Install a prefix-correct commit-msg hook + check-commit-message Action into this repo. |
+| `retasc claim [options] [issue]` | Claim an issue (RTSC-NN, a bare number, --id, or the next unblocked) and drop into a fresh worktree. |
+| `retasc next [options]` | Claim the next unblocked issue and drop into a fresh worktree (alias of `claim`). |
+| `retasc tidy [options]` | Reconcile rtsc-NN/* branches against their issue status; reap the done+merged ones. |
+| `retasc release [options] [issue]` | Hand a claimed issue back to the queue. Leaves your worktree and branch alone. |
+| `retasc done [options]` | Mark the current issue (rtsc-NN/ branch, or --id) done and tear down its worktree+branch. |
+| `retasc issue show [options] [issue]` | Show one issue in full (defaults to the current rtsc-NN/ branch's issue). |
+| `retasc issue list [options]` | List issues in this folder's project. Defaults to active work. |
+| `retasc checkpoint [options] [issue]` | Record a handoff note on your claimed issue (and renew its lease). |
+| `retasc check-claim [options] [issue]` | Does THIS session still hold the issue, and is anything renewing the lease? Exits non-zero if not. |
+| `retasc config` | Show the resolved CLI config (paths + endpoints). |
+
+{/* /docs-facts:commands */}
 
 ## Configuration and environment
 
@@ -448,10 +501,10 @@ you have.
 ## See also
 
 <CardGroup cols={2}>
-  <Card title="MCP tools reference" icon="wrench" href="/mcp-tools">
+  <Card title="MCP tools reference" icon="/icons/gear.svg" href="/mcp-tools">
     What your agents can call once the folder is wired.
   </Card>
-  <Card title="Changelog" icon="clock-rotate-left" href="/changelog">
+  <Card title="Changelog" icon="/icons/counter-clockwise-clock.svg" href="/changelog">
     Every published CLI release, newest first.
   </Card>
 </CardGroup>
