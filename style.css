@@ -49,10 +49,11 @@ html.dark {
   scrollbar-color: var(--dim) transparent;
 }
 
-/* Light: the landing's Structural Light. Mintlify sets html.light or drops .dark. */
+/* Light: only when Mintlify has actually switched. Do not use html:not(.dark):
+ * the default shell is dark and often has no .dark class, so that selector
+ * painted light ink on a dark page (nav titles at 1.1:1). */
 html.light,
-:root.light,
-html:not(.dark) {
+:root.light {
   color-scheme: light;
   --bg: #e8e4df;
   --card: #f1ede7;
@@ -307,27 +308,31 @@ button.lg\:hidden.h-14 + button,
   border-radius: 0;
 }
 html.dark .rt-shots img.rt-shot-dark:not(.rt-shot-phone),
-:root.dark .rt-shots img.rt-shot-dark:not(.rt-shot-phone) {
+:root.dark .rt-shots img.rt-shot-dark:not(.rt-shot-phone),
+html:not(.light) .rt-shots img.rt-shot-dark:not(.rt-shot-phone) {
   display: block;
 }
 html.light .rt-shots img.rt-shot-light:not(.rt-shot-phone),
-html:not(.dark) .rt-shots img.rt-shot-light:not(.rt-shot-phone) {
+:root.light .rt-shots img.rt-shot-light:not(.rt-shot-phone) {
   display: block;
 }
+html.light .rt-shots img.rt-shot-dark:not(.rt-shot-phone),
+:root.light .rt-shots img.rt-shot-dark:not(.rt-shot-phone) {
+  display: none;
+}
 @media (max-width: 640px) {
-  html.dark .rt-shots img.rt-shot-dark:not(.rt-shot-phone),
-  :root.dark .rt-shots img.rt-shot-dark:not(.rt-shot-phone),
-  html.light .rt-shots img.rt-shot-light:not(.rt-shot-phone),
-  html:not(.dark) .rt-shots img.rt-shot-light:not(.rt-shot-phone) {
-    display: none;
+  .rt-shots img.rt-shot-dark:not(.rt-shot-phone),
+  .rt-shots img.rt-shot-light:not(.rt-shot-phone) {
+    display: none !important;
   }
   html.dark .rt-shots img.rt-shot-dark.rt-shot-phone,
-  :root.dark .rt-shots img.rt-shot-dark.rt-shot-phone {
-    display: block;
+  :root.dark .rt-shots img.rt-shot-dark.rt-shot-phone,
+  html:not(.light) .rt-shots img.rt-shot-dark.rt-shot-phone {
+    display: block !important;
   }
   html.light .rt-shots img.rt-shot-light.rt-shot-phone,
-  html:not(.dark) .rt-shots img.rt-shot-light.rt-shot-phone {
-    display: block;
+  :root.light .rt-shots img.rt-shot-light.rt-shot-phone {
+    display: block !important;
   }
 }
 
