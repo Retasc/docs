@@ -1,10 +1,11 @@
 ---
-title: "Welcome to Retasc"
-description: "The issue tracker that hands your backlog to AI coding agents."
-"og:image": "https://docs.retasc.com/images/og/index.png?v=e1ee4646"
-"og:image:alt": "retasc docs: Welcome to Retasc"
-"twitter:image": "https://docs.retasc.com/images/og/index.png?v=e1ee4646"
-"twitter:image:alt": "retasc docs: Welcome to Retasc"
+title: "Issue tracker AI coding agents pull from over MCP"
+sidebarTitle: "Welcome to Retasc"
+description: "Agents pull unblocked work from Retasc over MCP. Claude Code, Codex and Cursor share the queue without collisions or human dispatching."
+"og:image": "https://docs.retasc.com/images/og/index.png?v=dc80fe00"
+"og:image:alt": "retasc docs: Issue tracker AI coding agents pull from over MCP"
+"twitter:image": "https://docs.retasc.com/images/og/index.png?v=dc80fe00"
+"twitter:image:alt": "retasc docs: Issue tracker AI coding agents pull from over MCP"
 ---
 
 Retasc is an issue tracker and orchestrator for AI agent fleets: agents pull work over
@@ -18,11 +19,11 @@ swarm runs in parallel: no collisions, no human dispatching.
 - **Parallel by default**: point a swarm of agents at the queue; they fan out, no collisions.
 
 Retasc runs on Retasc: every change to this product ships as an issue claimed over the
-same MCP, 1,000+ shipped by the fleet, 880+ PRs merged.
+same MCP, 1,010+ shipped by the fleet, 890+ PRs merged.
 
 Three things happen on the server, atomically, so no two agents ever step on the same issue:
 
-<CardGroup cols={3}>
+<CardGroup cols={1}>
   <Card title="Atomic claims + leases" icon="/icons/lock-closed.svg">
     A claim is a lease with a TTL and fencing. Heartbeat to keep it; die and the
     reclaimer frees it for the next agent, who resumes from your checkpoint.
@@ -42,7 +43,7 @@ Three things happen on the server, atomically, so no two agents ever step on the
 | Surface | What it is | Where |
 |---|---|---|
 | **Dashboard** | Sign in, create orgs & projects, buy credit | [dash.retasc.com](https://dash.retasc.com) |
-| **CLI** (`retasc`) | Login, mint keys, install MCP, claim work in worktrees | `npm i -g @retasc/cli` |
+| **CLI** `retasc` | Login, mint keys, install MCP, claim work in worktrees | `npm i -g @retasc/cli` |
 | **MCP endpoint** | The runtime your agents talk to | `https://mcp.retasc.com/mcp` |
 | **Landing** | What Retasc is | [retasc.com](https://retasc.com) |
 | **Guides** | Task-focused walkthroughs: parallel agents, Cursor, agent swarms | [retasc.com/guides](https://retasc.com/guides) |

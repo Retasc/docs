@@ -1,386 +1,507 @@
 /* ---------------------------------------------------------------------------
- * Retasc docs: the design system on Mintlify's shell.
+ * Retasc docs on the Retasc design system (operations/design-system.md in the
+ * Retasc monorepo; web/styles.css is the canon for every shared token).
  *
- * operations/design-system.md §docs.retasc.com. We do not own the markup
- * (nav, TOC, search, code blocks, footer). Tokens, type, and the rules
- * below go on top of it. Three things look like hacks and are structural:
- * they are commented at the rule.
+ * Mintlify draws the shell; this file puts the site's palette, type and surfaces
+ * on it. Two palettes, same tokens: Protocol Dark (default) and Structural Light.
+ * The values below are copied from web/styles.css and re-checked against it
+ * whenever the site's tokens move: the old copy of this file carried a 2026-07
+ * palette (#111 cards, #999 secondary) for two months after the site left it.
+ *
+ * Rules this file keeps: one accent (green) for state only, never for links or
+ * navigation; links are ink with an underline; no blue anywhere the eye lands
+ * except the focus ring; Space Grotesk in headings only; mono for the system
+ * voice (labels, meta, code); radii 4 / 6 / 8 / 10 / 100; hover moves an
+ * outline from --dim to --sep, nothing lifts.
  * ------------------------------------------------------------------------- */
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600&display=swap");
-
-/* Same ladder as dash/src/styles/tokens.css and web/styles.css. Names without
- * a prefix so the gate (docsaudit.py) can read --bg/--dim/--sep off :root. */
-:root,
-:root.dark,
-html.dark {
-  color-scheme: dark;
-  --bg: #0a0a0a;
-  --card: #202020;
-  --card-border: #404040;
-  --surface: #2e2e2e;
-  --surface-border: #4d4d4d;
-  --panel: #202020;
-  --panel-sunk: #161616;
-  --panel-inset: #161616;
-  --fg: #f0f0f0;
-  --fg-strong: #fff;
-  --ink: #cfcfcf;
-  --secondary: #a9a9a9;
-  --muted: #9a9a9a;
-  --dim: #444;
-  --sep: #7a7a7a;
-  --success: #4ade80;
-  --success-bg: rgba(74, 222, 128, 0.08);
-  --success-border: rgba(74, 222, 128, 0.32);
-  --warning: #facc15;
-  --warning-bg: rgba(250, 204, 21, 0.08);
-  --warning-border: rgba(250, 204, 21, 0.34);
-  --error: #f87171;
-  --error-bg: rgba(248, 113, 113, 0.08);
-  --error-border: rgba(248, 113, 113, 0.34);
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-card: 10px;
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-display: "Space Grotesk", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
-  scrollbar-color: var(--dim) transparent;
+/* ---- Fonts: self-hosted, the same three files as retasc.com (SIL OFL) ---- */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('/fonts/inter.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500 700;
+  font-display: swap;
+  src: url('/fonts/space-grotesk.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* Light: only when Mintlify has actually switched. Do not use html:not(.dark):
- * the default shell is dark and often has no .dark class, so that selector
- * painted light ink on a dark page (nav titles at 1.1:1). */
+/* ---- Tokens: Protocol Dark (web/styles.css :root) ---- */
+:root {
+  --bg: #0a0a0a;
+  --card: #202020; --card-border: #404040;
+  --surface: #2e2e2e; --surface-border: #4d4d4d;
+  --panel: #202020; --panel-line: #404040; --panel-sunk: #0c0c0c; --panel-inset: #0c0c0c;
+  --fg: #f0f0f0; --fg-strong: #fff;
+  --ink: #cfcfcf; --secondary: #a9a9a9; --muted: #9a9a9a; --dim: #444; --sep: #7a7a7a;
+  --success: #4ade80; --success-bg: rgba(74,222,128,0.08); --success-border: rgba(74,222,128,0.32);
+  --warning: #facc15; --warning-bg: rgba(250,204,21,0.08); --warning-border: rgba(250,204,21,0.34);
+  --error: #f87171; --error-bg: rgba(248,113,113,0.08); --error-border: rgba(248,113,113,0.34);
+  --link-blue: #5a9fd4;
+  --radius-sm: 4px; --radius-md: 6px; --radius-lg: 8px; --radius-card: 10px; --radius-pill: 100px;
+  --sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --display: 'Space Grotesk', 'Inter', sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --t-label: 11px; --t-value: 12.5px; --t-prose: 14px; --t-lead: 16px; --t-card: 20px; --t-section: 26px;
+  --ease-move: cubic-bezier(.4, 0, .2, 1);
+}
+
+/* ---- Structural Light (web/styles.css light blocks). Mintlify writes .dark or
+        .light on <html>, and the shell PAINTS DARK BEFORE IT WRITES EITHER: the light
+        tokens therefore hang off .light alone. `html:not(.dark)` also matched that first
+        paint and put #1a1a1a ink on a #0a0a0a ground, which is where the nav titles went
+        (Retasc/docs#61). ---- */
 html.light,
 :root.light {
   color-scheme: light;
-  --bg: #e8e4df;
-  --card: #f1ede7;
-  --card-border: #b3aba1;
-  --surface: #ece8e3;
-  --surface-border: #d0ccc7;
-  --panel: #f1ede7;
-  --panel-sunk: #e0dcd6;
-  --panel-inset: #e0dcd6;
-  --fg: #1a1a1a;
-  --fg-strong: #000;
-  --ink: #333;
-  --secondary: #555;
-  --muted: #666;
-  --dim: #bbb;
-  --sep: #767676;
-  --success: #16a34a;
-  --success-bg: rgba(22, 163, 74, 0.10);
-  --success-border: rgba(22, 163, 74, 0.32);
-  --warning: #ca8a04;
-  --warning-bg: rgba(202, 136, 4, 0.10);
-  --warning-border: rgba(202, 136, 4, 0.34);
-  --error: #dc2626;
-  --error-bg: rgba(220, 38, 38, 0.08);
-  --error-border: rgba(220, 38, 38, 0.34);
-  scrollbar-color: var(--dim) transparent;
+  --bg: #E8E4DF;
+  --card: #F1EDE7; --card-border: #b3aba1;
+  --surface: #EAE6DF; --surface-border: #bcb5ac;
+  --panel: #F7F4EF; --panel-line: #c6c0b6; --panel-sunk: #F7F4EF; --panel-inset: #EAE6DF;
+  --fg: #1a1a1a; --fg-strong: #000;
+  --ink: #333; --secondary: #555; --muted: #666; --dim: #bbb; --sep: #767676;
+  --success: #0c6e32; --success-bg: rgba(12,110,50,0.10); --success-border: rgba(12,110,50,0.34);
+  --warning: #835a0e; --warning-bg: rgba(217,159,6,0.12); --warning-border: rgba(163,111,4,0.40);
+  --error: #a8372a; --error-bg: rgba(168,55,42,0.09); --error-border: rgba(168,55,42,0.34);
+  --link-blue: #226295;
+}
+html.dark {
+  --bg: #0a0a0a;
+  --card: #202020; --card-border: #404040;
+  --surface: #2e2e2e; --surface-border: #4d4d4d;
+  --panel: #202020; --panel-line: #404040; --panel-sunk: #0c0c0c; --panel-inset: #0c0c0c;
+  --fg: #f0f0f0; --fg-strong: #fff;
+  --ink: #cfcfcf; --secondary: #a9a9a9; --muted: #9a9a9a; --dim: #444; --sep: #7a7a7a;
+  --success: #4ade80; --success-bg: rgba(74,222,128,0.08); --success-border: rgba(74,222,128,0.32);
+  --warning: #facc15; --warning-bg: rgba(250,204,21,0.08); --warning-border: rgba(250,204,21,0.34);
+  --error: #f87171; --error-bg: rgba(248,113,113,0.08); --error-border: rgba(248,113,113,0.34);
+  --link-blue: #5a9fd4;
 }
 
-/* Overrides carry !important. The shell ships Tailwind utilities in its own
- * markup. A token cannot beat a utility class at equal weight, and we cannot
- * edit the markup. design-system.md §docs.retasc.com. */
+/* ---- Ground and body voice ---- */
+html, body { background: var(--bg) !important; color: var(--fg); }
+body, #content-area, .prose, #sidebar, #navbar, #footer {
+  font-family: var(--sans); -webkit-font-smoothing: antialiased; text-wrap: pretty;
+}
+::selection { background: var(--fg); color: var(--bg); }
+em, i { font-style: normal; }
+a:focus-visible, button:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--link-blue); outline-offset: 2px; }
 
-html, body {
-  background: var(--bg) !important;
-  color: var(--fg) !important;
-  font-family: var(--font-sans) !important;
-  font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-}
+/* Prose: the guide voice, 15/1.6 in --ink; strong words step up to --fg. */
+#content-area .prose, #content-area .mdx-content { font-size: 15px; line-height: 1.6; color: var(--ink); overflow-wrap: break-word; }
+/* An over-long token (an env var, a branch pattern) breaks instead of running past the
+   column: break-word, never anywhere (design system §Rendered markdown). */
+#content-area .prose :is(p, li, td, th, h1, h2, h3, h4, span[data-as="p"]) { overflow-wrap: break-word; min-width: 0; }
+#content-area .prose p, #content-area .prose li, #content-area [data-as="p"] { color: var(--ink); }
+#content-area .prose strong, #content-area .prose b { color: var(--fg); font-weight: 600; }
+#content-area .prose ul > li::marker { color: var(--muted); }
+#content-area .prose ul, #content-area .prose ol { padding-left: 22px; }
+#content-area .prose li { margin: 3px 0; }
+#content-area .prose li > ul, #content-area .prose li > ol { margin: 3px 0 0; }
+#content-area .prose em { font-style: normal; color: var(--fg); font-weight: 500; }
+#content-area .prose blockquote { margin: 0 0 12px; padding: 2px 0 2px 12px; border-left: 2px solid var(--surface-border); color: var(--secondary); font-style: normal; }
+#content-area .prose blockquote p::before, #content-area .prose blockquote p::after { content: none; }
+#content-area .prose hr { border: 0; border-top: 1px solid var(--card-border); margin: 20px 0; }
+#content-area .prose del { color: var(--muted); }
 
-#content-area, #navbar, #sidebar, #footer, #header, #table-of-contents-layout, #mobile-nav {
-  background: var(--bg);
-  color: var(--fg);
-  font-family: var(--font-sans);
+/* Headings: Space Grotesk, the site's steps. h1 is the page title (38 desktop, 24
+   on the narrowest phone), h2 the guide section (23/600), h3 the card head (20/600). */
+#page-title, #content-area h1 {
+  font-family: var(--display); font-weight: 700; letter-spacing: -0.02em; color: var(--fg-strong);
+  /* The site's page title is 38px on a 560px column; the docs column is a phone's width
+     with the Copy button beside it, so the title takes the site's PHONE size, 32. */
+  font-size: clamp(24px, 10.8vw - 4px, 32px); line-height: 1.12; text-wrap: balance;
 }
+#content-area .prose h2, #content-area h2 { font-family: var(--display); font-size: 23px; font-weight: 600; letter-spacing: -0.01em; color: var(--fg-strong); text-wrap: balance; }
+#content-area .prose h3, #content-area h3 { font-family: var(--display); font-size: var(--t-card); font-weight: 600; color: var(--fg); text-wrap: balance; }
+#content-area .prose h4, #content-area h4 { font-family: var(--sans); font-size: 15px; font-weight: 600; color: var(--fg); }
+#header p, #header .description, #content-area .prose > p:first-of-type.lead { font-size: var(--t-lead); line-height: 1.6; color: var(--ink); }
+/* The section eyebrow above the title ("Get started"): mono label voice, not the accent. */
+#header [class*="text-primary"], #header .eyebrow { font-family: var(--mono); font-size: var(--t-label); font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted) !important; }
 
-.prose, p, li, td, th {
-  font-family: var(--font-sans);
-  color: var(--fg);
-  font-size: 16px;
-  line-height: 1.6;
+/* ---- Links: ink, underlined, never blue, never green. Hover lifts to --fg-strong.
+        An off-site link trails the 9px arrow the site uses everywhere. ---- */
+#content-area .prose a:not(.card):not([role="link"]):not(.step-link),
+#content-area a[data-as]:not(.card),
+#footer a {
+  color: var(--fg) !important; text-decoration: underline; text-decoration-color: var(--sep); text-underline-offset: 2px;
+  font-weight: 500; transition: color .15s, text-decoration-color .15s;
 }
-
-h1, h2, h3, h4, h5, h6,
-.prose h1, .prose h2, .prose h3, .prose h4 {
-  font-family: var(--font-display);
-  letter-spacing: -0.02em;
-  color: var(--fg-strong);
-  hyphens: none;
-  -webkit-hyphens: none;
-  overflow-wrap: normal;
-}
-h1, .prose h1 { font-size: 23px; font-weight: 600; }
-h2, .prose h2 { font-size: 20px; font-weight: 600; }
-h3, .prose h3 { font-size: 17px; font-weight: 600; }
-
-::selection {
-  background: var(--success-bg);
-  color: var(--fg);
-}
-
-/* Links: monochrome, green only on hover. Never blue. */
-.prose a,
-#content-area a:not(.card):not([class*="button"]) {
-  color: var(--fg-strong) !important;
-  text-decoration: underline;
-  text-decoration-color: var(--success-border);
-  text-underline-offset: 2px;
-}
-.prose a:hover,
-#content-area a:not(.card):not([class*="button"]):hover {
-  color: var(--success) !important;
-  text-decoration-color: var(--success);
-}
-
-/* The trailing arrow is text in the line it ends. Navbar/footer anchors are
- * display:flex; gap:6px — a pseudo-element is a flex item, so the arrow sat
- * 9px out until the rule zeroed the gap. Spaced by its own 3px margin. */
-#navbar a, #footer a, #header a {
-  gap: 0 !important;
-}
-.prose a[href^="http"]::after,
-#navbar a[href^="http"]:not(:has(img)):not(:has(svg))::after,
-#footer a[href^="http"]:not(:has(img)):not(:has(svg))::after {
-  content: "↗";
-  font-size: 9px;
-  margin-left: 3px;
-  display: inline;
-  text-decoration: none;
+#content-area .prose a:not(.card):hover, #footer a:hover { color: var(--fg-strong) !important; text-decoration-color: currentColor; }
+/* TEXT links only. A link whose content is a mark — the wordmark, the footer's social
+   glyphs, Mintlify's own badge — is not a labelled link and takes no arrow.
+   The arrow is spaced by its own 3px margin and NOTHING else: the navbar's links are flex
+   rows with a 6px gap, and a pseudo-element is a flex item, so the arrow sat 9px out there
+   and 3px in the footer. The landing learned this on its buttons (design system §Icons:
+   "letting the arrow sit in the flex gap landed it 8px from the label").
+   The primary CTA is excluded by href: its label is authored in docs.json and already ends
+   in an arrow. The shell renders that button twice — the visible one and a hidden twin the
+   drawer uses — and only the visible one happens to carry a chevron <svg> that the
+   :not(:has(svg)) guard catches, so without this the twin would arrive at "Login → ↗". */
+#navbar ul a[href^="http"] { gap: 0 !important; }
+#content-area .prose a[href^="http"]:not([href*="docs.retasc.com"]):not(.card):not([role="link"]):not(:has(img)):not(:has(svg))::after,
+#navbar ul a[href^="http"]:not([href*="docs.retasc.com"]):not([href^="https://dash.retasc.com"]):not([aria-label]):not(:has(img)):not(:has(svg))::after,
+#footer a[href^="http"]:not([href*="docs.retasc.com"]):not([href*="mintlify"]):not([aria-label]):not(:has(img)):not(:has(svg))::after {
+  content: ""; display: inline-block; width: 9px; height: 9px; margin-left: 3px; vertical-align: 0.07em;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 15'%3E%3Cpath d='M11.5 3a.5.5 0 0 1 .5.5V9l-.01.102a.5.5 0 0 1-.98-.001L11 9V4.707l-6.647 6.647a.5.5 0 0 1-.707-.707L10.293 4H6a.5.5 0 0 1 0-1z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 15'%3E%3Cpath d='M11.5 3a.5.5 0 0 1 .5.5V9l-.01.102a.5.5 0 0 1-.98-.001L11 9V4.707l-6.647 6.647a.5.5 0 0 1-.707-.707L10.293 4H6a.5.5 0 0 1 0-1z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
-code, kbd, pre, .font-mono,
-.prose code, .prose pre {
-  font-family: var(--font-mono) !important;
-  font-size: 14px;
+/* ---- Code: mono everywhere; inline chips on --surface, blocks as --panel ---- */
+code, kbd, pre, .font-mono, #content-area code, #content-area pre { font-family: var(--mono) !important; }
+#content-area :not(pre) > code {
+  /* The Dash's rendered markdown (tokens.css `.md code`), and INLINE like it. An
+     inline-block chip was the tidy answer to a 5px overhang and it cost the paragraph its
+     rhythm: a long chip wrapped inside its own box, the line grew, and the lines around it
+     moved apart (33 blocks on the changelog at 320px). A plain inline box cannot change a
+     line's height, so the leading is the prose's everywhere; a chip too long for the column
+     breaks like the text it sits in. */
+  font-size: 13px; font-weight: 400; color: var(--fg);
+  background: var(--surface); border: 1px solid var(--surface-border); border-radius: var(--radius-sm); padding: 1px 5px;
+  overflow-wrap: break-word;
 }
-.prose :not(pre) > code {
-  background: var(--surface);
-  border: 1px solid var(--surface-border);
-  border-radius: var(--radius-sm);
-  padding: 0.12em 0.36em;
-  color: var(--fg);
-  font-weight: 400;
-  font-size: 14px;
+#content-area :not(pre) > code::before, #content-area :not(pre) > code::after { content: none; }
+#content-area .code-block, #content-area pre {
+  background: var(--panel) !important; border: 1px solid var(--panel-line) !important; border-radius: var(--radius-card) !important;
+  box-shadow: none !important; --tw-ring-color: transparent !important;
 }
-pre, .prose pre {
-  background: var(--panel-sunk) !important;
-  border: 1px solid var(--card-border) !important;
-  border-radius: var(--radius-lg) !important;
+#content-area .code-block pre, #content-area .code-block code, #content-area pre.shiki { background: transparent !important; font-size: var(--t-value); line-height: 1.55; color: var(--fg) !important; }
+/* The block is the panel; nothing inside it draws its own plate or edge (Mintlify's
+   scroll container carries the Shiki theme background, the pre inherits the pre rule). */
+#content-area .code-block > div, #content-area .code-block [data-component-part="scroll-area-viewport"] { background: transparent !important; }
+#content-area .code-block pre { border: 0 !important; border-radius: 0 !important; box-shadow: none !important; }
+/* The site's code is one voice (web/styles.css .codeblock): every token in --fg, the
+   prompt in --secondary. Shiki's per-token colours are inline styles, so this is the
+   one place the sheet fights an inline rule on purpose. */
+#content-area .code-block pre span[style], #content-area .code-block .line span { color: var(--fg) !important; }
+#content-area .code-block .line { background: transparent !important; }
+#content-area .code-block [data-fade-overlay] { display: none !important; }
+#content-area .code-block [data-component-part="code-block-header"] {
+  background: transparent !important; border-bottom: 1px solid var(--panel-line); font-family: var(--mono); font-size: var(--t-label); color: var(--muted); letter-spacing: .02em;
 }
+#content-area .code-block [data-floating-buttons] { background: transparent !important; border: 0 !important; }
+#content-area .code-block button { color: var(--secondary); border-radius: var(--radius-sm); border: 0 !important; background: transparent !important; box-shadow: none !important; }
+#content-area .code-block button::after, #content-area .code-block button::before { content: none !important; }
+#content-area .code-block button:hover { color: var(--fg); background: var(--surface) !important; }
 
-#content-area .card, .card, a.card {
-  background: var(--card) !important;
-  border: 1px solid var(--card-border) !important;
-  border-radius: var(--radius-card) !important;
+/* ---- Callouts: a panel on the page; only the semantic ones wear a tinted edge ---- */
+#content-area .callout {
+  background: var(--panel) !important; border: 1px solid var(--panel-line) !important; border-radius: var(--radius-card) !important;
+  color: var(--ink); padding: 14px 16px; gap: 12px;
 }
-#content-area a.card:hover, a.card:hover {
-  border-color: var(--sep) !important;
-}
-.card h2, .card h3, .card .font-semibold {
-  font-family: var(--font-display);
-}
+#content-area .callout [data-component-part="callout-icon"], #content-area .callout svg { color: var(--secondary); }
+#content-area .callout p, #content-area .callout [data-as="p"], #content-area .callout div { color: var(--ink); }
+#content-area .callout strong { color: var(--fg); }
+#content-area .callout[data-callout-type="warning"] { border-color: var(--warning-border) !important; background: var(--warning-bg) !important; }
+#content-area .callout[data-callout-type="warning"] svg { color: var(--warning); }
+#content-area .callout[data-callout-type="danger"] { border-color: var(--error-border) !important; background: var(--error-bg) !important; }
+#content-area .callout[data-callout-type="danger"] svg { color: var(--error); }
+#content-area .callout[data-callout-type="tip"], #content-area .callout[data-callout-type="check"] { border-color: var(--success-border) !important; background: var(--success-bg) !important; }
+#content-area .callout[data-callout-type="tip"] svg, #content-area .callout[data-callout-type="check"] svg { color: var(--success); }
 
-/* Local SVG icons arrive as <img>, so they cannot inherit currentColor.
- * Mintlify also draws some as a mask filled with the primary colour.
- * Paint the mask in ink. */
-.card [style*="mask"],
-[class*="icon"][style*="mask"],
-span[style*="mask-image"],
-span[style*="webkit-mask"] {
-  background-color: var(--fg) !important;
+/* ---- Cards: --card on the page ground, 10px, hover moves the outline to --sep ---- */
+#content-area .card, .card {
+  background: var(--card) !important; border: 1px solid var(--card-border) !important; border-radius: var(--radius-card) !important;
+  box-shadow: none !important; --tw-ring-color: transparent !important; transition: border-color .15s;
 }
+#content-area .card:hover, .card:hover, #content-area .card:focus-within { border-color: var(--sep) !important; transform: none; }
+#content-area .card h2, #content-area .card h3, #content-area .card [data-component-part="card-title"], #content-area .card .font-semibold {
+  font-family: var(--display); font-size: 17px; font-weight: 600; color: var(--fg); letter-spacing: -0.01em; text-wrap: pretty; hyphens: manual; -webkit-hyphens: manual;
+}
+#content-area .card [data-component-part="card-icon"], #content-area .card > div > div:first-child:has([style*="mask"]) { margin-bottom: 12px; }
+#content-area .card p, #content-area .card [data-component-part="card-content"], #content-area .card span:not([class*="icon"]) { color: var(--ink); font-size: var(--t-prose); line-height: 1.55; }
+#content-area .card svg { color: var(--secondary); }
 
-/* A table scrolls; it does not shatter. The scroller is the wrapping DIV,
- * never the table: table { display:block; overflow-x:auto } lets the
- * anonymous inner table size to the block, so nothing ever scrolls. Two
- * more boxes have to shrink first — the shell pins the row above the
- * scroller to min-width: fit-content. A cell needs a FLOOR as well as the
- * 40ch cap: 16ch, rising to 18ch on a phone. */
-#content-area, .prose, .prose > div, [class*="prose"] {
-  min-width: 0 !important;
+/* ---- Steps: square markers in the mono voice, a --dim line between them ---- */
+#content-area .steps [data-component-part="step-number"] > div, #content-area .steps [data-component-part="step-index"] {
+  font-family: var(--mono); font-size: var(--t-label); font-weight: 500; color: var(--fg);
+  background: var(--surface) !important; border: 1px solid var(--surface-border) !important; border-radius: var(--radius-sm) !important; box-shadow: none !important;
 }
-.prose :has(> table),
-.prose .table-wrapper,
-.prose div:has(> table) {
-  overflow-x: auto;
-  max-width: 100%;
-  min-width: 0;
-}
-.prose table {
-  display: table !important;
-  width: 100%;
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
-.prose th, .prose td {
-  min-width: 16ch;
-  max-width: 40ch;
-  font-size: 14px;
-}
-.prose thead th {
-  background: var(--surface);
-  border-bottom: 1px solid var(--card-border);
-  font-family: var(--font-sans);
-  font-weight: 600;
-  color: var(--fg);
-}
-.prose tbody tr { border-top: 1px solid var(--card-border); }
+#content-area .steps [data-component-part="step-line"] { background: var(--dim) !important; }
+#content-area .steps [data-component-part="step-title"], #content-area .step h3, #content-area .step [role="heading"] { font-family: var(--display) !important; font-size: 17px; font-weight: 600 !important; color: var(--fg) !important; letter-spacing: -0.01em; }
+#content-area .steps [data-component-part="step-indicator"] { border-radius: var(--radius-sm) !important; background: var(--surface) !important; border: 1px solid var(--surface-border); color: var(--fg) !important; font-family: var(--mono); font-size: var(--t-label); font-weight: 500; }
+
+/* ---- Tables: the matrix voice ---- */
+/* Tables as the Dash renders markdown tables (tokens.css .md table): the width the
+   content wants, never more than the column, cells capped at 40ch, hairline cells, the
+   header on --surface. The block scrolls when even that does not fit. */
+/* THE SCROLLER IS THE DIV, NEVER THE TABLE. `table { display:block; overflow-x:auto }` is
+   the recipe everyone reaches for and it silently never fires: the anonymous inner table
+   sizes to the block, so scrollWidth equals clientWidth and there is nothing to scroll —
+   measured here at 350 = 350 on a 390px phone, which is why a three-column table came out
+   as three ribbons of two words. The design system records this under §Rendered markdown;
+   the Dash learned it first. Every one of these declarations needs `!important`: the shell
+   sets the same properties from its own utilities, and the cell floor read back as 0 until
+   it was weighted. Mintlify already wraps each table in its own div, so `:has`
+   finds the scroller without depending on their class names. `min-width: 0` is the other
+   half: the wrapper is a flex item, flex items default to `min-width: auto`, and a box that
+   refuses to shrink below its content does not scroll, it stretches — it came out 1025px
+   wide inside a 390px phone. */
+#content-area .prose div:has(> table) { display: block; overflow-x: auto; min-width: 0; max-width: 100%; }
+/* The row ABOVE the scroller is pinned to `min-width: fit-content` by the shell, and a box
+   that will not shrink below its content hands the scroller a 1025px viewport on a 390px
+   phone: nothing overflows, so nothing scrolls, and the table just runs off the screen with
+   no way back. Both boxes have to be allowed to shrink before either clamp means anything. */
+#content-area .prose div:has(> div > table) { min-width: 0 !important; }
+#content-area .prose table { border-collapse: collapse; font-size: 13px; display: table; max-width: 100%; width: max-content; border: 0; }
+/* A cell has a FLOOR as well as a cap. `max-width: 100%` clamps the table to the reading
+   column, which is right where there is room to wrap and wrong where there is not: with no
+   floor the clamp crushes a prose column to a couple of words. A min-width raises the
+   table's own min-content width, which `max-width` cannot beat, so a table that will not
+   fit stops squeezing and overflows into the scroller above instead. 16ch reads; 40ch is
+   the cap the Dash uses so one paragraph in a cell cannot push the table past a thumb. */
+#content-area .prose th, #content-area .prose td { border: 1px solid var(--surface-border); padding: 12px 14px; text-align: left !important; min-width: 16ch !important; max-width: 40ch; vertical-align: top; color: var(--ink); font-size: 13px; line-height: 1.6; }
+/* On a phone there is no column to wrap INTO, so the floor rises and the table scrolls at a
+   measure that still reads. The two numbers are picked against the real widths, not by
+   feel: 16ch keeps every three-column table inside the desktop reading column (480 against
+   569 at 1280, so nothing scrolls that did not need to), and 18ch on a phone puts a
+   three-column table at 456 against 350 of content, which scrolls, while leaving a
+   two-column one at 304, which still fits. 22ch read better and made every two-column table
+   scroll 28px, which is worse than the wrap it replaced. */
 @media (max-width: 640px) {
-  .prose th, .prose td { min-width: 18ch; }
+  #content-area .prose th, #content-area .prose td { min-width: 18ch !important; }
 }
+/* The strip keeps its scrollbar, on the page's own ink. The canon's fade-and-chevron cue
+   (§Scroll hints) is for scrollers that HIDE their scrollbar; hiding this one and drawing
+   no cue is the defect that section exists to stop, and the cue itself needs script we do
+   not have here. A cut-off column is its own cue besides. */
+#content-area .prose div:has(> table) { scrollbar-width: thin; scrollbar-color: var(--dim) transparent; }
+#content-area .prose div:has(> table)::-webkit-scrollbar { height: 10px; }
+#content-area .prose div:has(> table)::-webkit-scrollbar-track { background: transparent; }
+#content-area .prose div:has(> table)::-webkit-scrollbar-thumb { background: var(--dim); background-clip: padding-box; border: 3px solid transparent; border-radius: var(--radius-pill); }
+#content-area .prose thead th { background: var(--surface); font-family: var(--sans); font-size: 13px; font-weight: 600; color: var(--fg); }
 
-/* Current page / current heading. Mintlify paints these with
- * `text-primary dark:text-primary-light`. That `primary-light` token is
- * docs.json colors.light — which, if it holds light-palette ink, is
- * #1a1a1a on the dark shell (1.1:1, the row looks missing). The colour
- * also lands on a child span, so the <a> alone is not enough.
- *
- * Live markup (2026-09-18): #navigation-items a[aria-current="page"],
- * #table-of-contents-layout a[aria-current="location"]. #sidebar /
- * .sidebar / [data-active] do not exist on this shell. */
-#navigation-items a,
-#navigation-items a *,
-#sidebar a,
-#sidebar a * {
-  color: var(--fg) !important;
-}
-#table-of-contents-layout a {
-  color: var(--secondary) !important;
-}
-#navigation-items a[aria-current="page"],
-#navigation-items a[aria-current="page"] *,
-#sidebar a[aria-current="page"],
-#sidebar a[aria-current="page"] *,
-#table-of-contents-layout a[aria-current="location"],
-#table-of-contents-layout a[aria-current="true"],
-#table-of-contents a[aria-current="location"] {
-  color: var(--fg-strong) !important;
-}
-#navigation-items a[aria-current="page"],
-#sidebar a[aria-current="page"] {
-  background: var(--surface) !important;
-}
-#sidebar, #navigation-items { font-family: var(--font-sans); font-size: 13px; }
+#content-area .prose td code, #content-area .prose th code, #content-area .card code { white-space: normal; font-size: 12px; }
 
-a:focus-visible, button:focus-visible {
-  outline: 2px solid var(--success);
-  outline-offset: 2px;
-  border-radius: var(--radius-sm);
+/* ---- Navbar: the site's header. Links in mono, the CTA is the site's nav button ---- */
+#navbar, #navbar-transition { background: var(--bg) !important; border-bottom-color: var(--card-border) !important; }
+#navbar a:not(#topbar-cta-button):not([href="/"]), #navbar button { color: var(--secondary); font-family: var(--mono); font-size: var(--t-value); letter-spacing: .02em; font-weight: 400; }
+#navbar a:not(#topbar-cta-button):hover, #navbar button:hover { color: var(--fg); }
+#topbar-cta-button { border: 0; padding: 0; background: transparent; }
+#topbar-cta-button a {
+  font-family: var(--mono) !important; font-size: var(--t-value) !important; letter-spacing: .02em; font-weight: 400 !important; line-height: 1.55;
+  color: var(--fg) !important; background: transparent !important; border: 1px solid var(--dim) !important; border-radius: var(--radius-md) !important; padding: 7px 14px !important;
+  transition: color .15s, border-color .15s;
 }
+#topbar-cta-button a > span.absolute { display: none; }
+#topbar-cta-button a svg { display: none; }
+/* The arrow is TEXT in the line it ends (design system §Icons): it rides in the label
+   itself, "Login →", drawn in the button's own mono face exactly as the landing's nav door
+   draws it. It was a pseudo-element in another face for a day, and it read as a different
+   glyph at a different size. */
+#topbar-cta-button a span, #topbar-cta-button a svg { color: var(--fg) !important; }
+#topbar-cta-button a:hover { border-color: var(--sep) !important; }
+#topbar-cta-button a:hover span, #topbar-cta-button a:hover svg { color: var(--fg-strong) !important; }
+#search-bar-entry, #search-bar-entry-mobile {
+  background: var(--card) !important; border: 1px solid var(--card-border) !important; --tw-ring-color: transparent !important; box-shadow: none !important;
+  border-radius: var(--radius-md) !important; color: var(--muted) !important; font-family: var(--mono); font-size: var(--t-value); filter: none !important;
+}
+#search-bar-entry:hover, #search-bar-entry-mobile:hover { border-color: var(--sep) !important; }
+/* The phone bar's overflow menu is a TAP TARGET and sits beside the search button, so it
+   wears the same plate: 32 square on --card inside --card-border at 6px. The shell ships it
+   as a bare 20x28 glyph with no box, which is both hard to hit and a second control family
+   in a two-control bar. Scoped to the navbar: the same aria-label is on the Copy page
+   segment's menu in the content, which is already one control with its neighbour. */
+#navbar button[aria-label="More actions"] {
+  width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;
+  background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius-md);
+  color: var(--secondary); transition: border-color .15s, color .15s;
+}
+@media (hover: hover) {
+  #navbar button[aria-label="More actions"]:hover { border-color: var(--sep); color: var(--fg); }
+}
+#search-bar-entry kbd, #search-bar-entry [class*="kbd"] { font-family: var(--mono); color: var(--muted); border-color: var(--dim); background: transparent; }
+/* One place to pick a theme: the footer's system / light / dark (`mode-switch-*`). The
+   shell offers a SECOND control in two forms — a moon that opens a menu on desktop, and a
+   pill in the phone drawer's header — and both are the same duplicate, so both go. Neither
+   retasc.com nor the Dash offers a switch at all; they follow the OS, and the footer's
+   three-way is the one concession the docs make. Matched by class and aria-label, not by
+   id: the phone form carries neither an id nor a data-testid. */
+#theme-preference-menu-trigger,
+[id^="theme-preference"],
+[aria-label="Theme preference"] { display: none !important; }
+/* Copy page is one control with two parts: the site's segmented shape (design system
+   §Action segments), one outline, shared edges, one height. */
+#page-context-menu { align-items: stretch; border: 1px solid var(--dim); border-radius: var(--radius-md); overflow: hidden; gap: 0; width: fit-content; }
+#page-context-menu button, #page-context-menu [role="button"], #page-context-menu-button {
+  color: var(--secondary); background: transparent !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; --tw-ring-color: transparent !important;
+  font-family: var(--sans); font-size: 13px; font-weight: 500; height: 32px; padding: 0 12px; margin: 0 !important;
+}
+#page-context-menu button + button, #page-context-menu > * + * { border-left: 1px solid var(--dim) !important; }
+#page-context-menu button:hover { color: var(--fg); background: var(--card) !important; }
 
-/* One theme switch, and it is the footer's. The header's is hidden. Two
- * switches on one page is a duplicate control. */
-#theme-preference-menu-trigger {
-  display: none !important;
+/* ---- Sidebar: control voice (Inter 13/500), groups in the mono label voice,
+        the current page is ink on --card, hover is ink. No green. ---- */
+#sidebar, #sidebar-content, #navigation-items { color: var(--secondary); }
+#navigation-items .sidebar-group-header, #navigation-items .sidebar-title, #navigation-items h5, #sidebar-content h5 {
+  font-family: var(--mono) !important; font-size: 10.5px !important; font-weight: 500 !important; letter-spacing: .08em; text-transform: uppercase; color: var(--muted) !important;
 }
+#navigation-items a, #sidebar-content a { font-family: var(--sans); font-size: 13px; font-weight: 500; color: var(--secondary) !important; border-radius: var(--radius-md) !important; transition: color .15s, background .15s; }
+#navigation-items a:hover, #sidebar-content a:hover { color: var(--fg) !important; background: transparent !important; }
+#navigation-items a[aria-current="page"], #sidebar-content a[aria-current="page"], #navigation-items a[class*="bg-primary"] {
+  color: var(--fg-strong) !important; background: var(--card) !important; text-shadow: none !important;
+}
+#navigation-items a[aria-current="page"] *, #sidebar-content a[aria-current="page"] * { color: var(--fg-strong) !important; }
+#sidebar .text-primary, #sidebar [class*="text-primary"] { color: var(--fg-strong) !important; }
 
-/* Sibling controls in one bar are one control family. The phone bar's
- * overflow menu is a bare 20x28 glyph beside a 32-square search button;
- * it wears the search button's plate. */
-button.lg\:hidden.h-14 + button,
-#navbar button.h-14 {
-  width: 32px !important;
-  height: 32px !important;
-  border-radius: var(--radius-md) !important;
-}
+/* ---- Table of contents: quiet list, the current heading in ink, no green bar ---- */
+#table-of-contents, #table-of-contents-content { font-family: var(--sans); font-size: 13px; }
+#table-of-contents-layout nav > h2 button { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted) !important; }
+#table-of-contents-layout nav > h2 button svg { color: var(--muted); }
+#table-of-contents li a { font-family: var(--sans); font-size: 13px; text-transform: none; letter-spacing: 0; }
+#table-of-contents-content a { color: var(--secondary) !important; text-shadow: none !important; font-weight: 500; padding-block: 3px; line-height: 1.4; }
+#table-of-contents-content a:hover { color: var(--fg) !important; }
+#table-of-contents-content li[data-depth="1"] a, #table-of-contents-content li[data-depth="2"] a { color: var(--muted) !important; font-weight: 400; }
+#table-of-contents-content li[data-active="true"] > a { color: var(--fg-strong) !important; }
+#table-of-contents-content li[data-active-deepest="true"] > a { color: var(--fg-strong) !important; }
 
-/* Hairline under the code copy button: a header rule catching the floating
- * buttons. The header of a code block is a bar, not a ruled box. */
-[data-component-part="code-block-header"] {
-  border-bottom: none !important;
-  background: transparent !important;
-}
-[data-component-part="code-block-header"] button {
-  background: var(--surface) !important;
-  border: 1px solid var(--surface-border) !important;
-  border-radius: var(--radius-md) !important;
-}
+/* ---- Footer: the site's footer voice ---- */
+#footer { background: var(--bg); border-top: 1px solid var(--card-border) !important; }
+#footer a { font-family: var(--mono); font-size: var(--t-value); color: var(--secondary) !important; text-decoration: none; letter-spacing: .02em; }
+#footer a:hover { color: var(--fg) !important; }
+#footer p.font-semibold, #footer h5 { font-family: var(--mono) !important; font-size: 10.5px !important; font-weight: 500 !important; letter-spacing: .08em; text-transform: uppercase; color: var(--muted) !important; }
+#footer svg { color: var(--secondary); }
 
-/* Footer padding: the shell shipped 112px. Ours is a row, not a hero. */
-#footer {
-  padding-top: 24px !important;
-  padding-bottom: 24px !important;
-}
+/* ---- Everything Mintlify tints with its primary that still shows: a border, a ring ---- */
+[class*="border-primary"], [class*="ring-primary"] { border-color: var(--sep) !important; --tw-ring-color: transparent !important; }
+#navigation-items [class*="bg-primary"], #sidebar-content [class*="bg-primary"] { background-color: var(--card) !important; }
+/* Icons: Mintlify draws them as a box with a mask and the primary colour as fill. Ink
+   for the ones that lead (card, step), --secondary for decoration. */
+[style*="mask"][class*="bg-primary"], [class*="mask"][class*="bg-primary"], .card [class*="bg-primary"], .callout [class*="bg-primary"] { background-color: var(--secondary) !important; }
+/* The docs' icons are the design system's Radix set, shipped as files in icons/ (scripts/
+   docs-icons.py) and drawn by Mintlify as <img>, where currentColor is black. The two
+   filters put that black on the secondary ink of each palette: white at 66% over
+   --card is #b3b3b3 against #a9a9a9, black at 62% over the cream is #5d5b57 against #555. */
+[data-component-part="card-icon"] img, [data-component-part="step-icon"] img, .callout img[src^="/icons/"], img[src^="/icons/"] { width: 20px; height: 20px; opacity: .62; filter: none; }
+html.dark [data-component-part="card-icon"] img, html.dark img[src^="/icons/"] { filter: invert(1); opacity: .66; }
+[data-component-part="card-icon"] { margin-bottom: 14px; }
+.text-primary, [class*="text-primary"] { color: var(--fg-strong) !important; }
 
-/* Light/dark image pairs use our own rt-shot-light / rt-shot-dark classes.
- * Mintlify's Tailwind build does not scan MDX, so dark:hidden written in a
- * page compiles to nothing and both cuts render at once. A picture of the
- * Dash ships FOUR cuts: two palettes by two widths. <picture> with a
- * <source media> cannot be used: the shell wraps every image in a zoom
- * trigger, so the <img> stops being a direct child of the picture and the
- * source is ignored. Four images, one shown, switched at the same 640px
- * the tables use. */
-.rt-shots {
-  margin: 1.5em 0;
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius-card);
-  overflow: hidden;
-  background: var(--card);
-}
-.rt-shots img {
-  display: none;
-  width: 100%;
-  height: auto;
-  margin: 0;
-  border-radius: 0;
-}
-html.dark .rt-shots img.rt-shot-dark:not(.rt-shot-phone),
-:root.dark .rt-shots img.rt-shot-dark:not(.rt-shot-phone),
-html:not(.light) .rt-shots img.rt-shot-dark:not(.rt-shot-phone) {
-  display: block;
-}
-html.light .rt-shots img.rt-shot-light:not(.rt-shot-phone),
-:root.light .rt-shots img.rt-shot-light:not(.rt-shot-phone) {
-  display: block;
-}
-html.light .rt-shots img.rt-shot-dark:not(.rt-shot-phone),
-:root.light .rt-shots img.rt-shot-dark:not(.rt-shot-phone) {
-  display: none;
-}
+/* ---- Timestamp under the title ("Last updated"): mono meta voice ---- */
+#header time, #header [class*="updated"], #content-area [class*="last-updated"] { font-family: var(--mono); font-size: var(--t-label); color: var(--muted); }
+
+/* ---- Motion: state transitions only, and none for people who asked ---- */
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+
+/* ---------------------------------------------------------------------------
+ * The flow strips: a sequence of PLACES, not a screen. A capture of the Dash cannot
+ * show "Dash → Telegram → connected", so these stay drawn from the tokens above.
+ * Every drawing that WAS a screen is now a capture of the real one, taken from the
+ * Dash's own dev fixtures by scripts/docs-shots.py.
+ * ------------------------------------------------------------------------- */
+.rt-mock-flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin: 1.2em 0; }
+.rt-mock-fstep { flex: 1 1 140px; background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius-lg); padding: 10px 12px; font-size: 13px; color: var(--ink); line-height: 1.45; }
+.rt-mock-fstep b { display: block; font-family: var(--mono); font-size: var(--t-label); font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.rt-mock-farrow { align-self: center; color: var(--muted); font-family: var(--sans); }
+.rt-logos { display: flex; flex-wrap: wrap; gap: 8px; margin: 1em 0 1.4em; }
+.rt-logo { display: inline-flex; align-items: center; gap: 8px; padding: 6px 11px; border: 1px solid var(--card-border); border-radius: var(--radius-pill); background: var(--card); font-family: var(--mono); font-size: var(--t-value); color: var(--fg); }
+.rt-logo svg { width: 16px; height: 16px; display: block; }
+
+/* ---- Footer rhythm: the site's footer sits 56px under a hairline, not 112px ---- */
+#footer > div { padding-block: 48px 28px !important; gap: 36px !important; }
+#footer [class*="border-t"] { border-color: var(--card-border) !important; }
+
+/* ---- Accordions (the changelog's folded versions, billing states): a card row ---- */
+#content-area .accordion-group, #content-area details.accordion { border: 1px solid var(--card-border) !important; border-radius: var(--radius-card) !important; background: var(--card) !important; box-shadow: none !important; }
+#content-area .accordion-group details.accordion { border: 0 !important; border-radius: 0 !important; border-top: 1px solid var(--card-border) !important; }
+#content-area .accordion-group details.accordion:first-child { border-top: 0 !important; }
+#content-area details.accordion summary { font-family: var(--sans); font-size: var(--t-prose); font-weight: 500; color: var(--fg); }
+#content-area details.accordion summary:hover { background: var(--surface) !important; }
+#content-area details.accordion svg { color: var(--secondary); }
+
+/* ---- Changelog: version heading, date beneath it in the meta voice ---- */
+#content-area .rt-when { font-family: var(--mono); font-size: var(--t-label); letter-spacing: .04em; color: var(--muted); margin: -6px 0 14px; }
+#table-of-contents-content a { font-variant-numeric: tabular-nums; }
+
+/* ---- Flow steps: an eyebrow, one sentence, and the command on its own line ---- */
+.rt-mock-fstep { display: flex; flex-direction: column; gap: 6px; }
+.rt-mock-fstep code { display: block; width: 100%; font-size: 12px; padding: 5px 8px; margin-top: 2px; }
+
+/* ---- Pictures of the Dash (scripts/docs-shots.py), one per palette. They carry the
+        card's own corner and border, so nothing frames them again. ---- */
+/* One picture per palette, and only one on screen. Mintlify's Tailwind never sees a class
+   written in MDX, so `dark:hidden` there compiles to nothing and BOTH shots rendered. These
+   are our own classes, switched on the `dark` class Mintlify puts on <html>. */
+/* FOUR cuts per picture, and exactly one on screen: the palette picks the row, the width
+   picks the cut. A phone reader is shown the Dash AS A PHONE DRAWS IT — its own tab bar,
+   stacked rows, bigger controls — not a desktop screen shrunk to a third, which is an
+   interface nobody has. `<picture>` with a `<source media>` is the right tool and cannot be
+   used: the shell wraps every img in its zoom trigger, so the img is no longer a direct
+   child of the picture and the source is ignored. The four rules below are written at equal
+   specificity and in order, so the narrow pair simply wins inside the query.
+   The cost is honest: the browser fetches all four (it already fetched both palettes), about
+   60KB a cut. */
+#content-area .rt-shot { display: none; width: 100%; height: auto; margin: 1.4em 0; border-radius: var(--radius-card); }
+html.light #content-area .rt-shot-light.rt-shot-wide { display: block; }
+html.dark #content-area .rt-shot-dark.rt-shot-wide { display: block; }
 @media (max-width: 640px) {
-  .rt-shots img.rt-shot-dark:not(.rt-shot-phone),
-  .rt-shots img.rt-shot-light:not(.rt-shot-phone) {
-    display: none !important;
-  }
-  html.dark .rt-shots img.rt-shot-dark.rt-shot-phone,
-  :root.dark .rt-shots img.rt-shot-dark.rt-shot-phone,
-  html:not(.light) .rt-shots img.rt-shot-dark.rt-shot-phone {
-    display: block !important;
-  }
-  html.light .rt-shots img.rt-shot-light.rt-shot-phone,
-  :root.light .rt-shots img.rt-shot-light.rt-shot-phone {
-    display: block !important;
-  }
+  html.light #content-area .rt-shot-light.rt-shot-wide { display: none; }
+  html.dark #content-area .rt-shot-dark.rt-shot-wide { display: none; }
+  html.light #content-area .rt-shot-light.rt-shot-narrow { display: block; }
+  html.dark #content-area .rt-shot-dark.rt-shot-narrow { display: block; }
 }
+/* The shell hangs an "Expand image" button off every picture, and on these it renders as a
+   2x2px dot beside the shot — a control too small to be one, three of them per figure
+   because it follows the hidden cuts too. A documentation screenshot already fills the
+   reading column; there is nothing to expand. */
+#content-area button[aria-label^="Expand image"] { display: none !important; }
 
-/* Connector logo row: real brand marks, one row per Connectors page. */
-.rt-logos {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 18px 0 26px;
+/* ---- Scrollbars: the track is the page, the thumb is resting chrome. Mintlify paints a
+        near-white 4px track (neutral-50), which on the cream ground read as a white line
+        beside the sidebar, and a thumb from its own grey. Both take our tokens: --dim at
+        rest, --sep under the pointer (design system: structure is seen, never read). ---- */
+/* The PAGE's scrollbar is the same object as the sidebar's: same ink, same track, same
+   width. Chrome draws the document scrollbar from the root's colour-scheme, so that is
+   pinned to OUR palette too — left to the OS it painted a black trough beside a cream page
+   whenever the reader's system theme disagreed with the one they picked here. */
+/* Dark is the shell's default and the ground before any class is written, so the root
+   scheme is dark and .light turns it over (the light token block above). */
+:root { color-scheme: dark; }
+html { scrollbar-color: var(--dim) transparent; scrollbar-width: thin; }
+html::-webkit-scrollbar { width: 10px; height: 10px; background: transparent; }
+html::-webkit-scrollbar-track { background: transparent; }
+html::-webkit-scrollbar-thumb { background: var(--dim); background-clip: padding-box; border: 3px solid transparent; border-radius: var(--radius-pill); }
+html::-webkit-scrollbar-thumb:hover { background: var(--sep); background-clip: padding-box; }
+html::-webkit-scrollbar-corner { background: transparent; }
+
+[data-component-part="scroll-area-scrollbar"] { background: transparent !important; }
+[data-component-part="scroll-area-thumb"] { background: var(--dim) !important; border-radius: var(--radius-pill) !important; }
+[data-component-part="scroll-area-thumb"]:hover, [data-component-part="scroll-area-scrollbar"]:hover [data-component-part="scroll-area-thumb"] { background: var(--sep) !important; }
+
+/* ---- The anchor chip beside a heading (the link that appears on hover): a white plate on
+        the cream ground was Tailwind's own `bg-white`. It takes the surface ladder. ---- */
+#content-area a[href^="#"] > div, #content-area .prose h1 a > div, #content-area .prose h2 a > div,
+#content-area .prose h3 a > div, #content-area .prose h4 a > div {
+  background: var(--surface) !important; border: 1px solid var(--surface-border) !important;
+  box-shadow: none !important; --tw-ring-color: transparent !important; color: var(--secondary) !important;
+  border-radius: var(--radius-sm) !important; filter: none !important;
 }
-.rt-logo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  border-radius: 100px;
-  padding: 7px 14px 7px 10px;
+#content-area a[href^="#"]:hover > div { color: var(--fg) !important; border-color: var(--sep) !important; }
+
+/* ---- The theme switcher is a segmented control (design system §Sub-tabs `.seg`): the
+        resting cell is transparent with quiet ink, hover fills --surface and lifts the ink,
+        and the SELECTED cell is an inset plate, --surface inside --surface-border. It wore
+        Tailwind's grey. ---- */
+#footer [data-testid^="mode-switch-"] {
+  background: transparent !important; color: var(--secondary) !important;
+  border: 1px solid transparent !important; border-radius: var(--radius-md) !important;
+  transition: background .15s, color .15s, border-color .15s;
 }
-.rt-logo svg { flex: none; }
-.rt-logo span {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--fg);
-}
+@media (hover: hover) { #footer [data-testid^="mode-switch-"]:hover { background: var(--surface) !important; color: var(--fg) !important; } }
+#footer [data-testid^="mode-switch-"][class*="bg-gray"] { background: var(--surface) !important; border-color: var(--surface-border) !important; color: var(--fg) !important; }

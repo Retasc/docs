@@ -18,7 +18,7 @@
     }
   },
   "styling": {
-    "codeblocks": "dark"
+    "codeblocks": "system"
   },
   "metadata": {
     "timestamp": true
@@ -40,20 +40,6 @@
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg",
     "href": "https://retasc.com"
-  },
-  "fonts": {
-    "heading": {
-      "family": "Space Grotesk"
-    },
-    "body": {
-      "family": "Inter"
-    }
-  },
-  "seo": {
-    "metatags": {
-      "og:site_name": "Retasc docs",
-      "twitter:card": "summary_large_image"
-    }
   },
   "navigation": {
     "groups": [
@@ -95,6 +81,7 @@
         "pages": [
           "cli",
           "mcp-tools",
+          "auth",
           "changelog"
         ]
       }
@@ -107,8 +94,8 @@
         "href": "https://retasc.com"
       },
       {
-        "label": "Docs",
-        "href": "https://docs.retasc.com"
+        "label": "Guides",
+        "href": "https://retasc.com/guides"
       },
       {
         "label": "GitHub",
@@ -117,7 +104,7 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Sign in",
+      "label": "Login →",
       "href": "https://dash.retasc.com"
     }
   },
@@ -131,8 +118,8 @@
             "href": "https://retasc.com"
           },
           {
-            "label": "Docs",
-            "href": "https://docs.retasc.com"
+            "label": "Guides",
+            "href": "https://retasc.com/guides"
           },
           {
             "label": "Dashboard",
@@ -146,6 +133,10 @@
           {
             "label": "GitHub",
             "href": "https://github.com/Retasc"
+          },
+          {
+            "label": "Changelog",
+            "href": "/changelog"
           }
         ]
       }
@@ -160,5 +151,20 @@
       "source": "/billing",
       "destination": "/pricing"
     }
-  ]
+  ],
+  "integrations": {
+    "ga4": {
+      "measurementId": "G-LDG1JH7YMF"
+    }
+  },
+  "seo": {
+    "indexing": "navigable",
+    "metatags": {
+      "og:site_name": "Retasc docs",
+      "og:locale": "en_US",
+      "twitter:card": "summary_large_image",
+      "theme-color": "#0a0a0a",
+      "color-scheme": "dark light"
+    }
+  }
 }

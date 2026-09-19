@@ -1,27 +1,17 @@
 ---
-title: "CLI reference"
-description: "Every retasc command: synopsis, options, requirements, and examples."
-"og:image": "https://docs.retasc.com/images/og/cli.png?v=467849dc"
-"og:image:alt": "retasc docs: CLI reference"
-"twitter:image": "https://docs.retasc.com/images/og/cli.png?v=467849dc"
-"twitter:image:alt": "retasc docs: CLI reference"
+title: "CLI reference: every retasc command"
+sidebarTitle: "CLI reference"
+description: "Every Retasc CLI command lists its synopsis, options, requirements and an example. Commands cover sign-in, worktree claims, imports and releases."
+"og:image": "https://docs.retasc.com/images/og/cli.png?v=4a584bd5"
+"og:image:alt": "retasc docs: CLI reference: every retasc command"
+"twitter:image": "https://docs.retasc.com/images/og/cli.png?v=4a584bd5"
+"twitter:image:alt": "retasc docs: CLI reference: every retasc command"
 ---
 
 ```sh
 npm i -g @retasc/cli    # install
 retasc --version        # what you have
 ```
-
-## Conventions
-
-- **Auth.** Commands marked *login* need a session: `retasc login`, a GitHub or Google
-  device flow. Commands marked *key* resolve the folder's agent key instead (env,
-  `.mcp.json` marker, or keystore) and need no login.
-- **Output.** `--json` emits the raw payload on stdout; human notes go to stderr, so
-  pipes stay clean.
-- **Failure.** Errors print `✗ CODE: message` with a hint on its own line, and exit 1.
-- **Secrets are never flags.** Anything secret is typed with echo off, or read from an
-  environment variable. There is no `--token`.
 
 ## Every command
 
@@ -71,6 +61,17 @@ _38 commands, from `retasc --help` at 1.53.1. Each is described in full below or
 | `retasc config` | Show the resolved CLI config (paths + endpoints). |
 
 {/* /docs-facts:commands */}
+
+## Conventions
+
+- **Auth.** Commands marked *login* need a session: `retasc login`, a GitHub or Google
+  device flow. Commands marked *key* resolve the folder's agent key instead (env,
+  `.mcp.json` marker, or keystore) and need no login.
+- **Output.** `--json` emits the raw payload on stdout; human notes go to stderr, so
+  pipes stay clean.
+- **Failure.** Errors print `✗ CODE: message` with a hint on its own line, and exit 1.
+- **Secrets are never flags.** Anything secret is typed with echo off, or read from an
+  environment variable. There is no `--token`.
 
 ## Configuration and environment
 
@@ -493,7 +494,7 @@ you have.
 </AccordionGroup>
 
 <Warning>
-  Never set `NODE_TLS_REJECT_UNAUTHORIZED=0`. It disables certificate verification for
+  Never set `NODE_TLS_REJECT_UNAUTHORIZED` to `0`. It disables certificate verification for
   every connection the process makes, including the one carrying your session token.
   `NODE_EXTRA_CA_CERTS` fixes the same failures with verification left on.
 </Warning>

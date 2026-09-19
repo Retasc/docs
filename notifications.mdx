@@ -1,16 +1,18 @@
 ---
-title: "Notifications"
-description: "DMs when your issues move, on Telegram, Discord, or Slack. Self-service, per user, no role required."
-"og:image": "https://docs.retasc.com/images/og/notifications.png?v=80012615"
-"og:image:alt": "retasc docs: Notifications"
-"twitter:image": "https://docs.retasc.com/images/og/notifications.png?v=80012615"
-"twitter:image:alt": "retasc docs: Notifications"
+title: "Notifications on Telegram, Discord, Slack or email"
+sidebarTitle: "Notifications"
+description: "DMs when your issues move, on Telegram, Discord, Slack or email. Self-service, per user, no role required, and email needs no setup at all."
+"og:image": "https://docs.retasc.com/images/og/notifications.png?v=b187e207"
+"og:image:alt": "retasc docs: Notifications on Telegram, Discord, Slack or email"
+"twitter:image": "https://docs.retasc.com/images/og/notifications.png?v=b187e207"
+"twitter:image:alt": "retasc docs: Notifications on Telegram, Discord, Slack or email"
 ---
 
-All three connectors send the same relationship-routed DMs: the event decides who is
-told, and you are never notified about your own action. Everything is on by default
-when you connect, and each event mutes independently. Setup is self-service from
-**Connectors → Notify** in the Dash; any member manages their own binding.
+All four lanes send the same relationship-routed messages: the event decides who is
+told, and you are never notified about your own action. Everything is on by default,
+and each event mutes independently. Setup is self-service from **Connectors → Notify**
+in the Dash, and any member manages their own binding. Email is on from the moment you
+sign in, with nothing to connect.
 
 <div className="rt-logos">
   <div className="rt-logo">
@@ -34,6 +36,13 @@ when you connect, and each event mutes independently. Setup is self-service from
     </svg>
     <span>Telegram</span>
   </div>
+  <div className="rt-logo">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="M3 7l9 6 9-6" />
+    </svg>
+    <span>Email</span>
+  </div>
 </div>
 
 | Event | Who gets the DM |
@@ -50,38 +59,65 @@ when you connect, and each event mutes independently. Setup is self-service from
 
 ## Connect Telegram
 
-1. Once per workspace, add Retasc to Slack.
-2. Each person pastes `/retasc connect <code>` in any channel.
-3. Connected.
-
+<div className="rt-mock-flow">
+  <div className="rt-mock-fstep"><b>Dash</b><span>Connect Telegram</span></div>
+  <span className="rt-mock-farrow">→</span>
+  <div className="rt-mock-fstep"><b>Telegram</b><span>@RetascBot opens. Tap Start.</span></div>
+  <span className="rt-mock-farrow">→</span>
+  <div className="rt-mock-fstep"><b>Done</b><span>Connected.</span></div>
+</div>
 
 The link is single-use and lives 15 minutes. The Dash flips to Connected on its own,
 no refresh needed.
 
 ## Connect Discord
 
-1. In the Dash, connect Discord: a code plus a server invite.
-2. Join the Retasc server in Discord.
-3. Type `/connect <code>`.
-4. DMs arrive from the Retasc bot.
+<div className="rt-mock-flow">
+  <div className="rt-mock-fstep"><b>Dash</b><span>Connect Discord. You get a code and a server invite.</span></div>
+  <span className="rt-mock-farrow">→</span>
+  <div className="rt-mock-fstep"><b>Discord</b><span>Join the Retasc server.</span></div>
+  <span className="rt-mock-farrow">→</span>
+  <div className="rt-mock-fstep"><b>Discord</b><span>Type it in any channel.</span><code>/connect &lt;code&gt;</code></div>
+  <span className="rt-mock-farrow">→</span>
+  <div className="rt-mock-fstep"><b>Done</b><span>DMs arrive from the Retasc bot.</span></div>
+</div>
 
 ## Connect Slack
 
-1. Once per workspace, add Retasc to Slack.
-2. Each person pastes `/retasc connect <code>` in any channel.
-3. Connected.
+<div className="rt-mock-flow">
+  <div className="rt-mock-fstep"><b>Once per workspace</b><span>Add Retasc to Slack.</span></div>
+  <span className="rt-mock-farrow">→</span>
+  <div className="rt-mock-fstep"><b>Per person</b><span>Paste it in any channel.</span><code>/retasc connect &lt;code&gt;</code></div>
+  <span className="rt-mock-farrow">→</span>
+  <div className="rt-mock-fstep"><b>Done</b><span>Connected.</span></div>
+</div>
 
 The workspace install happens once; every teammate after that only runs the
 `/retasc connect` step.
 
+## Email
+
+Nothing to connect. Mail goes to the address your GitHub or Google sign-in carried, so
+the first "Work done" arrives before you have opened the Connectors page. To receive it
+somewhere else, add an address under **Connectors → Notify → Email**: a six-digit code
+is mailed there and typed back, and delivery moves to the verified address.
+
+Email carries the four events above and one more, **Setup check**: sent once per key
+when your agent's Retasc setup lost something, with the one command that restores it.
+Each mutes on its own. Invites and low-credit notices are transactional and always
+arrive. Mail comes from `noreply@retasc.com` and replies go to support@retasc.com.
+
+<Note>
+  If your sign-in provider handed over no address, the Email card says **Unreachable**.
+  That is the one lane that cannot reach you until you verify an address.
+</Note>
+
 ## After connecting
 
-<div className="rt-shots">
-  <img className="rt-shot-dark" src="/images/ui/connector-telegram-dark.png" alt="The Telegram connector in the Dash: connected, with a toggle per event and a Send test button" />
-  <img className="rt-shot-light" src="/images/ui/connector-telegram-light.png" alt="The Telegram connector in the Dash: connected, with a toggle per event and a Send test button" />
-  <img className="rt-shot-dark rt-shot-phone" src="/images/ui/connector-telegram-dark-phone.png" alt="The Telegram connector in the Dash: connected, with a toggle per event and a Send test button" />
-  <img className="rt-shot-light rt-shot-phone" src="/images/ui/connector-telegram-light-phone.png" alt="The Telegram connector in the Dash: connected, with a toggle per event and a Send test button" />
-</div>
+<img src="/images/ui/connector-telegram-light.png" alt="The Telegram connector in the Dash: connected, with a toggle per event and a Send test button" className="rt-shot rt-shot-light rt-shot-wide" />
+<img src="/images/ui/connector-telegram-light-phone.png" alt="The Telegram connector in the Dash: connected, with a toggle per event and a Send test button" className="rt-shot rt-shot-light rt-shot-narrow" />
+<img src="/images/ui/connector-telegram-dark.png" alt="The Telegram connector in the Dash: connected, with a toggle per event and a Send test button" className="rt-shot rt-shot-dark rt-shot-wide" />
+<img src="/images/ui/connector-telegram-dark-phone.png" alt="The Telegram connector in the Dash: connected, with a toggle per event and a Send test button" className="rt-shot rt-shot-dark rt-shot-narrow" />
 
 **Send test** pushes a real DM through the live path, so "it works" is verified, not
 assumed. **Disconnect** stops delivery immediately and keeps your mute settings for
@@ -94,8 +130,8 @@ when you reconnect.
 
 <Warning>
   **Discord and Slack need workspace provisioning.** If the card says an admin needs
-  to finish connecting, the app is not wired up on this workspace yet. Telegram is
-  always available.
+  to finish connecting, the app is not wired up on this workspace yet. Telegram and
+  email are always available.
 </Warning>
 
 ## Next steps
