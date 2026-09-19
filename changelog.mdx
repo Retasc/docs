@@ -23,6 +23,30 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.55.0
+
+<div className="rt-when">2026-09-19</div>
+
+- **RTSC-1057** — the proxy now reports how long **this machine** keeps a session transcript, read from the harness's own settings (Claude Code's `cleanupPeriodDays`), so the Dash can name the day a conversation will be gone instead of quoting a documented default at you.
+
+<Accordion title="Full notes">
+
+- **RTSC-1057** — the proxy now reports how long **this machine** keeps a session
+  transcript, read from the harness's own settings (Claude Code's `cleanupPeriodDays`),
+  so the Dash can name the day a conversation will be gone instead of quoting a
+  documented default at you. It was saying "deleted after 30 days by default", which is
+  wrong by eleven months for anyone who set it to a year.
+  A **number of days, never a path and never the file** — the same boundary the
+  transcript id and the workspace already sit on: Retasc holds the id, the machine holds
+  the conversation. It is sent only for a harness whose retention the proxy actually
+  read, so Codex, Gemini CLI, Cursor and OpenCode send nothing and the Dash keeps the
+  shorter sentence for them rather than borrowing Claude Code's number.
+  **Nothing to do on upgrade**, and nothing breaks on an older CLI: the field is
+  optional, an install that never sends it is ordinary, and the panel simply does not
+  name a day. The backend that accepts it is already deployed.
+
+</Accordion>
+
 ## 1.54.0
 
 <div className="rt-when">2026-09-19</div>
