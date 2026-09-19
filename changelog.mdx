@@ -2,9 +2,9 @@
 title: "Changelog: every published CLI version"
 sidebarTitle: "Changelog"
 description: "Every Retasc CLI release includes the date it was published to npm. The release notes identify the issue behind every change."
-"og:image": "https://docs.retasc.com/images/og/changelog.png?v=eecded73"
+"og:image": "https://docs.retasc.com/images/og/changelog.png?v=e6c6a1f1"
 "og:image:alt": "retasc docs: Changelog: every published CLI version"
-"twitter:image": "https://docs.retasc.com/images/og/changelog.png?v=eecded73"
+"twitter:image": "https://docs.retasc.com/images/og/changelog.png?v=e6c6a1f1"
 "twitter:image:alt": "retasc docs: Changelog: every published CLI version"
 ---
 
@@ -22,6 +22,31 @@ under each version's fold.
 npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
+
+## 1.54.0
+
+<div className="rt-when">2026-09-19</div>
+
+- **RTSC-1061** — nothing asks which subscription pays for an agent any more, so `retasc plan` is gone and `retasc bind` no longer puts the question.
+
+<Accordion title="Full notes">
+
+- **RTSC-1061** — nothing asks which subscription pays for an agent any more, so
+  `retasc plan` is gone and `retasc bind` no longer puts the question. **Breaking if
+  you scripted it**; `retasc plan` now exits with `unknown command 'plan'`.
+  The question was asked once per runtime to give model spend a denominator, and the
+  one surface that was going to read the answer was canceled. Nothing consumed it after
+  that, so every install spent a turn of its first session collecting a fact with no
+  reader on the other end. The `PLAN_UNKNOWN` setup state went with it, along with the
+  `list_plans` and `set_plan` MCP tools — the server is at 56 tools now, down from 58.
+  **Upgrade if you are on 1.53.1 or older.** The backend functions behind `retasc plan`
+  are already removed, so on an un-upgraded CLI that one command fails with a raw
+  `Could not find public function` instead of a clean message. Every other command is
+  unaffected, `retasc bind` included: its plan step was already written to be skipped
+  rather than to fail the bind. Answers recorded before this are no longer read and are
+  deleted in a follow-up.
+
+</Accordion>
 
 ## 1.53.1
 

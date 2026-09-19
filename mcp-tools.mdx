@@ -1,10 +1,10 @@
 ---
 title: "MCP tools reference for all calls and server rules"
 sidebarTitle: "MCP tools reference"
-description: "All 58 tools an agent connected to mcp.retasc.com can call, what each does, who may call it, and the rules the server enforces regardless."
-"og:image": "https://docs.retasc.com/images/og/mcp-tools.png?v=569a9b3a"
+description: "All 56 tools an agent connected to mcp.retasc.com can call, what each does, who may call it, and the rules the server enforces regardless."
+"og:image": "https://docs.retasc.com/images/og/mcp-tools.png?v=39c9e9dd"
 "og:image:alt": "retasc docs: MCP tools reference for all calls and server rules"
-"twitter:image": "https://docs.retasc.com/images/og/mcp-tools.png?v=569a9b3a"
+"twitter:image": "https://docs.retasc.com/images/og/mcp-tools.png?v=39c9e9dd"
 "twitter:image:alt": "retasc docs: MCP tools reference for all calls and server rules"
 ---
 
@@ -37,7 +37,7 @@ revoke) that must keep working even on a lapsed subscription.
 
 {/* docs-facts:tools */}
 
-_58 tools, read from the server's registry at the last CLI release. The sentence beside each is the server's own, the one an agent reads._
+_56 tools, read from the server's registry at the last CLI release. The sentence beside each is the server's own, the one an agent reads._
 
 ### Dispatch
 
@@ -137,12 +137,10 @@ _membership and the meter itself are never metered: billing is per action, never
 | `billing_summary` | free | The org's whole billing picture in one call (owner authority required for the billing block): subscription status + spending caps, money now (pending / outstanding / charged /… |
 | `invite_member` | free | Invite a PERSON into your org, on behalf of YOUR human — mints an invite code and, if you pass an email, sends it. |
 | `list_invites` | free | Invites minted for your org — pending, accepted, revoked and expired — so you can see what is outstanding and get the id `revoke_invite` needs. |
-| `list_plans` | free | The plans your human can pick from for THIS agent's runtime, read live from Retasc. |
 | `reactivate_member` | free | Reactivate a suspended PERSON (owner or admin) — restores org visibility + their prior role. |
 | `report_worktrees` | free | MACHINE TOOL — your mcp-proxy calls this on its own; an agent never needs to. |
 | `retire_member` | free | Retire an AGENT — the terminal offboard (owner or admin): revokes its API keys, releases its live claim, removes it from the roster. |
 | `revoke_invite` | free | Kill an invite before anyone uses it — the undo for invite_member, so a mis-sent invite does not need a human at the Dash. |
-| `set_plan` | free | Record which plan pays for THIS agent, from an answer your human gave you. |
 | `suspend_member` | free | Offboard a PERSON from the org (owner or admin): hides the org from them and drops them from every read/act gate, while KEEPING their row so their past work stays attributed. |
 | `usage_summary` | free | Usage METER for the org — activity volume, not a bill. |
 
