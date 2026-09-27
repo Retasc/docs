@@ -2,9 +2,9 @@
 title: "Changelog: every published CLI version"
 sidebarTitle: "Changelog"
 description: "Every Retasc CLI release includes the date it was published to npm. The release notes identify the issue behind every change."
-"og:image": "https://docs.retasc.com/images/og/changelog.png?v=21520e8d"
+"og:image": "https://docs.retasc.com/images/og/changelog.png?v=caa846d8"
 "og:image:alt": "retasc docs: Changelog: every published CLI version"
-"twitter:image": "https://docs.retasc.com/images/og/changelog.png?v=21520e8d"
+"twitter:image": "https://docs.retasc.com/images/og/changelog.png?v=caa846d8"
 "twitter:image:alt": "retasc docs: Changelog: every published CLI version"
 ---
 
@@ -22,6 +22,153 @@ under each version's fold.
 npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
+
+## 1.56.3
+
+<div className="rt-when">2026-09-27</div>
+
+- **RTSC-1150** — **after a `/clear` in Claude Code, the new conversation is told which claims the window still holds.** The watchdog keeps renewing every claim across a `/clear`, because a `/clear` often means "fresh context, same issue", and dropping a lease mid-work costs more than holding one too long.
+
+<Accordion title="Full notes">
+
+- **RTSC-1150** — **after a `/clear` in Claude Code, the new conversation is told which
+  claims the window still holds.** The watchdog keeps renewing every claim across a
+  `/clear`, because a `/clear` often means "fresh context, same issue", and dropping a lease
+  mid-work costs more than holding one too long. What was missing is that the new
+  conversation had no way to know it held anything, so a claim could stay held for hours
+  with nobody working it. The SessionStart hook now also runs on `clear`, and on `clear` or
+  an in-window `/resume` it names the issues the window holds, so the agent carries on,
+  releases them before claiming other work, or asks you. Nothing is released on its own.
+  The proxy lists issue ids only, never claim tokens, and only claims the server last
+  confirmed, so a claim whose renewals are failing is never announced as held. A machine
+  wired with the old `startup|resume` matcher is widened at its next session start. The
+  notice comes from the copy of the CLI that `retasc setup` wired into Claude Code, so
+  update that copy (`npm i -g @retasc/cli` for a global install) to get it.
+
+</Accordion>
+
+## 1.56.2
+
+<div className="rt-when">2026-09-21</div>
+
+- **RTSC-1092** — **the CLI now tells you when it is the stale one, and gives advice that works.** Until now the update notice said `npm i -g @retasc/cli@latest`, which cannot fix a CLI that npx started: the global install and the npx cache are different copies, and npx caches by the literal spec string and never re-resolves `@latest`.
+- **RTSC-1092** — **`retasc doctor` now checks the marker it was blind to.** 1.56.1 added a warning for a folder pinned to a moving tag, but only looked at the binding Claude Code uses.
+
+<Accordion title="Full notes">
+
+- **RTSC-1092** — **the CLI now tells you when it is the stale one, and gives advice that
+  works.** Until now the update notice said `npm i -g @retasc/cli@latest`, which cannot fix
+  a CLI that npx started: the global install and the npx cache are different copies, and
+  npx caches by the literal spec string and never re-resolves `@latest`. Measured — a proxy
+  ran **1.51.0 for eight days across five releases** while `retasc --version` reported
+  1.56.0, because the global copy had been kept dutifully current and that was never what
+  started. Following the old advice changed nothing and looked like it had worked.
+  A copy started by npx is now told so, and told to run `retasc bind` **pinned to the
+  published version** — an exact spec gets its own cache entry, so it cannot be served a
+  stale one, and `bind` rewrites the marker with the launcher that machine can actually
+  run. It also **stops offering to install**: a global install would succeed and fix
+  nothing there.
+  Detection reads this module's own path rather than `npm_config_user_agent`, which any
+  npm invocation sets — including `npm run` against a perfectly ordinary global install.
+- **RTSC-1092** — **`retasc doctor` now checks the marker it was blind to.** 1.56.1 added a
+  warning for a folder pinned to a moving tag, but only looked at the binding Claude Code
+  uses. Where a `claude-local` entry shadows `./.mcp.json`, that file went unchecked — and
+  it is exactly the one **Pi's MCP adapter, Codex and Cursor** read. A folder in that state
+  got four green checks. Both are reported now, and the warning names which file to fix.
+  **Nothing to do on upgrade**, and no behaviour changes for a folder that was already
+  healthy. If you have been running `npx @retasc/cli@latest`, run `retasc doctor` once —
+  it will tell you whether your agent has been starting the build you think it has.
+
+</Accordion>
+
+## 1.56.1
+
+<div className="rt-when">2026-09-21</div>
+
+- **RTSC-1091** — **`doctor` now tells you when your folder is pinned to a moving tag.** A marker that says `@retasc/cli@latest` looks healthy and is not: npx caches by the literal spec string and never re-resolves a dist-tag, so it keeps serving whatever it fetched the first time and every release after that silently does nothing.
+
+<Accordion title="Full notes">
+
+- **RTSC-1091** — **`doctor` now tells you when your folder is pinned to a moving tag.**
+  A marker that says `@retasc/cli@latest` looks healthy and is not: npx caches by the
+  literal spec string and never re-resolves a dist-tag, so it keeps serving whatever it
+  fetched the first time and every release after that silently does nothing. Measured on
+  2026-09-21 — a folder had been running **1.51.0 for eight days across five releases**
+  while `retasc --version` reported 1.56.0, and the only symptom was a feature quietly
+  missing.
+  `doctor` reported four green checks on that folder, and it was not wrong: the marker
+  *starts*, and "does it start" was the only question it had ever asked. It now also asks
+  whether it starts the version you think it does, and says what to run.
+  **A warning, never a failure** — the folder works, and the exit code is untouched.
+  **The fix is `retasc bind`, not `npm i -g`.** The global binary and the npx cache are
+  different copies, and your agent loads the npx one, so installing globally can leave a
+  stale proxy running and look like it worked. `bind` rewrites the marker with the
+  launcher that machine can actually run, and pins it.
+  Also here: the published setup docs no longer put `@latest` in any command, and
+  `release-cli` repins them on every release so they cannot fall behind silently.
+
+</Accordion>
+
+## 1.56.0
+
+<div className="rt-when">2026-09-21</div>
+
+- **RTSC-822** — **Codex, Cursor, OpenCode and Gemini CLI now report their own sessions**, so the Agents page can name the conversation each one is having and its resume line reopens it.
+
+<Accordion title="Full notes">
+
+- **RTSC-822** — **Codex, Cursor, OpenCode and Gemini CLI now report their own sessions**, so
+  the Agents page can name the conversation each one is having and its resume line reopens it.
+  Until now only Claude Code and Grok could: Claude Code through a `SessionStart` hook, Grok
+  because it exports `GROK_SESSION_ID` to MCP servers directly. Everything else said "no
+  session-id adapter yet", forever.
+  Every adapter was built from a payload **captured on a real install**, and two vendor docs
+  turned out to be wrong. Codex has no `SessionStart` at all, so its hook rides
+  `UserPromptSubmit`, and its hooks live in `~/.codex/hooks.json` in Claude Code's own schema
+  rather than in `config.toml`. Cursor is `cursor-agent`, its schema is flat with no matcher,
+  and its payload carries no `cwd` — only `workspace_roots`. OpenCode is a plugin, not a hook.
+  **Codex needs one manual step and `setup` says so.** Codex gates hooks behind a trust record
+  in its own config, so a freshly written hook does not fire until you approve it. We do not
+  write that hash for you — marking our own hook trusted on your behalf would bypass a gate
+  Codex put there deliberately — so the receipt tells you rather than reporting a success that
+  will not happen.
+  **Gemini is wired from its bundle and was never observed running**, because a live session
+  needs `GEMINI_API_KEY` and the machine it was built on has none. The receipt says that too,
+  instead of letting a row imply it was watched working.
+  Two fields are never read or stored: Cursor sends `user_email`, Codex sends your literal
+  prompt. Verified by piping the real captured payloads through the built binary.
+  **Re-run `retasc setup`** to wire the new adapters; nothing breaks if you do not.
+
+- **RTSC-1080, RTSC-1084** — **Pi is a runtime of its own.** Its work was being filed under
+  Claude Code's name — not a mislabelled Pi, but Pi's issues attributed to another tool, on
+  another machine, pointing at another tool's transcript. `pi` was missing from the server's
+  runtime vocabulary, so the proxy fell back to the workspace's remembered Claude Code
+  credential. A Pi session now mints its own key and draws as Pi.
+  **Pi also names its conversation now**, derived from the folder it is running in. The route
+  pi.dev documents (`PI_SESSION_ID`, `PI_SESSION_FILE`) does not exist in the shipped 0.74.2 —
+  those names appear nowhere in the install — and Pi has no MCP client of its own to ask, so
+  the folder is the meeting point. Only the id is reported: never the path, never a byte of
+  the file. A transcript a live session is still writing to is never opened, and a transcript
+  from an earlier session in the same folder is refused rather than reported with confidence.
+  **Needs the matching backend**, which is already deployed to production.
+  Note for anyone whose product name contains the letters "pi": `pi` is matched **exactly**,
+  deliberately, so Copilot is not relabelled as Pi and is not handed Pi's resume verb.
+  The first attempt at this shipped and did nothing, and the fix is in this same release. It
+  gated on `AI_AGENT=pi`, which Pi sets for its **shell tool** — but the supported path does
+  not go through bash: `pi-mcp-adapter` runs inside Pi's own process and the proxy is that
+  process's child, which never sees the shell tool's environment. The handshake is what works
+  on the path people actually use (`clientInfo.name` arrives as `pi-mcp-<server>`), and the
+  gate now takes either signal, so driving the proxy from a shell by hand still works. Found
+  by running it against a real Pi session rather than by reading it.
+
+- Pi has no MCP client of its own and `retasc setup` does not wire it. It reaches Retasc
+  through the third-party `pi-mcp-adapter`, which reads the same `./.mcp.json` marker every
+  other client reads — `pi install npm:pi-mcp-adapter`, then `retasc bind`. The Retasc Agent
+  Skill carries the setup and the one caveat worth knowing: that adapter starts servers on
+  demand, so the proxy never lives long enough to heartbeat your lease. `checkpoint` at
+  pauses rather than trusting the watchdog there.
+
+</Accordion>
 
 ## 1.55.0
 

@@ -2,9 +2,9 @@
 title: "CLI reference: every retasc command"
 sidebarTitle: "CLI reference"
 description: "Every Retasc CLI command lists its synopsis, options, requirements and an example. Commands cover sign-in, worktree claims, imports and releases."
-"og:image": "https://docs.retasc.com/images/og/cli.png?v=86a0c34e"
+"og:image": "https://docs.retasc.com/images/og/cli.png?v=37a452e6"
 "og:image:alt": "retasc docs: CLI reference: every retasc command"
-"twitter:image": "https://docs.retasc.com/images/og/cli.png?v=86a0c34e"
+"twitter:image": "https://docs.retasc.com/images/og/cli.png?v=37a452e6"
 "twitter:image:alt": "retasc docs: CLI reference: every retasc command"
 ---
 
@@ -17,7 +17,7 @@ retasc --version        # what you have
 
 {/* docs-facts:commands */}
 
-_37 commands, from `retasc --help` at 1.55.0. Each is described in full below or in `retasc <command> --help`._
+_37 commands, from `retasc --help` at 1.56.3. Each is described in full below or in `retasc <command> --help`._
 
 | Command | What it does |
 |---|---|
@@ -45,7 +45,7 @@ _37 commands, from `retasc --help` at 1.55.0. Each is described in full below or
 | `retasc import [options]` | Bring a Linear/Jira/Asana/ClickUp/Shortcut project across into a new Retasc project. |
 | `retasc setup [options]` | Detect the MCP harnesses on this machine and wire Retasc into each, once. |
 | `retasc mcp install [options]` | Register the Retasc MCP server with your agent (Claude Code) or write .mcp.json. |
-| `retasc hook session-start` | Claude Code SessionStart hook: record this session's transcript id for the proxy. |
+| `retasc hook session-start [options]` | SessionStart hook: record this session's transcript id for the proxy. |
 | `retasc hook model-switch` | Claude Code PostModelSwitch hook: update this session's model for the proxy. |
 | `retasc gate install [options]` | Install a prefix-correct commit-msg hook + check-commit-message Action into this repo. |
 | `retasc claim [options] [issue]` | Claim an issue (RTSC-NN, a bare number, --id, or the next unblocked) and drop into a fresh worktree. |

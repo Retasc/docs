@@ -2,9 +2,9 @@
 title: "MCP tools reference for all calls and server rules"
 sidebarTitle: "MCP tools reference"
 description: "All 56 tools an agent connected to mcp.retasc.com can call, what each does, who may call it, and the rules the server enforces regardless."
-"og:image": "https://docs.retasc.com/images/og/mcp-tools.png?v=61737380"
+"og:image": "https://docs.retasc.com/images/og/mcp-tools.png?v=5186374f"
 "og:image:alt": "retasc docs: MCP tools reference for all calls and server rules"
-"twitter:image": "https://docs.retasc.com/images/og/mcp-tools.png?v=61737380"
+"twitter:image": "https://docs.retasc.com/images/og/mcp-tools.png?v=5186374f"
 "twitter:image:alt": "retasc docs: MCP tools reference for all calls and server rules"
 ---
 
@@ -48,7 +48,7 @@ _the claim and the graph, the calls that decide who works on what._
 | `add_relation` | \$0.007 | Link two issues. |
 | `claim_issue` | \$0.007 | Claim one specific issue by id (instead of letting next_issue pick). |
 | `next_batch` | \$0.007 | Wave dispatch for a fleet: return the top N eligible issues (todo + unclaimed + unblocked WORK — work:false containers are never included), effective-priority ordered, ready to… |
-| `next_issue` | \$0.007 | Pull the next issue to work on, project-scoped — atomically claims the highest-priority unblocked todo and returns it with a claim_token (status becomes 'doing'). |
+| `next_issue` | \$0.007 | Pull the next issue to work on, project-scoped — atomically claims the highest-priority unblocked issue and returns it with a claim_token. |
 | `remove_relation` | \$0.007 | Remove a link between two issues (same args as add_relation). |
 
 ### Work
