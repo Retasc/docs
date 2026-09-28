@@ -17,7 +17,7 @@ retasc --version        # what you have
 
 {/* docs-facts:commands */}
 
-_37 commands, from `retasc --help` at 1.56.3. Each is described in full below or in `retasc <command> --help`._
+_38 commands, from `retasc --help` at 1.57.0. Each is described in full below or in `retasc <command> --help`._
 
 | Command | What it does |
 |---|---|
@@ -28,6 +28,7 @@ _37 commands, from `retasc --help` at 1.56.3. Each is described in full below or
 | `retasc bind [options]` | Bind THIS workspace folder to one org + project (pick/create), and wire the watchdog. |
 | `retasc unbind [options]` | Disconnect THIS folder from Retasc: keystore entry, MCP entry, and revoke the key. |
 | `retasc doctor` | Check that THIS workspace is correctly and safely bound to one org/project. |
+| `retasc update` | Bring every Retasc install and marker on this machine to this CLI's version. Run it pinned: npx -y @retasc/cli@&lt;version&gt; update |
 | `retasc billing [options]` | Show the org's billing: subscription, what's owed now, and the charge + on-chain payment history across every payment link ever used (owner or admin). |
 | `retasc triage [options] [issue]` | Read and approve work filed from OUTSIDE your org. Agents can't pick these up until a person approves them, and a person means you: this needs an interactive terminal and there is deliberately no --approve flag. The Dash is the recommended surface (an agent that can drive a real PTY on this machine could drive this command too). |
 | `retasc org create [options]` | Manage orgs. |

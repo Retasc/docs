@@ -23,6 +23,33 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.57.0
+
+<div className="rt-when">2026-09-28</div>
+
+- **RTSC-1127** — **new `retasc update`: one command that upgrades a connected machine, and asks nothing.** The "newer CLI available" notice used to say `npx … bind`.
+- **RTSC-1127** — the CLI's own update notice and `retasc doctor`'s stale-`@latest` warning now prescribe `update` instead of `bind`.
+
+<Accordion title="Full notes">
+
+- **RTSC-1127** — **new `retasc update`: one command that upgrades a connected machine,
+  and asks nothing.** The "newer CLI available" notice used to say `npx … bind`. `bind`
+  connects a folder; it does not upgrade one. Run from a fresh terminal it signed you in
+  again and offered the org picker, in a bound folder it asked "Replace it?", and either
+  way it left a global `retasc` on the old build. Before that the notice said `npm i -g`,
+  which never touches a folder whose marker starts Retasc through npx. `update` does both
+  halves: it upgrades a global install if there is one, re-wires the harness entries
+  `retasc setup` wrote, and re-pins every bound folder's npx marker (`./.mcp.json` and
+  Claude Code's local scope) to its own version. The folders come from your keystore, so
+  it works from any terminal, and it never signs in, never prompts and never downgrades.
+  Run it pinned: `npx -y @retasc/cli@1.57.0 update`. A build older than the published one
+  hands over to the newest instead of reporting success, and a rewritten `.mcp.json` that
+  git tracks is named so the diff is not a surprise. Restart your agent sessions after.
+- **RTSC-1127** — the CLI's own update notice and `retasc doctor`'s stale-`@latest`
+  warning now prescribe `update` instead of `bind`.
+
+</Accordion>
+
 ## 1.56.3
 
 <div className="rt-when">2026-09-27</div>
