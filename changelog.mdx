@@ -23,6 +23,30 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.60.0
+
+<div className="rt-when">2026-09-28</div>
+
+- **RTSC-1155** — **after `/clear` or `/resume`, every supported tool now learns which claims its window still holds**, as Claude Code already did.
+- **RTSC-1155** — Cursor gets a small per-prompt hook (`retasc hook prompt`), added next to the one Retasc already installed there, because Cursor's session-start hook does not run on `/clear` or `/resume`.
+
+<Accordion title="Full notes">
+
+- **RTSC-1155** — **after `/clear` or `/resume`, every supported tool now learns which
+  claims its window still holds**, as Claude Code already did. Before, only Claude Code's
+  new conversation was told, so in Codex, Cursor, Gemini, OpenCode, Grok and Pi a claim
+  could stay held for hours with nobody working on it. Codex hears it with its first
+  prompt; the others hear it on their next Retasc call. Where the tool restarts Retasc on
+  `/clear` (Pi does), the new Retasc session takes the previous one's claims over, so they
+  keep renewing instead of lapsing unreachable for 30 minutes. In Cursor and OpenCode,
+  where one window can run several conversations, the notice asks you before anything is
+  released.
+- **RTSC-1155** — Cursor gets a small per-prompt hook (`retasc hook prompt`), added next
+  to the one Retasc already installed there, because Cursor's session-start hook does not
+  run on `/clear` or `/resume`.
+
+</Accordion>
+
 ## 1.59.0
 
 <div className="rt-when">2026-09-28</div>

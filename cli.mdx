@@ -17,7 +17,7 @@ retasc --version        # what you have
 
 {/* docs-facts:commands */}
 
-_38 commands, from `retasc --help` at 1.59.0. Each is described in full below or in `retasc <command> --help`._
+_39 commands, from `retasc --help` at 1.60.0. Each is described in full below or in `retasc <command> --help`._
 
 | Command | What it does |
 |---|---|
@@ -47,6 +47,7 @@ _38 commands, from `retasc --help` at 1.59.0. Each is described in full below or
 | `retasc setup [options]` | Detect the MCP harnesses on this machine and wire Retasc into each, once. |
 | `retasc mcp install [options]` | Register the Retasc MCP server with your agent (Claude Code) or write .mcp.json. |
 | `retasc hook session-start [options]` | SessionStart hook: record this session's transcript id for the proxy. |
+| `retasc hook prompt [options]` | Per-prompt hook (Cursor): record the window's conversation for the proxy. |
 | `retasc hook model-switch` | Claude Code PostModelSwitch hook: update this session's model for the proxy. |
 | `retasc gate install [options]` | Install a prefix-correct commit-msg hook + check-commit-message Action into this repo. |
 | `retasc claim [options] [issue]` | Claim an issue (RTSC-NN, a bare number, --id, or the next unblocked) and drop into a fresh worktree. |
