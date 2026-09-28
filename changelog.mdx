@@ -23,6 +23,34 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.59.0
+
+<div className="rt-when">2026-09-28</div>
+
+- **RTSC-1154** — **a Pi agent no longer loses its claim by sitting idle.** Pi's MCP adapter closes a server that has been idle for 10 minutes, which stopped Retasc from renewing your claims while the agent was still working.
+- **RTSC-1154** — **Gemini CLI's session hook runs.** Gemini reads the hook timeout in milliseconds, so the value we wrote stopped the hook at once and Gemini sessions recorded no transcript or model.
+- **RTSC-1154** — OpenCode reports each new session after `/new`, not only the first one, and never a subagent's.
+- **RTSC-1154** — Cursor and Grok also run Claude Code's hooks.
+
+<Accordion title="Full notes">
+
+- **RTSC-1154** — **a Pi agent no longer loses its claim by sitting idle.** Pi's MCP
+  adapter closes a server that has been idle for 10 minutes, which stopped Retasc from
+  renewing your claims while the agent was still working. `retasc setup` now writes a
+  Retasc entry into Pi's own `~/.pi/agent/mcp.json` that stays alive once started, and a
+  Retasc session inside Pi adds it by itself on machines set up earlier. You still need
+  an MCP extension in Pi (`pi install npm:pi-mcp-adapter`).
+- **RTSC-1154** — **Gemini CLI's session hook runs.** Gemini reads the hook timeout in
+  milliseconds, so the value we wrote stopped the hook at once and Gemini sessions
+  recorded no transcript or model. Existing entries are corrected automatically.
+- **RTSC-1154** — OpenCode reports each new session after `/new`, not only the first one,
+  and never a subagent's. The plugin on your machine is updated automatically.
+- **RTSC-1154** — Cursor and Grok also run Claude Code's hooks. Retasc's Claude Code hook
+  now recognises them and stays out, so their sessions are no longer filed under Claude
+  Code.
+
+</Accordion>
+
 ## 1.58.0
 
 <div className="rt-when">2026-09-28</div>
