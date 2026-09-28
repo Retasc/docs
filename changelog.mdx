@@ -23,6 +23,35 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.58.0
+
+<div className="rt-when">2026-09-28</div>
+
+- **RTSC-1153** — **the CLI now keeps itself up to date, and it is on by default.** Until now every way Retasc starts stayed on the version you installed until you ran a command, and the only prompt to do so was a notice your agent had to pass on.
+- **RTSC-1153** — shared `.mcp.json` files say `@retasc/cli@latest` again.
+- **RTSC-1153** — the "newer CLI available" notice now appears only when the automatic update is not working: it failed, it has not managed to check for three days, or a session still starts an older build after an update landed.
+
+<Accordion title="Full notes">
+
+- **RTSC-1153** — **the CLI now keeps itself up to date, and it is on by default.** Until
+  now every way Retasc starts stayed on the version you installed until you ran a command,
+  and the only prompt to do so was a notice your agent had to pass on. Once a day the
+  watchdog now checks npm in the background and, if a newer CLI is out, installs it. Your
+  running session keeps its version and the next one starts the new one, so nothing
+  changes mid-session. It never edits a file git tracks, never replaces an `npm link`ed
+  install, and stays off in CI. You are told once, and `retasc config auto-update off`
+  turns it off until you turn it back on (`RETASC_AUTO_UPDATE=0` does the same for one
+  shell). `retasc doctor` shows whether it is on and what the last update did.
+- **RTSC-1153** — shared `.mcp.json` files say `@retasc/cli@latest` again. npx checks the
+  registry for a tag on every start (npm 9 and later) and falls back to its cached copy
+  offline, so a pinned version was the thing that went stale. `retasc update` moves a
+  pinned marker to `@latest` once, and `doctor` no longer warns about `@latest`.
+- **RTSC-1153** — the "newer CLI available" notice now appears only when the automatic
+  update is not working: it failed, it has not managed to check for three days, or a
+  session still starts an older build after an update landed.
+
+</Accordion>
+
 ## 1.57.0
 
 <div className="rt-when">2026-09-28</div>
