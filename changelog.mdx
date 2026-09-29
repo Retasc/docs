@@ -23,6 +23,23 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.60.1
+
+<div className="rt-when">2026-09-29</div>
+
+- **RTSC-1156** — **an agent is no longer labelled Claude Code just because it ran `retasc bind`.** `init`, `bind`, `join` and `key mint` used to record every new agent as Claude Code unless you passed `--runtime`, so a Grok, Cursor or Codex agent that set itself up showed as "Your name's Claude Code" in the Dash for good.
+
+<Accordion title="Full notes">
+
+- **RTSC-1156** — **an agent is no longer labelled Claude Code just because it ran
+  `retasc bind`.** `init`, `bind`, `join` and `key mint` used to record every new agent as
+  Claude Code unless you passed `--runtime`, so a Grok, Cursor or Codex agent that set
+  itself up showed as "Your name's Claude Code" in the Dash for good. With no `--runtime`
+  the agent is now named after the tool that actually connects. `--runtime` still sets
+  the label when you pass it.
+
+</Accordion>
+
 ## 1.60.0
 
 <div className="rt-when">2026-09-28</div>
