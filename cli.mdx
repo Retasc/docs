@@ -177,8 +177,7 @@ the MCP server, in one pass. The canonical setup command. Requires login, except
 | `--org-id`, `--org-name` | Bind into an existing org | picker |
 | `--project`, `--project-id` | Select or create the project | picker |
 | `--prefix` | Issue prefix for a new project | derived |
-| `--agent` | Display name for the minted agent | derived |
-| `--runtime` | Runtime the key is labeled for | `claude-code` |
+| `--runtime` | Label for the agent in the Dash. Omit it and the agent is named after the tool that connects | none |
 | `-y, --yes` | Accept the re-bind confirmation non-interactively | off |
 | `--no-install` | Decline the global CLI install step | asks |
 | `--setup` | Dash-issued single-use code: no login, no prompts, headless-safe | off |
@@ -203,7 +202,7 @@ code.
 |---|---|
 | `--no-bind` | Redeem only, skip folder setup (the old behavior, same output and exit code) |
 | `--project-id` | Skip the project picker |
-| `--agent`, `--runtime` | As in `bind` |
+| `--runtime` | As in `bind` |
 | `-y, --yes` | Skip confirmations. Never answers the identity question: claiming history is irreversible |
 | `--no-install` | Decline the global CLI install step |
 
@@ -221,8 +220,7 @@ scripted or first-time setup. Requires login.
 | `--project` | Project name (required) | |
 | `--prefix` | Issue prefix (required) | |
 | `--org`, `--org-id` | Name a new org, or reuse an existing one | new org |
-| `--agent` | Agent display name | derived |
-| `--runtime` | Runtime label | `claude-code` |
+| `--runtime` | Label for the agent in the Dash. Omit it and the agent is named after the tool that connects | none |
 | `--scope` | MCP registration scope: `local` or `project` | `local` |
 | `--no-watchdog` | Skip the liveness watchdog proxy | on |
 
@@ -360,8 +358,7 @@ Mints an agent API key, shown once. A member may mint keys for their own agents.
 
 | Flag | What it does | Default |
 |---|---|---|
-| `--agent` | Agent display name | derived |
-| `--runtime` | Runtime label | `claude-code` |
+| `--runtime` | Label for the agent in the Dash. Omit it and the agent is named after the tool that connects | none |
 | `--name` | Key label | derived |
 | `--install` | Also wire the key into this folder's MCP config | off |
 | `--scope` | `local` or `project` registration | `local` |
