@@ -23,6 +23,26 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.61.0
+
+<div className="rt-when">2026-10-05</div>
+
+- **RTSC-1172** — **a signup from the command line is now credited to the ad that brought it.** When the CLI can't open a browser on its own machine (over SSH, in a container), the sign-in link it prints now goes through retasc.com, which sends you straight on to GitHub's or Google's code page and picks up the ad click your browser carries on the way.
+
+<Accordion title="Full notes">
+
+- **RTSC-1172** — **a signup from the command line is now credited to the ad that
+  brought it.** When the CLI can't open a browser on its own machine (over SSH, in a
+  container), the sign-in link it prints now goes through retasc.com, which sends you
+  straight on to GitHub's or Google's code page and picks up the ad click your browser
+  carries on the way. Creating an org also sends this machine's public IP address, so an
+  ad clicked in another browser, or on another machine on the same network, can still be
+  matched. The address is compared against ad clicks from the last 24 hours and is not
+  stored. `retasc join` does neither, since an invited teammate joins an org that already
+  exists. The privacy policy covers this under "Advertising measurement".
+
+</Accordion>
+
 ## 1.60.1
 
 <div className="rt-when">2026-09-29</div>
