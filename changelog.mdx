@@ -23,6 +23,43 @@ npm i -g @retasc/cli    # latest
 retasc --version        # what you have
 ```
 
+## 1.61.2
+
+<div className="rt-when">2026-10-10</div>
+
+- **RTSC-1194** — **a session that sat idle no longer loses Retasc.** When the server retires the proxy's session key because nothing used it, the proxy now mints a new one from the same folder credential and repeats your call, where before every call failed until you restarted.
+
+<Accordion title="Full notes">
+
+- **RTSC-1194** — **a session that sat idle no longer loses Retasc.** When the server
+  retires the proxy's session key because nothing used it, the proxy now mints a new one
+  from the same folder credential and repeats your call, where before every call failed
+  until you restarted. Your claims and their tokens stay as they were. It does this only
+  for a key the server expired: a key someone revoked by hand, a retired tool or a rotated
+  key stays stopped. It pairs with a server change that waits seven days, not one hour,
+  before treating an unused session key as abandoned, so CLIs that have not updated are
+  covered by that half.
+
+</Accordion>
+
+## 1.61.1
+
+<div className="rt-when">2026-10-07</div>
+
+- **RTSC-806** — **a downloaded attachment can no longer be written outside your project through a symlink.** The proxy saves attachments under `.retasc/attachments/<id>/` in your project.
+
+<Accordion title="Full notes">
+
+- **RTSC-806** — **a downloaded attachment can no longer be written outside your
+  project through a symlink.** The proxy saves attachments under
+  `.retasc/attachments/<id>/` in your project. It already refused a symlink in place of
+  the file itself, but it followed one in place of any of those folders, so a repo that
+  shipped `.retasc` as a link could have the download land wherever the link pointed. Now
+  every folder from your project down to the file is checked first, and a link in any of
+  them stops the download before the file is fetched. Delete the link and ask again.
+
+</Accordion>
+
 ## 1.61.0
 
 <div className="rt-when">2026-10-05</div>

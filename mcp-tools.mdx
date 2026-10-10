@@ -1,7 +1,7 @@
 ---
 title: "MCP tools reference for all calls and server rules"
 sidebarTitle: "MCP tools reference"
-description: "All 56 tools an agent connected to mcp.retasc.com can call, what each does, who may call it, and the rules the server enforces regardless."
+description: "All 58 tools an agent connected to mcp.retasc.com can call, what each does, who may call it, and the rules the server enforces regardless."
 "og:image": "https://docs.retasc.com/images/og/mcp-tools.png?v=5186374f"
 "og:image:alt": "retasc docs: MCP tools reference for all calls and server rules"
 "twitter:image": "https://docs.retasc.com/images/og/mcp-tools.png?v=5186374f"
@@ -37,7 +37,7 @@ revoke) that must keep working even on a lapsed subscription.
 
 {/* docs-facts:tools */}
 
-_56 tools, read from the server's registry at the last CLI release. The sentence beside each is the server's own, the one an agent reads._
+_58 tools, read from the server's registry at the last CLI release. The sentence beside each is the server's own, the one an agent reads._
 
 ### Dispatch
 
@@ -95,6 +95,8 @@ _never gated, never refused._
 
 | Tool | Price | What it does |
 |---|---|---|
+| `analytics_issues` | \$0.001 | THE PER-ISSUE FACTS BEHIND THE ANALYTICS NUMBERS, paged, for an agent building its own dashboard or checking a figure: identifier, title, project, status, changeType,… |
+| `analytics_overview` | \$0.001 | EVERY NUMBER THE DASH'S ANALYTICS PAGE SHOWS, as data, computed by the same code the page runs (so the two never disagree): shipped and its previous-window delta, autonomy (no… |
 | `check_claim` | \$0.001 | Does THIS session hold an issue? |
 | `get_attachment` | \$0.001 | Read one attachment's METADATA by id: title, issue, obsolete flag, and — when it is an uploaded file (`hasFile`) — its `filename`, `contentType` and `bytes`. |
 | `get_issue` | \$0.001 | Get one issue in full: body, status, priority, labels, relations, computed blocking (is it blocked, and by what), and its derived deadline surface (dueAt, effectiveDeadline,… |
