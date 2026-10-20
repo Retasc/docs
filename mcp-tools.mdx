@@ -82,7 +82,6 @@ _keepalives, identity and wind-down; heartbeat sits below the floor._
 | Tool | Price | What it does |
 |---|---|---|
 | `heartbeat` | \$0.0001 | Extend your lease on a claimed issue during long-silent work. |
-| `mint_harness_key` | \$0.001 | Mint the API key for ONE TOOL in this workspace — the middle tier between the folder's workspace key and a session key. |
 | `mint_session_key` | \$0.001 | Mint a per-session API key bound to YOUR identity (same org/project/agent), distinctly labeled. |
 | `name_workspace` | \$0.001 | Tell Retasc which FOLDER your workspace key is bound to, so the Dash can say where an agent runs. |
 | `record_session` | \$0.001 | Record this harness session's transcript id on YOUR session key, so the Dash can show the conversation behind the work and hand a human `claude --resume <id>`. |
@@ -139,6 +138,7 @@ _membership and the meter itself are never metered: billing is per action, never
 | `billing_summary` | free | The org's whole billing picture in one call (owner authority required for the billing block): subscription status + spending caps, money now (pending / outstanding / charged /… |
 | `invite_member` | free | Invite a PERSON into your org, on behalf of YOUR human — mints an invite code and, if you pass an email, sends it. |
 | `list_invites` | free | Invites minted for your org — pending, accepted, revoked and expired — so you can see what is outstanding and get the id `revoke_invite` needs. |
+| `mint_harness_key` | free | Mint the API key for ONE TOOL in this workspace — the middle tier between the folder's workspace key and a session key. |
 | `reactivate_member` | free | Reactivate a suspended PERSON (owner or admin) — restores org visibility + their prior role. |
 | `report_worktrees` | free | MACHINE TOOL — your mcp-proxy calls this on its own; an agent never needs to. |
 | `retire_member` | free | Retire an AGENT — the terminal offboard (owner or admin): revokes its API keys, releases its live claim, removes it from the roster. |
