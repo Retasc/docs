@@ -284,9 +284,10 @@ top unblocked one), then creates and enters its git worktree on the server-compu
 | `--print-path` | Print only the worktree path | off |
 | `--json` | Machine-readable claim payload | off |
 
-The claim is a 30-minute lease; only heartbeat and checkpoint renew it. When your
-lane is empty but ready work sits in another lane, the CLI says so and points at
-`--all-lanes` instead of reading as "nothing to do".
+The claim is a 2-hour lease, because it is made with the workspace key and no watchdog
+renews it; only heartbeat and checkpoint do. When your lane is empty but ready work sits
+in another lane, the CLI says so and points at `--all-lanes` instead of reading as
+"nothing to do".
 
 ### retasc next
 

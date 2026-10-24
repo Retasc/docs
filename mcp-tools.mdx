@@ -208,10 +208,10 @@ names may be your own former session, and you can take the lease back — see
 
 ### heartbeat
 
-*Write, always allowed.* Required `identifier`, `claimToken`. Renews the 30-minute
-lease — a full reset from the moment the call lands, not a top-up. Called before any
-long stretch of silent work (builds, test runs, waiting on CI); nothing else renews a
-lease, not comments and not status edits. Prefer `checkpoint`: it renews identically
+*Write, always allowed.* Required `identifier`, `claimToken`. Renews the lease (30
+minutes behind the proxy, 2 hours with no watchdog) — a full reset from the moment the
+call lands, not a top-up. Called before any long stretch of silent work (builds, test
+runs, waiting on CI); nothing else renews a lease, not comments and not status edits. Prefer `checkpoint`: it renews identically
 and leaves the handoff note. Whether you need to call either depends on your client —
 see [who renews the lease](/claims-are-leases#who-renews-the-lease).
 
